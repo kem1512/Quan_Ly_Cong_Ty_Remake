@@ -12,7 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('equiments', function (Blueprint $table) {
+        Schema::create('equipments', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50);
             $table->string('image', 500);
@@ -27,8 +27,10 @@ return new class extends Migration {
             $table->date('out_of_date');
             $table->date('warranty_date');
 
-            $table->bigInteger('equiment_type_id')->unsigned()->nullable();
-            $table->foreign('equiment_type_id')->references('id')->on('equiment_types');
+            $table->bigInteger('equipment_type_id')->unsigned()->nullable();
+            $table->foreign('equipment_type_id')->references('id')->on('equipment_types');
+
+            $table->bigInteger('supplier_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

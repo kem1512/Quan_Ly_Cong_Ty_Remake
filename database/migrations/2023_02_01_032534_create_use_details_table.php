@@ -14,8 +14,8 @@ return new class extends Migration {
     {
         Schema::create('use_details', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('equiment_id')->unsigned()->nullable();
-            $table->foreign('equiment_id')->references('id')->on('equiments');
+            $table->bigInteger('equipment_id')->unsigned()->nullable();
+            $table->foreign('equipment_id')->references('id')->on('equipments');
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->bigInteger('department_id')->unsigned()->nullable();

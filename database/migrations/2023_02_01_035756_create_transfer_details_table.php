@@ -16,8 +16,8 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('transfer_id')->unsigned()->nullable();
             $table->foreign('transfer_id')->references('id')->on('transfers');
-            $table->bigInteger('equiment_id')->unsigned()->nullable();
-            $table->foreign('equiment_id')->references('id')->on('equiments');
+            $table->bigInteger('equipment_id')->unsigned()->nullable();
+            $table->foreign('equipment_id')->references('id')->on('equipments');
             $table->timestamps();
         });
     }

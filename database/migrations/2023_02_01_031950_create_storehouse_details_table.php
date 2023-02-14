@@ -16,8 +16,8 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('storehouse_id')->unsigned()->nullable();
             $table->foreign('storehouse_id')->references('id')->on('storehouses');
-            $table->bigInteger('equiment_id')->unsigned()->nullable();
-            $table->foreign('equiment_id')->references('id')->on('equiments');
+            $table->bigInteger('equipment_id')->unsigned()->nullable();
+            $table->foreign('equipment_id')->references('id')->on('equipments');
             $table->integer('amount');
             $table->timestamps();
         });
