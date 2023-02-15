@@ -14,13 +14,13 @@ class EquimentTypeController extends Controller
     public function Get($perpage, $oderby, $keyword = null)
     {
         if ($keyword == null) {
-            $list = DB::table('equiment_types')
+            $list = DB::table('equipment_types')
                 ->orderBy('created_at', $oderby)
                 ->paginate($perpage);
             return $list;
         }
 
-        $list = DB::table('equiment_types')
+        $list = DB::table('equipment_types')
             ->where('name', 'like', '%' . $keyword . '%')
             ->orWhere('status', $keyword)
             ->orderBy('created_at', $oderby)
@@ -45,7 +45,7 @@ class EquimentTypeController extends Controller
         $created_at = Carbon::Now();
         $updated_at = Carbon::Now();
 
-        return DB::table('equiment_types')->insert([
+        return DB::table('equipment_types')->insert([
             'name' => $name,
             'status' => $status,
             'created_at' => $created_at,
@@ -55,12 +55,12 @@ class EquimentTypeController extends Controller
 
     public function Delete($id)
     {
-        return DB::table('equiment_types')->where('id', '=', $id)->delete();
+        return DB::table('equipment_types')->where('id', '=', $id)->delete();
     }
 
     public function Get_By_Id($id)
     {
-        return DB::table('equiment_types')->where('id', '=', $id)->get();
+        return DB::table('equipment_types')->where('id', '=', $id)->get();
     }
 
     public function Update($id, Request $request)
@@ -79,7 +79,7 @@ class EquimentTypeController extends Controller
         $status = $request->status == 'on' ? 1 : 0;
         $updated_at = Carbon::Now();
 
-        return DB::table('equiment_types')
+        return DB::table('equipment_types')
             ->where('id', $id)
             ->update([
                 'name' => $name,

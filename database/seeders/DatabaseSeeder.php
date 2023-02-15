@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
+            'personnel_code' => 'concac',
             'fullname' => 'admin',
             'email' => 'admin@argon.com',
             'password' => bcrypt('admin')
@@ -26,7 +27,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 1, "code" => 'SNC1', 'name' => 'Sconnect', 'id_department_parent' => 1, 'avatar' => 'https://vothisaucamau.edu.vn/wp-content/uploads/2022/12/1670579071_256_222-Hinh-Anh-Avatar-FF-Dep-Chat-Ngat-AI-CUNG.jpg', 'created_at' => Carbon::now()],
 
             ['id' => 2, "code" => 'SNC2', 'name' => 'Phòng Công Nghệ', 'id_department_parent' => 1, 'avatar' => 'https://vothisaucamau.edu.vn/wp-content/uploads/2022/12/1670579071_256_222-Hinh-Anh-Avatar-FF-Dep-Chat-Ngat-AI-CUNG.jpg', 'created_at' => Carbon::now()],
-            ['id' => 8, "code" => 'SNC3' ,'name' => 'Nhóm Phát Triển Phần Mềm', 'id_department_parent' => 2, "avatar" => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRqRyIiwYCq4s-fZi1zdmyfSuIPUvg9EyZ_Q&usqp=CAU', 'created_at' => Carbon::now()],
+            ['id' => 8, "code" => 'SNC3', 'name' => 'Nhóm Phát Triển Phần Mềm', 'id_department_parent' => 2, "avatar" => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRqRyIiwYCq4s-fZi1zdmyfSuIPUvg9EyZ_Q&usqp=CAU', 'created_at' => Carbon::now()],
             ['id' => 9, "code" => 'SNC4', 'name' => 'Nhóm Quản Trị Hệ Thống', 'id_department_parent' => 2, 'avatar' => 'https://png.pngtree.com/png-vector/20190704/ourlarge/pngtree-boy-user-avatar-vector-icon-free-png-image_1538406.jpg', 'created_at' => Carbon::now()],
 
             ['id' => 3, "code" => 'SNC3', 'name' => 'Phòng Hành Chính Nhân Sự', 'id_department_parent' => 1, 'avatar' => 'https://vothisaucamau.edu.vn/wp-content/uploads/2022/12/1670579071_256_222-Hinh-Anh-Avatar-FF-Dep-Chat-Ngat-AI-CUNG.jpg', 'created_at' => Carbon::now()],

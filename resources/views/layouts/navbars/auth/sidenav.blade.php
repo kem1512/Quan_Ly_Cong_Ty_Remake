@@ -38,7 +38,7 @@
                 </a>
             </li>
             <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Loại Thiết Bị</h6>
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Danh mục thiết bị</h6>
             </li>
             {{-- Thiet bi link --}}
             <li class="nav-item">
@@ -56,6 +56,14 @@
                     <span class="nav-link-text ms-1">Kho</span>
                 </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'equiment' ? 'active' : '' }}" href="equiment">
+                    <i class="fa-solid fa-hard-drive text-primary"></i>
+                    <span class="nav-link-text ms-1">Thiết bị</span>
+                </a>
+            </li>
+
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Phòng Ban</h6>
             </li>
