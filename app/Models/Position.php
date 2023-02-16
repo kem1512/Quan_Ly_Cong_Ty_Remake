@@ -9,7 +9,7 @@ class Position extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'id',
         'position',
-       'job_title'
     ];
 }

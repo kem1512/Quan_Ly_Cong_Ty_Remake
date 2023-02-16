@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\DB;
 
@@ -70,7 +71,7 @@ class User extends Authenticatable
     public static function getUsers()
     {
         $users = DB::table('users');
-        return $users->paginate(8);
+        return $users->paginate(7);
     }
 
     public static function UserBuild($nhansu)
@@ -119,7 +120,7 @@ class User extends Authenticatable
             if ($ns->img_url == '') {
                 $ns->img_url = 'avatar2.png';
             }
-            $html .= '<img src="./file/' . $ns->img_url . '" class="avatar me-3"
+            $html .= '<img src="./img/' . $ns->img_url . '" class="avatar me-3"
                                         alt="Avatar">
                                 </div>
                                 <div class="d-flex flex-column justify-content-center">
@@ -185,15 +186,16 @@ class User extends Authenticatable
                 $html .= '<span class="badge badge-sm bg-gradient-danger">Khoá</span> ';
             } else if ($ns->status === 4) {
                 $html .= '<span class="badge badge-sm bg-gradient-danger">Nghỉ Việc</span> ';
-            }
-             else {
+            } else {
                 $html .= '<span class="badge badge-sm bg-gradient-warning">Không xác định</span> ';
             }
 
+
             $html .= '</td>
                         <td class="align-middle text-end">
-                            <div class="d-flex px-3 py-1 justify-content-center align-items-center">    
-                                <a class="text-sm font-weight-bold mb-0 " id="btn-del"
+                            <div class="d-flex px-3 py-1 justify-content-center align-items-center"> ';
+            if (!Auth::user()->level == 0) {
+                $html .= '<a class="text-sm font-weight-bold mb-0 " id="btn-del"
                                     onclick="onDelete(' . $ns->id . ')">
                                     Delete
                                 </a>
@@ -202,8 +204,17 @@ class User extends Authenticatable
                                     data-bs-target="#offcanvasNavbarupdate"
                                     class="text-sm font-weight-bold mb-0 ps-2">
                                     Edit
-                                </a>
-                            </div>
+                                </a> ';
+            } else {
+                $html .= '      <a id="btn-edit" data-bs-toggle="offcanvas"
+                                    onclick="getdetailview(' . $ns->id . ')"
+                                    data-bs-target="#offcanvasNavbarupdate"
+                                    class="text-sm font-weight-bold mb-0 ps-2">
+                                    view
+                                </a> ';
+            }
+
+            $html .= '</div>
                         </td>
                     </tr> ';
         }

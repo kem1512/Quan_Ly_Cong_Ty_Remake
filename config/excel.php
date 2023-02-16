@@ -161,24 +161,24 @@ return [
     | needs to guess the correct type based on the extension alone.
     |
     */
-    'extension_detector' => [
-        'xlsx'     => Excel::XLSX,
-        'xlsm'     => Excel::XLSX,
-        'xltx'     => Excel::XLSX,
-        'xltm'     => Excel::XLSX,
-        'xls'      => Excel::XLS,
-        'xlt'      => Excel::XLS,
-        'ods'      => Excel::ODS,
-        'ots'      => Excel::ODS,
-        'slk'      => Excel::SLK,
-        'xml'      => Excel::XML,
-        'gnumeric' => Excel::GNUMERIC,
-        'htm'      => Excel::HTML,
-        'html'     => Excel::HTML,
-        'csv'      => Excel::CSV,
-        'tsv'      => Excel::TSV,
+    // 'extension_detector' => [
+    //     'xlsx'     => Excel::XLSX,
+    //     'xlsm'     => Excel::XLSX,
+    //     'xltx'     => Excel::XLSX,
+    //     'xltm'     => Excel::XLSX,
+    //     'xls'      => Excel::XLS,
+    //     'xlt'      => Excel::XLS,
+    //     'ods'      => Excel::ODS,
+    //     'ots'      => Excel::ODS,
+    //     'slk'      => Excel::SLK,
+    //     'xml'      => Excel::XML,
+    //     'gnumeric' => Excel::GNUMERIC,
+    //     'htm'      => Excel::HTML,
+    //     'html'     => Excel::HTML,
+    //     'csv'      => Excel::CSV,
+    //     'tsv'      => Excel::TSV,
 
-        /*
+    /*
         |--------------------------------------------------------------------------
         | PDF Extension
         |--------------------------------------------------------------------------
@@ -187,8 +187,8 @@ return [
         | Available options: Excel::MPDF | Excel::TCPDF | Excel::DOMPDF
         |
         */
-        'pdf'      => Excel::DOMPDF,
-    ],
+    //     'pdf'      => Excel::DOMPDF,
+    // ],
 
     /*
     |--------------------------------------------------------------------------
