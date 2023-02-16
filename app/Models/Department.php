@@ -11,7 +11,7 @@ class Department extends Model
     use HasFactory;
     use NodeTrait;
 
-    public function department_childs(){
-        return $this -> belongsTo(Department::class, 'parent_id');
+    public function users(){
+        return $this -> hasMany(User::class, 'department_id', 'id');
     }
 }
