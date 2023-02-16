@@ -17,7 +17,9 @@ class equiment extends Model
         'warranty_date',
         'out_of_date',
         'price',
+        'equipment_type_id',
         'status',
-        'equiment_type_id',
     ];
+
+    protected $table = 'equipments';
 }

@@ -15,15 +15,17 @@ $(document).ready(function () {
     Previous();
     Delete();
     Update();
-    View();
     Submit();
     ChangeImage();
     ShowModal();
     CancelUpdate();
     Search();
+    cancelValidate();
+    ShowModalChiTietKHo();
 });
 
 function Get() {
+    paginate.perPage = 6;
     $.ajax({
         type: "get",
         url:
@@ -138,6 +140,7 @@ function Update() {
                 $('input[name = "name"]').val(response.warehouse.name);
                 $('input[name = "address"]').val(response.warehouse.address);
                 $("#image-kho").attr("src", response.warehouse.image);
+                $("#image-kho").css('display', 'block');
                 $("#flexSwitchCheckDefault").val(
                     response.warehouse.status == 1 ? "on" : null
                 );
@@ -147,12 +150,6 @@ function Update() {
                 $("#title").text(title);
             },
         });
-    });
-}
-
-function View() {
-    $(document).on("click", "#btnXem", function () {
-        alert();
     });
 }
 
@@ -177,11 +174,9 @@ function Submit() {
                     Get();
                 },
                 error: function (err) {
-                    $("#error-name").text(err.responseJSON.errors.name[0]);
-                    $("#error-address").text(
-                        err.responseJSON.errors.address[0]
-                    );
-                    $("#error-image").text(err.responseJSON.errors.image[0]);
+                    for (const key in err.responseJSON.errors) {
+                        $('#error-' + key).text(err.responseJSON.errors[key]);
+                    }
                 },
             });
         } else {
@@ -193,6 +188,7 @@ function Submit() {
                 processData: false,
                 contentType: false,
                 success: function (res) {
+                    console.log(res);
                     $("#formKho")[0].reset();
                     $("#exampleModalSignUp").modal("hide");
                     $("#image-kho").attr("src", "");
@@ -203,10 +199,9 @@ function Submit() {
                     $("#title").text(title);
                 },
                 error: function (err) {
-                    $("#error-name").text(err.responseJSON.errors.name[0]);
-                    $("#error-address").text(
-                        err.responseJSON.errors.address[0]
-                    );
+                    for (const key in err.responseJSON.errors) {
+                        $('#error-' + key).text(err.responseJSON.errors[key]);
+                    }
                 },
             });
         }
@@ -249,4 +244,24 @@ function Search() {
         keyword = $(this).val();
         Get();
     });
+}
+
+function cancelValidate() {
+    $('#formKho').each(function () {
+        let elements = $(this).find(':input');
+        for (const element of elements) {
+            let name = element['name'];
+            $('input[name="' + name + '"]').on('input', function () {
+                if ($('input[name="' + name + '"]').val().trim().length != 0) {
+                    $('#error-' + name).text("");
+                }
+            })
+        }
+    })
+}
+
+function ShowModalChiTietKHo() {
+    $(document).on('click', '#btnXem', function () {
+        $('#modal-kho').modal('show');
+    })
 }

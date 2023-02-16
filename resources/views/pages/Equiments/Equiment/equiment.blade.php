@@ -18,8 +18,12 @@
 
                                 <div class="d-flex row">
                                     <div class="me-1 col-sm">
-                                        <select class="form-control form-control-sm" style="width: 150px;">
-                                            <option value="">Trạng thái</option>
+                                        <select id="selectstatus" class="form-control form-control-sm"
+                                            style="width: 150px;">
+                                            <option value="">Tất cả</option>
+                                            <option value="active">Hoạt động</option>
+                                            <option value="inactive">Không hoạt động</option>
+                                            <option value="broken">Hỏng</option>
                                         </select>
                                     </div>
 
@@ -77,14 +81,15 @@
                                 <nav aria-label="Page navigation example">
                                     <ul class="pagination">
                                         <li class="page-item">
-                                            <a class="page-link" aria-label="Previous" id="btnPrevious">
+                                            <a class="page-link" aria-label="Previous" id="btnPrevious"
+                                                style="cursor: pointer">
                                                 <i class="fa fa-angle-left"></i>
                                                 <span class="sr-only">Previous</span>
                                             </a>
                                         </li>
                                         <div id="pageLink" class="d-flex"></div>
                                         <li class="page-item">
-                                            <a class="page-link" aria-label="Next" id="btnNext">
+                                            <a class="page-link" aria-label="Next" id="btnNext" style="cursor: pointer">
                                                 <i class="fa fa-angle-right"></i>
                                                 <span class="sr-only">Next</span>
                                             </a>
@@ -103,7 +108,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Thêm mới thiết bị</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="form-equiment">
@@ -130,15 +135,17 @@
                                                 <label class="form-control-label text-danger"
                                                     id="specifications-error"></label>
                                             </div>
-                                            <textarea class="form-control" name="specifications" cols="50" rows="3"></textarea>
+                                            <textarea class="form-control" id="specifications" name="specifications" cols="50" rows="3"></textarea>
                                         </div>
                                         <div class="mt-2">
                                             <div class="d-flex justify-content-between">
                                                 <label>Nhà cung cấp (<strong class="text-danger">*</strong>)</label>
-                                                <label class="form-control-label text-danger"
-                                                    id="manufacture-error"></label>
                                             </div>
-                                            <input type="text" name="manufacture" class="form-control">
+                                            <select name="supplier_id" class="form-control">
+                                                @foreach ($list_nha_cung_cap as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                         <div class="mt-2">
                                             <div class="d-flex justify-content-between">
@@ -188,32 +195,6 @@
                                         class="fa-solid fa-x"></i></button>
                                 <button type="submit" class="btn btn-primary"><i
                                         class="fa-solid fa-floppy-disk"></i></button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal import excel -->
-            <div class="modal fade" id="modalExcel" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Nhập file excel</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <form action="equiment/importexcel" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="modal-body">
-                                <div>
-                                    <input type="file" name="file" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
                             </div>
                         </form>
                     </div>

@@ -5,7 +5,7 @@ var orderby = 'asc';
 var keyword = "";
 var title = "Thêm mới thiết bị";
 var create = true;
-var id_warehouse = 0;
+var id_equipments = 0;
 
 $(document).ready(function () {
     Get();
@@ -13,13 +13,15 @@ $(document).ready(function () {
     Next();
     Previous();
     ShowModalThem();
-    ShowModalExcel();
     submit();
-    ImportExcel();
+    cancelValidate();
+    GetStatus();
+    CancelModalThem();
+    GetById();
+    Delete();
 });
 
 function Get() {
-    paginate.perPage = 2;
     $.ajax({
         type: "get",
         url: "/equiment/get/" + paginate.perPage + "/" + paginate.currentPage + "/" + keyword,
@@ -35,8 +37,8 @@ function Get() {
                                 <td class="align-middle text-center w-25"><img class="w-25" src="/uploads/'+ value.image + '"/></td>\
                                 <td class="align-middle text-center" style="border-left-width: 1px;border-right-width: 1px;">'+ value.name + '</td>\
                                 <td class="align-middle text-center" style="border-right-width: 1px;"><span class="badge bg-gradient-success">'+ (value.status == 'active' ? 'Hoạt động' : value.status == 'inactive' ? 'Không hoạt động' : 'Đang hỏng') + '</span></td>\
-                                <td class="align-middle text-center" style="border-right-width: 1px;"><button class="btn btn-primary">Sửa</button></td>\
-                                <td class="align-middle text-center" style="border-right-width: 1px;"><button class="btn btn-primary">Xóa</button></td>\
+                                <td class="align-middle text-center" style="border-right-width: 1px;"><button id="btnSua" name="'+ value.id + '" class="btn btn-primary">Sửa</button></td>\
+                                <td class="align-middle text-center" style="border-right-width: 1px;"><button id="btnXoa" name="'+ value.id + '" class="btn btn-primary">Xóa</button></td>\
                             </tr>';
                 });
             }
@@ -69,12 +71,7 @@ function Redirect() {
 function ShowModalThem() {
     $(document).on('click', '#btnThem', function () {
         $('#modalThem').modal('show');
-    })
-}
-
-function ShowModalExcel() {
-    $(document).on('click', '#btnThemExcel', function () {
-        $('#modalExcel').modal('show');
+        $('#exampleModalLabel').text(title)
     })
 }
 
@@ -82,43 +79,144 @@ function submit() {
     $(document).on('submit', '#form-equiment', function (e) {
         e.preventDefault();
         var data = new FormData(this);
-        $.ajax({
-            type: "post",
-            url: "/equiment/post",
-            data: data,
-            dataType: "json",
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                console.log(response);
-            },
-            error: function (err) {
-
-            }
-        });
+        if (create) {
+            $.ajax({
+                type: "post",
+                url: "/equiment/post",
+                data: data,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    // Swal.fire(
+                    //     'Good job',
+                    //     'Thêm thành công',
+                    //     'success'
+                    // );
+                    // Get();
+                    // $("#form-equiment")[0].reset();
+                    // $("#modalThem").modal("hide");
+                },
+                error: function (err) {
+                    for (const key in err.responseJSON.errors) {
+                        $('#' + key + '-error').text(err.responseJSON.errors[key]);
+                    }
+                }
+            });
+        } else {
+            $.ajax({
+                type: "post",
+                url: "/equiment/update/" + id_equipments,
+                data: data,
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function () {
+                    Swal.fire(
+                        'Good job',
+                        'Sửa thành công',
+                        'success'
+                    );
+                    Get();
+                    $("#form-equiment")[0].reset();
+                    $("#modalThem").modal("hide");
+                    create = true;
+                },
+                error: function (err) {
+                    for (const key in err.responseJSON.errors) {
+                        $('#' + key + '-error').text(err.responseJSON.errors[key]);
+                    }
+                }
+            });
+        }
     });
 }
 
-function ImportExcel() {
-    $(document).on('submit', '#form-excel', function (e) {
-        e.preventDefault();
+function cancelValidate() {
+    $('#form-equiment').each(function () {
+        let elements = $(this).find(':input');
+        for (const element of elements) {
+            let name = element['name'];
+            $('input[name="' + name + '"]').on('input', function () {
+                if ($('input[name="' + name + '"]').val().trim().length != 0) {
+                    $('#' + name + "-error").text("");
+                }
+            })
+        }
+    })
+}
 
-        var data = new FormData(this);
+function GetStatus() {
+    $('#selectstatus').on('change', function () {
+        keyword = $('#selectstatus').val();
+        Get();
+    })
+}
+
+function CancelModalThem() {
+    $('#btnHuy').on('click', function () {
+        $("#form-equiment")[0].reset();
+        $("#modalThem").modal("hide");
+        create = true;
+    })
+}
+
+function GetById() {
+    $(document).on('click', '#btnSua', function () {
+        let id = $(this).attr('name');
 
         $.ajax({
-            type: "post",
-            url: "/equiment/importexcel",
-            data: data,
+            type: "get",
+            url: "/equiment/getbyid/" + id,
             dataType: "json",
-            processData: false,
-            contentType: false,
             success: function (response) {
-                console.log(response);
-            },
-            error: function (err) {
-
+                $('#form-equiment').each(function () {
+                    let elements = $(this).find(':input');
+                    for (const element of elements) {
+                        let name = element['name'];
+                        $('input[name="' + name + '"]').val(response.equipment['' + name + '']);
+                    }
+                })
+                $('#specifications').val(response.equipment['specifications']);
+                $('#modalThem').modal('show');
+                create = false;
+                id_equipments = response.equipment['id'];
+                title = "Sửa thiết bị"
+                $('#exampleModalLabel').text(title)
             }
         });
+    })
+}
+
+function Delete() {
+    $(document).on('click', '#btnXoa', function () {
+        let id = $(this).attr('name');
+        Swal.fire({
+            title: 'Bạn có chắc muốn xóa?',
+            text: "",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Có',
+            cancelButtonText: 'Không'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "get",
+                    url: "/equiment/delete/" + id,
+                    dataType: "json",
+                    success: function () {
+                        Swal.fire(
+                            'Good job',
+                            'Xóa thành công',
+                            'success'
+                        );
+                        Get();
+                    }
+                });
+            }
+        })
     })
 }
 
