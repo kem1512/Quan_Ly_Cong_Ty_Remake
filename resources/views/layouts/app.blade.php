@@ -33,6 +33,10 @@
             background: white;
             cursor: auto
         }
+
+        ul.ui-autocomplete {
+            z-index: 1100;
+        }
     </style>
 </head>
 

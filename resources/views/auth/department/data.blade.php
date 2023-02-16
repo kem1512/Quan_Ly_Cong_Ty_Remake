@@ -22,8 +22,7 @@
             </td>
             <td class="align-middle text-center">
                 <div class="mt-2">
-                    <button class="btn btn-warning btn-sm me-2 view" data-bs-toggle="modal"
-                        data-bs-target="#modal-default" data-id="{{ $department->id }}">Xem</button>
+                    <button class="btn btn-warning btn-sm me-2 view" data-bs-toggle="modal" data-bs-target="#modal-default" data-id="{{ $department->id }}">Xem</button>
                     <button class="btn btn-warning btn-sm me-2 edit" data-id="{{ $department->id }}">Sửa</button>
                     <button class="btn btn-danger btn-sm delete" data-id="{{ $department->id }}">Xóa</button>
                 </div>

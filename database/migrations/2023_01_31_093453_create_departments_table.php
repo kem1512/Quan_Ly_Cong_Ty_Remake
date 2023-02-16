@@ -19,10 +19,16 @@ return new class extends Migration
             $table->string('name');
             $table->string('note')->nullable();
             $table->string('avatar')->nullable();
-            $table->bigInteger('id_department_parent')->unsigned()->nullable();
-            $table->foreign('id_department_parent')->references('id')->on('departments')->onDelete('set null');
+            // $table->integer('level')->default(1);
+            // $table->bigInteger('id_department_parent')->unsigned()->nullable();
+            // $table->foreign('id_department_parent')->references('id')->on('departments')->onDelete('set null');
             $table->boolean('status')->default(true);
             $table->timestamps();
+            $table->nestedSet();
+        });
+
+        Schema::table('users', function(Blueprint $table){
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('set null');
         });
     }
 
@@ -32,7 +38,9 @@ return new class extends Migration
      * @return void
      */
     public function down()
-    {
-        Schema::dropIfExists('departments');
+    {  
+        Schema::table('departments', function (Blueprint $table) {
+            $table->dropNestedSet();
+        });
     }
 };
