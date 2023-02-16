@@ -26,6 +26,10 @@ return new class extends Migration
             $table->timestamps();
             $table->nestedSet();
         });
+
+        Schema::table('users', function(Blueprint $table){
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('set null');
+        });
     }
 
     /**

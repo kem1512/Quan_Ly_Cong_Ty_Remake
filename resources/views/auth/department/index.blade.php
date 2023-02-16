@@ -110,30 +110,6 @@
                 }
             });
 
-            $("#user_search").autocomplete({
-                source: function(request, response) {
-                    // Fetch data
-                    $.ajax({
-                        url: "{{ route('department.searchUsers') }}",
-                        type: 'post',
-                        dataType: "json",
-                        data: {
-                            search: request.term
-                        },
-                        success: function(data) {
-                            response(data);
-                        }
-                    });
-                },
-                select: function(event, ui) {
-                    // Set selection
-                    $('#container_staff').append(
-                        `<input value='${ui.item.label}' class="btn btn-primary position-relative me-2 staff" name='users[]'></input>`
-                    )
-                    return false;
-                }
-            });
-
             $(document).on('click', '.staff', function() {
                 $(this).remove();
             })
