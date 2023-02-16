@@ -73,8 +73,6 @@ class User extends Authenticatable
         return $users->paginate(8);
     }
 
-
-
     public static function UserBuild($nhansu)
     {
         $html = '

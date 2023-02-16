@@ -55,6 +55,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('test', [DepartmentController::class, 'test']);
 	Route::post('searchUser', [DepartmentController::class, 'searchUsers'])->name('department.searchUsers');
 	Route::get('department/{id?}', [DepartmentController::class, 'display'])->name('department.display');
+	Route::get('user', [DepartmentController::class, 'user'])->name('department.user');
 
 
 	//personnel

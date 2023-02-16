@@ -81,6 +81,10 @@ class DepartmentController extends Controller
 		return response()->json($response);
     }
 
+    public function user(){
+        return view('auth.department.user');
+    }
+
     public function addUserToDepartment(Request $request){
         $department_user = new DeparmentUser;
         $department_user->id_department = $request -> id_department;
@@ -136,15 +140,17 @@ class DepartmentController extends Controller
     }
 
     public function test(){
-        $departments = Department::with('ancestors')->get()->toTree();
+        // $departments = Department::with('ancestors')->get()->toTree();
 
-        $traverse = function ($departments, $prefix = '-') use (&$traverse) {
-            foreach ($departments as $department) {
-                echo '<br>'.$prefix.' '.$department->name;
+        // $traverse = function ($departments, $prefix = '-') use (&$traverse) {
+        //     foreach ($departments as $department) {
+        //         echo '<br>'.$prefix.' '.$department->name;
         
-                $traverse($department->children, $prefix.'-');
-            }
-        };
-        $traverse($departments);
+        //         $traverse($department->children, $prefix.'-');
+        //     }
+        // };
+        // $traverse($departments);
+        $test = DepartmentUser::with('userDepeatment')->get();
+        return $test;
     }
 }
