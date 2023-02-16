@@ -11,14 +11,13 @@ class EquimentImport implements ToModel, WithHeadingRow
     {
         return new equiment([
             'name' => $row['name'],
-            'image' => $row['image'],
             'specifications' => $row['specifications'],
-            'manufacture' => $row['manufacture'],
-            'warranty_date' => $row['warranty_date'],
-            'out_of_date' => $row['out_of_date'],
+            'supplier_id' => $row['supplier_id'],
+            'warranty_date' => date('Y-m-d H:i:s', strtotime($row['warranty_date'])),
+            'out_of_date' => date('Y-m-d H:i:s', strtotime($row['out_of_date'])),
             'price' => $row['price'],
+            'equipment_type_id' => $row['equipment_type_id'],
             'status' => $row['status'],
-            'equiment_type_id' => $row['equiment_type_id'],
         ]);
     }
 }

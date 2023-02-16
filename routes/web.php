@@ -102,6 +102,7 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get('getbyid/{id?}', [WareHousesController::class, 'GetById']);
 					Route::post('post', [WareHousesController::class, 'Create']);
 					Route::post('update/{id?}', [WareHousesController::class, 'Update']);
+					Route::get('addwarehousedetail', [WareHousesController::class, 'AddWarehouseDetail']);
 				}
 			);
 
@@ -112,7 +113,9 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get('/', [EquimentsController::class, 'Index'])->name('equiment');
 					Route::get('get/{perpage?}/{currentpage?}/{keyword?}', [EquimentsController::class, 'Get']);
 					Route::post('post', [EquimentsController::class, 'Create']);
-					Route::post('importexcel', [EquimentsController::class, 'ImportExcel']);
+					Route::get('delete/{id?}', [EquimentsController::class, 'Delete']);
+					Route::get('getbyid/{id?}', [EquimentsController::class, 'GetById']);
+					Route::post('update/{id?}', [EquimentsController::class, 'Update']);
 				}
 			);
 			//End route thiết bị

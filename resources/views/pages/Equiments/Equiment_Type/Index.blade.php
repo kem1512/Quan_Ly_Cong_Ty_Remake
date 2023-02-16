@@ -97,14 +97,14 @@
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination">
                                     <li class="page-item">
-                                        <a class="page-link" aria-label="Previous" id="btnPrevious">
+                                        <a class="page-link" aria-label="Previous" id="btnPrevious" style="cursor: pointer">
                                             <i class="fa fa-angle-left"></i>
                                             <span class="sr-only">Previous</span>
                                         </a>
                                     </li>
                                     <div id="pageLink" class="d-flex"></div>
                                     <li class="page-item">
-                                        <a class="page-link" aria-label="Next" id="btnNext">
+                                        <a class="page-link" aria-label="Next" id="btnNext" style="cursor: pointer">
                                             <i class="fa fa-angle-right"></i>
                                             <span class="sr-only">Next</span>
                                         </a>
