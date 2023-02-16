@@ -110,6 +110,34 @@
                 }
             });
 
+            $("#user_search").autocomplete({
+                source: function(request, response) {
+                    // Fetch data
+                    $.ajax({
+                        url: "{{ route('department.searchUsers') }}",
+                        type: 'post',
+                        dataType: "json",
+                        data: {
+                            search: request.term
+                        },
+                        success: function(data) {
+                            response(data);
+                        }
+                    });
+                },
+                select: function(event, ui) {
+                    // Set selection
+                    $('#container_staff').append(
+                        `<input value='${ui.item.label}' class="btn btn-primary position-relative me-2 staff" name='users[]'></input>`
+                    )
+                    return false;
+                }
+            });
+
+            $(document).on('click', '.staff', function() {
+                $(this).remove();
+            })
+
             // Hủy chỉnh sửa
             $('.clear').on('click', function(e) {
                 e.preventDefault();
@@ -121,40 +149,36 @@
                 e.preventDefault()
                 var form = $('#form').serialize();
 
-                showAlert('info', $("input[name='id']").length ? 'Bạn có chắc chắn muốn sửa' :
-                    'Bạn có chắc chắn muốn thêm',
-                    function() {
-                        $.ajax({
-                            url: '{{ route('department.createOrUpdate') }}',
-                            type: 'POST',
-                            data: form,
-                            success: function(response) {
-                                if (response.status == 0) {
-                                    if (response.msg.name) {
-                                        $(".name-error").html(response.msg.name)
-                                    } else {
-                                        $(".name-error").empty();
-                                    }
-
-                                    if (response.msg.code) {
-                                        $(".code-error").html(response.msg.code)
-                                    } else {
-                                        $(".code-error").empty();
-                                    }
-
-                                    if (response.msg.id_department_parent) {
-                                        $(".id_department_parent_error").html(response.msg
-                                            .id_department_parent)
-                                    } else {
-                                        $(".id_department_parent_error").empty();
-                                    }
-                                } else {
-                                    clear();
-                                    showAlert('success', response.msg)
-                                }
+                $.ajax({
+                    url: '{{ route('department.createOrUpdate') }}',
+                    type: 'POST',
+                    data: form,
+                    success: function(response) {
+                        if (response.status == 0) {
+                            if (response.msg.name) {
+                                $(".name-error").html(response.msg.name)
+                            } else {
+                                $(".name-error").empty();
                             }
-                        });
-                    })
+
+                            if (response.msg.code) {
+                                $(".code-error").html(response.msg.code)
+                            } else {
+                                $(".code-error").empty();
+                            }
+
+                            if (response.msg.id_department_parent) {
+                                $(".id_department_parent_error").html(response.msg
+                                    .id_department_parent)
+                            } else {
+                                $(".id_department_parent_error").empty();
+                            }
+                        } else {
+                            showAlert('success', response.msg);
+                            clear();
+                        }
+                    }
+                });
             })
 
             // Hiển thị phòng ban lên form
@@ -168,7 +192,7 @@
                     } else {
                         $("input[name='status']").attr("checked", '');
                     }
-                    $.get("{{ route('department.display') }}" + '/' + data.id_department_parent)
+                    $.get("{{ route('department.display') }}" + '/' + data.parent_id)
                         .done(function(data) {
                             $("input[name='department_name']").val(data.name);
                             $("input[name='id_department_parent']").val(data.id);
@@ -206,26 +230,37 @@
             })
 
             $(document).on('click', '.view', function() {
-                var html = ''
-                $.get('getEmployeeInDepartment' + '/' + $(this).attr('data-id'), function(response) {
-                    if (response.data) {
-                        $.each(response.data, function(i, data) {
-                            html += `<div class="d-flex mb-2">
-                                <div class="w-25">
-                                    <img class="w-100" style="border-radius: 10px" src="https://phunugioi.com/wp-content/uploads/2022/11/Hinh-anh-avatar-ff-1.jpg"/>
-                                </div>
-                                <div>
-                                    <p class="px-3 m-0">Email : ${data.email}</p>
-                                    <p class="px-3 m-0">Tên : ${data.fullname}</p>
-                                    <p class="px-3 m-0 font-weight-bold">Chức Vụ : Chủ Tịch</p>
-                                </div>
-                            </div>`;
-                        });
-                        $('.modal-body').empty().html(html);
-                    } else {
-                        $('.modal-body').empty().html("<p class='m-0'>Không Có Nhân Viên</p>");
-                    }
-                });
+                // var html = ''
+                // $.get('getEmployeeInDepartment' + '/' + $(this).attr('data-id'), function(response) {
+                //     if (response.data) {
+                //         $.each(response.data, function(i, data) {
+                //             html += `<div class="d-flex mb-2">
+            //             <div class="w-25">
+            //                 <img class="w-100" style="border-radius: 10px" src="https://phunugioi.com/wp-content/uploads/2022/11/Hinh-anh-avatar-ff-1.jpg"/>
+            //             </div>
+            //             <div>
+            //                 <p class="px-3 m-0">Email : ${data.email}</p>
+            //                 <p class="px-3 m-0">Tên : ${data.fullname}</p>
+            //                 <p class="px-3 m-0 font-weight-bold">Chức Vụ : Chủ Tịch</p>
+            //             </div>
+            //         </div>`;
+                //         });
+                //         $('.modal-body').empty().html(html);
+                //     } else {
+                //         $('.modal-body').empty().html("<p class='m-0'>Không Có Nhân Viên</p>");
+                //     }
+                // });
+                $('.department').html($(this).attr('data-id'));
+            })
+
+            $(document).on('click', '.add_staff', function(e) {
+                e.preventDefault();
+                // var all = $(".staff").map(function() {
+                //     return $(this).attr('data-id');
+                // }).get();
+                // console.log(all);
+                var form = $('#vip').serialize();
+                console.log(form);
             })
 
             $(document).on('dblclick', '.edit-table', function() {

@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FormDataRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Department;
+use Illuminate\Support\Collection;
 use App\Models\User;
+use App\Models\DepartmentUser;
 use Illuminate\Http\Request;
 use  Carbon\Carbon;
 
@@ -16,33 +18,34 @@ class DepartmentController extends Controller
         return view('auth.department.form');
     }
 
-    public function createOrUpdate(FormDataRequest $request){     
+    public function createOrUpdate(FormDataRequest $request){    
         if(!$request -> validated())
         {
             return response()->json(['status' => 0,'msg' => $request->errors()]);
         }else{
+            $department_parent = Department::find($request -> id_department_parent);
+
             if($request -> id){
                 $department = Department::find($request -> id);
             }else{
                 $department = new Department;
             }
 
-            $department_parent = Department::find($request -> id_department_parent);
-
             $department -> code = $request -> code;
             $department -> name = $request -> name;
-            $department -> id_department_parent = $request -> id_department_parent ?? 1;
             $department -> status = $request -> status == 'on' ? 1 : 0;
         
-            if($department -> id){
-                if($department_parent -> id_department_parent == 1){
-                    if($department -> save())
-                        return response()->json(['status' => 1,'msg' => 'Cập nhật thành công']);
-                }
+            if($request -> id_department_parent){
+                $department->appendToNode($department_parent)->save();
+                return response()->json(['status' => 1,'msg' => 'Cập nhật thành công']);
             }else{
-                if($department -> save()){
-                    return response()->json(['status' => 1,'msg' => 'Thêm mới thành công']);
-                }
+                // #1 Implicit save
+                $department->saveAsRoot();
+
+                // #2 Explicit save
+                $department->makeRoot()->save();
+
+                return response()->json(['status' => 1,'msg' => 'Thêm mới thành công']);
             }
             return response()->json(['status' => 0,'msg' => 'Thao tác thất bại']);
         }
@@ -62,6 +65,28 @@ class DepartmentController extends Controller
 
 		return response()->json($response);
 	}
+
+    public function searchUsers(Request $request){
+        $search = $request->search;
+
+		if (!empty($search)) {
+            $users = User::orderby('fullname', 'asc')->select('id', 'fullname')->where('fullname', 'like', '%' . $search . '%')->limit(5)->get();
+		}
+
+		$response = array();
+		foreach ($users as $user) {
+			$response[] = array("value" => $user->id, "label" => $user->fullname);
+		}
+
+		return response()->json($response);
+    }
+
+    public function addUserToDepartment(Request $request){
+        $department_user = new DeparmentUser;
+        $department_user->id_department = $request -> id_department;
+        $department_user->id_user = $request -> id_user;
+        DepartmentUser->save($department_user);
+    }
 
     public function getEmployeeInDepartment(Request $request){
         if($request -> id){
@@ -84,10 +109,6 @@ class DepartmentController extends Controller
         $name = $request -> name ?? '';
         $datetime = $request -> datetime ?? date('Y-m-d H:i:s');
 
-        // $departments = Department::with('department_childs')->where([
-        //     ['status', 'like', '%' . $status . '%'], 
-        //     ['name', 'like', '%' . $name . '%']
-        // ])->whereDate('created_at', '<=', $datetime)->orderby('id', 'desc')->paginate($per_page);
         $departments = Department::with('department_childs')->where([
             ['status', 'like', '%' . $status . '%'],
             ['name', 'like', '%' . $name . '%']
@@ -110,7 +131,20 @@ class DepartmentController extends Controller
     }
 
     public function getDepartment(){
-        $departments = Department::with('department_childs')->orderby('created_at', 'desc')->paginate(5);
+        $departments = Department::paginate(5);
         return view('auth.department.data', compact('departments'));
+    }
+
+    public function test(){
+        $departments = Department::with('ancestors')->get()->toTree();
+
+        $traverse = function ($departments, $prefix = '-') use (&$traverse) {
+            foreach ($departments as $department) {
+                echo '<br>'.$prefix.' '.$department->name;
+        
+                $traverse($department->children, $prefix.'-');
+            }
+        };
+        $traverse($departments);
     }
 }

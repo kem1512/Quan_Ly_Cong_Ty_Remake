@@ -53,6 +53,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('filter', [DepartmentController::class, 'filter'])->name('department.filter');
 	Route::post('department', [DepartmentController::class, 'createOrUpdate'])->name('department.createOrUpdate');
 	Route::delete('department', [DepartmentController::class, 'delete'])->name('department.delete');
+	Route::get('test', [DepartmentController::class, 'test']);
+	Route::post('searchUser', [DepartmentController::class, 'searchUsers'])->name('department.searchUsers');
 	Route::get('department/{id?}', [DepartmentController::class, 'display'])->name('department.display');
 
 
