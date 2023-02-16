@@ -19,9 +19,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('note')->nullable();
             $table->string('avatar')->nullable();
-            // $table->integer('level')->default(1);
-            // $table->bigInteger('id_department_parent')->unsigned()->nullable();
-            // $table->foreign('id_department_parent')->references('id')->on('departments')->onDelete('set null');
             $table->boolean('status')->default(true);
             $table->timestamps();
             $table->nestedSet();

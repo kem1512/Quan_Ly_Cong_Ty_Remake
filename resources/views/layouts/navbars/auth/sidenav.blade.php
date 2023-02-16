@@ -70,7 +70,7 @@
             {{-- Thiet bi link --}}
             <li class="nav-item">
                 <a class="nav-link mx-3 {{ Route::currentRouteName() == 'department' ? 'active' : '' }}"
-                    href="department">
+                    href="{{ route('department') }}">
                     <i class="fa-solid fa-compass"></i>
                     <span class="nav-link-text ms-1">Quản Lý Phòng Ban</span>
                 </a>

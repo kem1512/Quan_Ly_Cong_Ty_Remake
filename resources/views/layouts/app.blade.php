@@ -56,7 +56,6 @@
                     'recover-password',
                     'rtl',
                     'virtual-reality',
-                    'department',
                     'overview',
                 ]))
             @yield('content')
@@ -111,6 +110,84 @@
     @yield('script')
     @yield('javascript')
     @stack('js')
+    <script>
+        $("#user_search").autocomplete({
+            source: function(request, response) {
+                // Fetch data
+                $.ajax({
+                    url: "{{ route('department.searchUsers') }}",
+                    type: 'post',
+                    dataType: "json",
+                    data: {
+                        search: request.term
+                    },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            select: function(event, ui) {
+                // Set selection
+                $('.users_table tr:last').after(`<tr>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value=""
+                                                                id="fcustomCheck1">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span
+                                                            class="text-secondary text-xs font-weight-bold">${ui.item.label}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="text-secondary text-xs font-weight-bold">
+                                                            <img src="https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg" style="width: 100px; height: 100px;" class="rounded-circle" alt="">
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group m-0">
+                                                            <select
+                                                                class="form-control text-secondary text-xs font-weight-bold w-75 text-center"
+                                                                id="exampleFormControlSelect1">
+                                                                <option>Nhân Viên</option>
+                                                                <option>Trưởng Phòng</option>
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span
+                                                            class="text-secondary text-xs font-weight-bold">${ui.item.phone}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span
+                                                            class="text-secondary text-xs font-weight-bold">${ui.item.gender ? 'Nam' : 'Nữ'}</span>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-danger staff m-0">Xóa</button>
+                                                    </td>
+                                                </tr>`);
+                return false;
+            }
+        });
+
+        $(document).on('click', '.staff', function(e) {
+            e.preventDefault();
+            $(this).closest('.align-items-center').remove();
+        })
+
+        $(document).on('click', '.add_staff', function(e) {
+            e.preventDefault();
+            var form = $('#vip').serialize();
+            $.ajax({
+                url: '{{ route('department.addUsers') }}',
+                type: 'POST',
+                data: form,
+                success: function(response) {
+                    $('#container_staff').html('');
+                }
+            });
+        })
+    </script>
 </body>
 
 </html>
