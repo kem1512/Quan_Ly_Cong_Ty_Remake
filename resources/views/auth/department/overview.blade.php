@@ -139,7 +139,18 @@
     </style>
     <div class="container-fluid py-4">
         @yield('department')
-        <div class="row">
+
+        @foreach ($departments as $i => $department)
+            <small>{{ $department->ancestors->count() ? implode(' > ', $department->ancestors->pluck('name')->toArray()) : 'Top Level' }}</small><br>
+            {{-- <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{ $department->name }}</h5>
+                    <a href="#" class="btn btn-primary">Xem Nhân Viên</a>
+                </div>
+            </div> --}}
+        @endforeac
+        {{-- <div class="row">
             <div class="col-12" style="position: relative">
                 <div style="position: absolute; width: 350px;" id="staff">
                     <div class="card">
@@ -586,7 +597,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         @include('layouts.footers.auth.footer')
     </div>
 @endsection
