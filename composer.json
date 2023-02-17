@@ -70,7 +70,7 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
    "type": "project",
    "description": "The Laravel Framework.",
    "keywords": ["framework", "laravel"],

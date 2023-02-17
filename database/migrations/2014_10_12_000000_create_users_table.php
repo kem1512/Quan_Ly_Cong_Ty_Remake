@@ -27,9 +27,10 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('address')->nullable();
             $table->integer('status')->default(0);
-            $table->date('recruitment_date')->default(Carbon::now());
-            $table->string('img_url')->default('https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=');
+            $table->date('recruitment_date')->nullable();
+            $table->string('img_url')->nullable();
             $table->string('about')->nullable();
+            $table->string('title')->nullable();
             $table->integer('gender')->default(0);
             $table->integer('level')->default(0);
             $table->rememberToken();
