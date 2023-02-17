@@ -64,13 +64,12 @@
                 </div>
             </div>
         </div>
-        @include('auth.department.modal')
         @include('layouts.footers.auth.footer')
     </div>
 @endsection
 
 @section('script')
-    <script type="text/javascript">
+    <script>
         $(document).ready(function() {
             $.ajaxSetup({
                 headers: {
@@ -109,10 +108,6 @@
                     return false;
                 }
             });
-
-            $(document).on('click', '.staff', function() {
-                $(this).remove();
-            })
 
             // Hủy chỉnh sửa
             $('.clear').on('click', function(e) {
@@ -203,40 +198,6 @@
                     });
                     clear();
                 })
-            })
-
-            $(document).on('click', '.view', function() {
-                // var html = ''
-                // $.get('getEmployeeInDepartment' + '/' + $(this).attr('data-id'), function(response) {
-                //     if (response.data) {
-                //         $.each(response.data, function(i, data) {
-                //             html += `<div class="d-flex mb-2">
-            //             <div class="w-25">
-            //                 <img class="w-100" style="border-radius: 10px" src="https://phunugioi.com/wp-content/uploads/2022/11/Hinh-anh-avatar-ff-1.jpg"/>
-            //             </div>
-            //             <div>
-            //                 <p class="px-3 m-0">Email : ${data.email}</p>
-            //                 <p class="px-3 m-0">Tên : ${data.fullname}</p>
-            //                 <p class="px-3 m-0 font-weight-bold">Chức Vụ : Chủ Tịch</p>
-            //             </div>
-            //         </div>`;
-                //         });
-                //         $('.modal-body').empty().html(html);
-                //     } else {
-                //         $('.modal-body').empty().html("<p class='m-0'>Không Có Nhân Viên</p>");
-                //     }
-                // });
-                $('.department').html($(this).attr('data-id'));
-            })
-
-            $(document).on('click', '.add_staff', function(e) {
-                e.preventDefault();
-                // var all = $(".staff").map(function() {
-                //     return $(this).attr('data-id');
-                // }).get();
-                // console.log(all);
-                var form = $('#vip').serialize();
-                console.log(form);
             })
 
             $(document).on('dblclick', '.edit-table', function() {
@@ -338,13 +299,14 @@
                     });
                 }
                 $('#staff').css('z-index', 3000);
-            })
-
+            }) 
             var clicked = false,
                 clickX;
             $('#drag').on({
                 'mousemove': function(e) {
-                    clicked && updateScrollPos(e);
+                    clicked
+                        &&
+                        updateScrollPos(e);
                 },
                 'mousedown': function(e) {
                     $(this).css('cursor', 'grab');
@@ -356,14 +318,13 @@
                     $(this).css('cursor', 'grab');
                 }
             });
-
-            $('#staff').on('mouseleave', function() {
-                setTimeout(function() {
-                    $('#staff').css('z-index', -999)
-                }, 300)
-            })
-
-            var updateScrollPos = function(e) {
+            $('#staff').on('mouseleave',
+                function() {
+                    setTimeout(function() {
+                        $('#staff').css('z-index', -999)
+                    }, 300)
+                }) 
+                var updateScrollPos = function(e) {
                 $('#drag').css('cursor', 'grabbing');
                 $('#drag').scrollLeft($('#drag').scrollLeft() + (clickX - e.pageX) / 9.5);
             }
@@ -372,24 +333,19 @@
         function clear() {
             $.get("{{ URL::to('getDepartment') }}", function(data) {
                 $('#departments').empty().html(data);
-            })
+            }) 
             $('#not_found').hide();
-            $("input[name='code']").val('');
-            $("input[name='name']").val('');
-            $("input[name='department_name']").val('');
-            $("input[name='id_department_parent']").val('');
-            $("input[name='status']").attr("checked", '');
-            $(".clear").hide()
+            $("input[name='code' ]").val('');
+            $("input[name='name' ]").val('');
+            $("input[name='department_name' ]").val('');
+            $("input[name='id_department_parent' ]").val('');
+            $("input[name='status' ]").attr("checked", '');
+            $(".clear").hide() 
             $(".code-error").empty();
             $(".name-error").empty();
             $(".id_department_parent_error").empty();
-            $("#search_close").hide()
-            $("input[name='id']").remove();
-        }
-
-        function filter() {
-            var status = $('select#status').val();
-            var per_page = $('select#per_page').val();
+            $("#search_close").hide() 
+            $("input[name='id']").remove(); } function filter() { var status=$('select#status').val(); var per_page=$('select#per_page').val();
             var name = $('#name').val();
             var datetime = $('#datetime').val();
             $.ajax({

@@ -1,12 +1,12 @@
 class Pagination {
-    perPage = 6;
+    perPage = 5;
     currentPage = 1;
     lastPage = 0;
 
     ViewPageLink = (lastPage, active, idElement) => {
         let html = "";
         for (let index = 1; index <= lastPage; index++) {
-            html += " <li class='page-item " + (index == active ? "active" : "") + "'><a class='page-link' id='btnRedirect'>" + (index) +
+            html += " <li class='page-item " + (index == active ? "active" : "") + "'><a style='cursor: pointer' class='page-link' id='btnRedirect'>" + (index) +
                 "</a></li>";
         }
         $('#' + idElement).html(html);

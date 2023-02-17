@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\equiment;
 use App\Models\EquimentImport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,24 +15,43 @@ class EquimentsController extends Controller
     function Index()
     {
         $list_loai = DB::table('equipment_types')->get();
-        return view('pages.Equiments.Equiment.equiment', compact('list_loai'));
+        $list_nha_cung_cap = DB::table('suppliers')->get();
+        return view('pages.Equiments.Equiment.equiment', compact('list_loai', 'list_nha_cung_cap'));
     }
+
     public function Get($perpage, $curentpage, $keyword = null)
     {
+        $equiment_types = DB::table('equipment_types')
+            ->select(['id', 'name'])
+            ->get()
+            ->toArray();
+        $newtable = array();
         if ($keyword == null) {
-            $equiment_types = DB::table('equipment_types')
-                ->select(['id', 'name'])
-                ->get()
-                ->toArray();
-
-
-            $newtable = array();
-
             foreach ($equiment_types as $value) {
 
                 $result = DB::table('equipments')
                     ->select(['id', 'image', 'name', 'status'])
-                    ->where('equiment_type_id', '=', $value->id)
+                    ->where('equipment_type_id', '=', $value->id)
+                    ->get()
+                    ->toArray();
+
+
+                $list_equiment = $this->paginate($result, $perpage, $curentpage);
+
+                if (count($list_equiment) != 0) {
+                    $newtable['' . $value->name . ''] = $list_equiment;
+                }
+
+            }
+        } else {
+            foreach ($equiment_types as $value) {
+
+                $result = DB::table('equipments')
+                    ->select(['id', 'image', 'name', 'status'])
+                    ->where([
+                        ['equipment_type_id', '=', $value->id],
+                        ['status', $keyword],
+                    ])
                     ->get()
                     ->toArray();
 
@@ -44,7 +64,6 @@ class EquimentsController extends Controller
 
             }
         }
-
         return $newtable;
     }
 
@@ -63,9 +82,7 @@ class EquimentsController extends Controller
         $request->validate(
             [
                 'name' => ['required', 'min:6'],
-                'image' => ['required'],
                 'specifications' => ['required', 'min:6'],
-                'manufacture' => ['required', 'min:6'],
                 'price' => ['required', 'regex:/^[0-9]+$/'],
                 'warranty_date' => ['date'],
                 'out_of_date' => ['date'],
@@ -73,11 +90,8 @@ class EquimentsController extends Controller
             [
                 'name.required' => "Tên thiết bị không được để trống!",
                 'name.min' => "Tên thiết bị phải lớn hơn 6 kí tự!",
-                'image.required' => "Ảnh thiết bị không được để trống!",
                 'specifications.required' => "Thông số thiết bị không được để trống!",
                 'specifications.min' => "Thông số thiết bị phải lớn hơn 6 kí tự!",
-                'manufacture.required' => "Nhà cung cấp không được để trống!",
-                'manufacture.min' => "Nhà cung cấp phải lớn hơn 6 kí tự!",
                 'price.required' => "Giá nhập không được để trống!",
                 'price.regex' => "Giá nhập phải là số!",
                 'warranty_date.date' => "Ngày không hợp lệ!",
@@ -89,12 +103,97 @@ class EquimentsController extends Controller
             $file = $request->image;
             $file_name = $file->getClientOriginalName();
             $file->move(public_path('uploads'), $file_name);
+        } else {
+            $file_name = "";
         }
 
         $name = $request->name;
         $image = $file_name;
         $specifications = $request->specifications;
-        $manufacture = $request->manufacture;
+        $supplier_id = $request->supplier_id;
+        $price = $request->price;
+        $warranty_date = $request->warranty_date;
+        $out_of_date = $request->out_of_date;
+        $created = Carbon::Now();
+        $updated = Carbon::Now();
+
+
+        $equiment = new equiment;
+        $equiment->name = $name;
+        $equiment->image = $image;
+        $equiment->specifications = $specifications;
+        $equiment->supplier_id = $supplier_id;
+        $equiment->price = $price;
+        $equiment->warranty_date = $warranty_date;
+        $equiment->out_of_date = $out_of_date;
+        $equiment->created_at = $created;
+        $equiment->updated_at = $updated;
+        $equiment->save();
+        $equiment->id;
+
+        return response()->json([
+            'equiment' => $equiment,
+        ], 200);
+    }
+
+    function Delete($id)
+    {
+        $equipment = DB::table('equipments')->delete($id);
+        $equipment == 0 ? $message = "Thất bại" : $message = "Thành công";
+        return response()->json(
+            [
+                'message' => $message,
+            ],
+            200
+        );
+    }
+
+    function GetById($id)
+    {
+        $equipment = DB::table('equipments')->find($id);
+        return response()->json(
+            [
+                'equipment' => $equipment,
+            ],
+            200
+        );
+    }
+
+    function Update($id, Request $request)
+    {
+
+        $request->validate(
+            [
+                'name' => ['required', 'min:6'],
+                'specifications' => ['required', 'min:6'],
+                'price' => ['required', 'regex:/^[0-9]+$/'],
+                'warranty_date' => ['date'],
+                'out_of_date' => ['date'],
+            ],
+            [
+                'name.required' => "Tên thiết bị không được để trống!",
+                'name.min' => "Tên thiết bị phải lớn hơn 6 kí tự!",
+                'specifications.required' => "Thông số thiết bị không được để trống!",
+                'specifications.min' => "Thông số thiết bị phải lớn hơn 6 kí tự!",
+                'price.required' => "Giá nhập không được để trống!",
+                'price.regex' => "Giá nhập phải là số!",
+                'warranty_date.date' => "Ngày không hợp lệ!",
+                'out_of_date.date' => "Ngày không hợp lệ!",
+            ]
+        );
+
+        if ($request->has('image')) {
+            $file = $request->image;
+            $file_name = $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $file_name);
+        } else {
+            $file_name = "";
+        }
+
+        $name = $request->name;
+        $image = $file_name;
+        $specifications = $request->specifications;
+        $supplier_id = $request->supplier_id;
         $price = $request->price;
         $warranty_date = $request->warranty_date;
         $out_of_date = $request->out_of_date;
@@ -102,30 +201,24 @@ class EquimentsController extends Controller
         $updated = Carbon::Now();
 
         $result = DB::table('equipments')
-            ->insert([
+            ->where('id', $id)
+            ->update([
                 'name' => $name,
                 'image' => $image,
                 'specifications' => $specifications,
-                'manufacture' => $manufacture,
                 'price' => $price,
                 'warranty_date' => $warranty_date,
                 'out_of_date' => $out_of_date,
-                'equiment_type_id' => $request->equiment_type_id,
+                'supplier_id' => $supplier_id,
+                'equipment_type_id' => $request->equiment_type_id,
                 'created_at' => $created,
                 'updated_at' => $updated,
             ]);
 
-        $message = $result == 1 ? "Thành công" : "Thất bại";
+        $message = $result == 0 ? "Thất bại" : "Thành công";
 
         return response()->json([
-            'message' => $message
+            'message' => $message,
         ], 200);
-    }
-
-    function ImportExcel()
-    {
-        $data = Excel::get(request()->file('file'));
-
-        dd($data);
     }
 }

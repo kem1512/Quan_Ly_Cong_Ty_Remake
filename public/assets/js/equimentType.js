@@ -23,6 +23,7 @@ $(document).ready(function () {
         createCheck = true;
         $('input[name = "name"]').val("");
     })
+    cancelValidate();
 });
 
 function GetAll() {
@@ -175,6 +176,7 @@ function GetEquiment() {
             url: "/equimenttype/getbyid/" + id,
             dataType: "json",
             success: function (response) {
+                console.log(response);
                 $('input[name = "name"]').val(response.name);
                 response.status == 1 ? $('#flexSwitchCheckDefault').attr('checked', true) : $('#flexSwitchCheckDefault').attr('checked', false);
                 id = response.id;
@@ -198,6 +200,15 @@ function ChangeStatus() {
         keyword = $('#list_status').val();
         GetAll();
     })
+}
+
+function cancelValidate() {
+    $(document).on('input', 'input[name="name"]', function () {
+        let name = $('input[name="name"]').val();
+        if (name != null) {
+            $('#error-name').text("");
+        }
+    });
 }
 
 

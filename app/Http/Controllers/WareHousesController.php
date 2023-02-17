@@ -67,14 +67,12 @@ class WareHousesController extends Controller
             [
                 'name' => ['required', 'min:6'],
                 'address' => ['required', 'min:6'],
-                'image' => ['required'],
             ],
             [
                 'name.required' => "Tên kho không được để trống!",
                 'name.min' => "Tên kho phải lớn hơn 6 kí tự!",
                 'address.required' => "Địa chỉ không được để trống!",
                 'address.min' => "Địa chỉ phải lớn hơn 6 kí tự!",
-                'image.required' => "Ảnh kho không được để trống!"
             ]
         );
 
@@ -127,7 +125,7 @@ class WareHousesController extends Controller
             $file_name = $file->getClientOriginalName();
             $file->move(public_path('uploads'), $file_name);
         } else {
-            $file_name = $image_old->split("/")[1];
+            $file_name = str_replace('uploads/', '', $image_old[0]->image);
         }
 
         $name = $request->name;

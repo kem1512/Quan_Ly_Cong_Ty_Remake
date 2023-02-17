@@ -46,7 +46,7 @@ Route::get('/personnel/delete', [App\Http\Controllers\PersonnelController::class
 Route::post('/personnel/add', [App\Http\Controllers\PersonnelController::class, 'store'])->middleware('auth')->name('create.user');
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::get('department', [DepartmentController::class, 'index']);
+	Route::get('department', [DepartmentController::class, 'index'])->name('department');
 	Route::get('overview', [DepartmentController::class, 'overview'])->name('overview');
 	Route::get('getEmployeeInDepartment/{id?}', [DepartmentController::class, 'getEmployeeInDepartment']);
 	Route::get('getDepartment', [DepartmentController::class, 'getDepartment']);
@@ -57,7 +57,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('test', [DepartmentController::class, 'test']);
 	Route::post('searchUser', [DepartmentController::class, 'searchUsers'])->name('department.searchUsers');
 	Route::get('department/{id?}', [DepartmentController::class, 'display'])->name('department.display');
-	Route::get('user', [DepartmentController::class, 'user'])->name('department.user');
+
+	// user
+	Route::get('user/{id?}', [DepartmentController::class, 'user'])->name('department.user');
+	Route::post('addUsers', [DepartmentController::class, 'addUserToDepartment'])->name('department.addUsers');
 
 
 	//personnel
@@ -110,6 +113,7 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get('getbyid/{id?}', [WareHousesController::class, 'GetById']);
 					Route::post('post', [WareHousesController::class, 'Create']);
 					Route::post('update/{id?}', [WareHousesController::class, 'Update']);
+					Route::get('addwarehousedetail', [WareHousesController::class, 'AddWarehouseDetail']);
 				}
 			);
 
@@ -120,7 +124,9 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get('/', [EquimentsController::class, 'Index'])->name('equiment');
 					Route::get('get/{perpage?}/{currentpage?}/{keyword?}', [EquimentsController::class, 'Get']);
 					Route::post('post', [EquimentsController::class, 'Create']);
-					Route::post('importexcel', [EquimentsController::class, 'ImportExcel']);
+					Route::get('delete/{id?}', [EquimentsController::class, 'Delete']);
+					Route::get('getbyid/{id?}', [EquimentsController::class, 'GetById']);
+					Route::post('update/{id?}', [EquimentsController::class, 'Update']);
 				}
 			);
 			//End route thiết bị

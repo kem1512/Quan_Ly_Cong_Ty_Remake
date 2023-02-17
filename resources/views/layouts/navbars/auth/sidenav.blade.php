@@ -42,14 +42,6 @@
             </li>
             {{-- Thiet bi link --}}
             <li class="nav-item">
-                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'equimenttype' ? 'active' : '' }}"
-                    href="equimenttype">
-                    <i class="fa-solid fa-memory text-primary"></i>
-                    <span class="nav-link-text ms-1">Loại thiết bị</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
                 <a class="nav-link mx-3 {{ Route::currentRouteName() == 'warehouse' ? 'active' : '' }}"
                     href="warehouse">
                     <i class="fa-solid fa-warehouse text-primary"></i>
@@ -64,13 +56,21 @@
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'equimenttype' ? 'active' : '' }}"
+                    href="equimenttype">
+                    <i class="fa-solid fa-memory text-primary"></i>
+                    <span class="nav-link-text ms-1">Loại thiết bị</span>
+                </a>
+            </li>
+
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Phòng Ban</h6>
             </li>
             {{-- Thiet bi link --}}
             <li class="nav-item">
                 <a class="nav-link mx-3 {{ Route::currentRouteName() == 'department' ? 'active' : '' }}"
-                    href="department">
+                    href="{{ route('department') }}">
                     <i class="fa-solid fa-compass"></i>
                     <span class="nav-link-text ms-1">Quản Lý Phòng Ban</span>
                 </a>
