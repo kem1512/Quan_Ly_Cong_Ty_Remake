@@ -22,6 +22,7 @@ $(document).ready(function () {
     Search();
     cancelValidate();
     ShowModalChiTietKHo();
+    GetDetailKho();
 });
 
 function Get() {
@@ -43,7 +44,7 @@ function Get() {
             $.each(response.warehouses.data, function (index, value) {
                 html += '<div class="col-sm-3 card px-0 m-5 border">';
                 html +=
-                    '<div class="card-header"><h5 class="text-primary">Kho : ' +
+                    '<div class="card-header"><h5 id="tenkho" class="text-primary">Kho : ' +
                     value.name +
                     "</h5></div>";
                 html += '<div class="card-body">';
@@ -118,8 +119,8 @@ function Delete() {
                     type: "get",
                     url: "/warehouse/delete/" + id,
                     dataType: "json",
-                    success: function () {
-                        Swal.fire("Good job", "Xóa thành công", "success");
+                    success: function (response) {
+                        Swal.fire("Good job", response.message, "success");
                         Get();
                     },
                 });
@@ -263,5 +264,35 @@ function cancelValidate() {
 function ShowModalChiTietKHo() {
     $(document).on('click', '#btnXem', function () {
         $('#modal-kho').modal('show');
+    })
+}
+
+function GetDetailKho() {
+    $(document).on('click', '#btnXem', function () {
+        let id = $(this).attr('name');
+        $('#staticBackdropLabel').text($('#tenkho').text().replace('Kho : ', ''));
+        $.ajax({
+            type: "get",
+            url: "warehouse/getequipment/" + paginate.perPage + "/" + paginate.currentPage + "/" + id + "/" + keyword,
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                let html = '';
+                for (const key in response) {
+                    html += '<tr>\
+                                <td rowspan="'+ (response[key].data.length + 1) + '">' + key + '</td>\
+                            </tr>';
+                    $.each(response[key].data, function (index, value) {
+                        html += '<tr>\
+                                    <td style="border-left-width: 1px;border-right-width: 1px;">'+ value.image + '</td >\
+                                    <td style="border-left-width: 1px;border-right-width: 1px;">'+ value.name + '</td>\
+                                    <td style="border-left-width: 1px;border-right-width: 1px;"><button class="btn btn-primary">Thanh lý</button></td>\
+                                </tr>';
+                    });
+                }
+
+                $('#list-equiment').html(html);
+            }
+        });
     })
 }

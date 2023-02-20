@@ -17,8 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('email')->unique();
             $table->string('name');
-            $table->string('phone')->nullable();
-            $table->date('date_of_birth')->nullable();
+            $table->string('phone');
+            $table->date('date_of_birth');
+            $table->date('interview_date')->nullable();
             $table->bigInteger('position_id')->unsigned()->nullable();
             $table->foreign('position_id')->references('id')->on('positions')->onDelete('set null');
             $table->bigInteger('nominee')->unsigned()->nullable();

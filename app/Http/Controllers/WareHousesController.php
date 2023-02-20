@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Storage;
 
 class WareHousesController extends Controller
@@ -148,5 +149,44 @@ class WareHousesController extends Controller
         return response()->json([
             'message' => $message,
         ], 200);
+    }
+
+    public function GetEquiments($perpage, $curentpage, $id, $keyword = null)
+    {
+        $equiment_types = DB::table('equipment_types')
+            ->select(['id', 'name'])
+            ->get()
+            ->toArray();
+
+        $newtable = array();
+
+        foreach ($equiment_types as $value) {
+            $result = DB::table('storehouse_details as sd')
+                ->join('equipments as e', 'e.id', '=', 'sd.equipment_id')
+                ->select(['e.name', 'e.image'])
+                ->where([
+                    ['e.equipment_type_id', '=', $value->id],
+                    ['sd.storehouse_id', $id],
+                ])
+                ->get()
+                ->toArray();
+
+            $list_equiment = $this->paginate($result, $perpage, $curentpage);
+
+            if (count($list_equiment) != 0) {
+                $newtable['' . $value->name . ''] = $list_equiment;
+            }
+        }
+        return $newtable;
+    }
+
+    function paginate($item, $perpage, $page)
+    {
+        $page ?: (Paginator::resolveCurrentPage() ?: 1);
+        $total = count($item);
+        $curentpage = $page;
+        $offset = ($curentpage * $perpage) - $perpage;
+        $itemtoshow = array_slice($item, $offset, $perpage);
+        return new \Illuminate\Pagination\LengthAwarePaginator($itemtoshow, $total, $perpage);
     }
 }

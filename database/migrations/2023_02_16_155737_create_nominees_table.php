@@ -24,7 +24,7 @@ return new class extends Migration
         Schema::table('curriculum_vitaes', function (Blueprint $table) {
             $table->foreign('nominee')->references('id')->on('nominees')->onDelete('set null');
         });
-
+        
         Schema::table('users', function (Blueprint $table) {
             $table->foreign('nominee_id')->references('id')->on('nominees')->onDelete('set null');
         });

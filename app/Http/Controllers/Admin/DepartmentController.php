@@ -117,7 +117,6 @@ class DepartmentController extends Controller
             return response()->json(['status' => 0, 'msg' => 'Xóa thất bại']);
         }
     }
-
     public function updateUser(Request $request){
         if($request -> id){
             $user = User::find($request -> id);
