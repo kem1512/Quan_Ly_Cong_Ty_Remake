@@ -20,6 +20,10 @@ return new class extends Migration
             $table->string('nominees');
             $table->timestamps();
         });
+
+        Schema::table('curriculum_vitaes', function (Blueprint $table) {
+            $table->foreign('nominee')->references('id')->on('nominees')->onDelete('set null');
+        });
     }
 
     /**

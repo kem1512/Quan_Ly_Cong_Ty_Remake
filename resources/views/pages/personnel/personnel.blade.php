@@ -43,7 +43,8 @@
             text-align: center;
         }
 
-        #offcanvasNavbarut {
+        #offcanvasNavbarut,
+        #offcanvasNavbareditcv {
             width: 50%;
         }
 
@@ -51,21 +52,24 @@
             width: 70%;
         }
 
-        @media only screen and (max-width: 1400px) {
-            #offcanvasNavbarupdate {
-                width: 78%;
-            }
+        #offcanvasNavbarevaluatecv {
+            width: 78%
+        }
 
+        @media only screen and (max-width: 1400px) {
+
+            #offcanvasNavbarupdate,
+            #offcanvasNavbarevaluatecv,
             #offcanvasNavbar {
                 width: 78%;
             }
         }
 
         @media only screen and (max-width: 1200px) {
-            #offcanvasNavbarupdate {
-                width: 100%;
-            }
 
+            #offcanvasNavbarupdate,
+            #offcanvasNavbarevaluatecv,
+            #offcanvasNavbarut,
             #offcanvasNavbar {
                 width: 100%;
             }
@@ -78,6 +82,7 @@
             }
         }
 
+
         #imgupdate {
             color: bisque;
             border: 1px solid #b3aea7;
@@ -86,6 +91,7 @@
             margin-left: 8%;
         }
     </style>
+
     <div class="container-fluid">
         <div class="header-body">
             <!-- Card stats -->
@@ -95,7 +101,7 @@
                         role="tab" aria-controls="home" aria-selected="true" style="border-radius: 0.5rem ">
                         <div class="row">
                             <div class="col">
-                                <h5 class="card-title text-uppercase text-muted mb-0">HRM</h5>
+                                <h5 class="card-title text-uppercase text-muted mb-0">Nhân Sự</h5>
                                 <span class="h2 font-weight-bold mb-0">{{ $ucount }}</span>
                             </div>
                             <div class="col-auto">
@@ -111,7 +117,7 @@
                         role="tab" aria-controls="profile" aria-selected="false"style="border-radius: 0.5rem ">
                         <div class="row">
                             <div class="col">
-                                <h5 class="card-title text-uppercase text-muted mb-0">Ứng Tuyển</h5>
+                                <h5 class="card-title text-uppercase text-muted mb-0">Ứng Viên</h5>
                                 <span class="h2 font-weight-bold mb-0">350,897</span>
                             </div>
                             <div class="col-auto">
@@ -213,8 +219,7 @@
                                         data-bs-target="#offcanvasNavbarut">Thêm Hồ Sơ</a>
                                 </div>
                             </div>
-                            <div class="card-body px-0 pt-0 pb-2" id="body_query">
-                                {!! \App\Models\User::UserBuild($nhansu) !!}
+                            <div class="card-body px-0 pt-0 pb-2" id="cvut_query">
 
                             </div>
                         </div>
@@ -307,7 +312,8 @@
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarupdate"
                 aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i
+                            class="fa fa-times" aria-hidden="true"></i></button>
                 </div>
                 <div class="offcanvas-body">
                     <h1 id="add-title" style="text-align: center">Sửa Nhân Sự</h1>
@@ -375,7 +381,7 @@
                                         @endforeach
                                     </select>
                                     <label for="chucvu" class="col-sm-4 col-form-label">Chức Danh :</label>
-                                    <select class="form-control" name="status" id="nominee_bild">
+                                    <select class="form-control" name="nominee_bild" id="nominee_bild">
                                     </select>
                                     <label for="trangthai" class="col-sm-4 col-form-label">Trạng Thái :</label>
                                     <select class="form-control" name="status" id="statusu">
@@ -447,7 +453,7 @@
                 </div>
                 <div class="offcanvas-body">
                     <h1 id="add-title" style="text-align: center">Thêm Hồ Sơ Ứng Tuyển</h1>
-                    <form class="mt-5" method="POST" id="insert_ut">
+                    <form class="mt-5" method="POST" id="form_insert_cv">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
@@ -497,7 +503,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Chức Vụ</label>
-                                    <select class="form-control" name="position_ut" id="position_ut">
+                                    <select class="form-control" name="position_ut" id="position_cv">
                                         @foreach ($postions as $po)
                                             <option value="{{ $po->id }}">{{ $po->position }}</option>
                                         @endforeach
@@ -507,7 +513,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Vị Trí Ứng Truyển</label>
-                                    <select class="form-control" name="nominees_ut" id="nominees_ut">
+                                    <select class="form-control" name="nominees_ut" id="nominees_cv">
                                     </select>
                                 </div>
                             </div>
@@ -516,11 +522,11 @@
                             <div class="col-12">
                                 <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
                                     Địa Chỉ :</label>
-                                <textarea class="form-control" name="about" id="about" rows="3"></textarea>
+                                <textarea class="form-control" name="address" id="address" rows="3"></textarea>
                             </div>
                         </div>
                         <div id="btn-submit-add">
-                            <button type="submit" id="btn_insert_ut" class="btn btn-primary mt-7">Thêm</button>
+                            <button type="submit" id="btn_insert_cv" class="btn btn-primary mt-7">Thêm</button>
                         </div>
                     </form>
                 </div>
@@ -529,131 +535,191 @@
     </div>
 
     <!-- Update Ứng Tuyển page -->
-    <div id="updatedropdown" class="bg-light fixed-top">
+    <div id="adddropdown" class="bg-light fixed-top">
         <div class="container-fluid">
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarupdate"
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasNavbareditcv" aria-controls="offcanvasNavbareditcv">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbareditcv"
                 aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i
+                            class="fa fa-times" aria-hidden="true"></i></button>
                 </div>
                 <div class="offcanvas-body">
-                    <h1 id="add-title" style="text-align: center">Sửa Nhân Sự</h1>
-                    <form class="mt-5 col col-12" id="form_update" action="{{ route('update.user') }}" method="POST"
-                        enctype="multipart/form-data">
+                    <h1 id="add-title" style="text-align: center">Sửa Hồ Sơ</h1>
+                    <form class="mt-5" method="POST" id="form_edit_cv">
                         @csrf
-                        <div class="row wraper">
-                            <div class="row">
-                                <div class="col-4 justify-content-center" style="text-align: center">
-                                    <div id="imgupdate">
-                                        <img id="img_url" src="" width="100%" height="100%"
-                                            alt="ảnh Nhân sự" />
-                                    </div>
-                                    <div class="m-3 col-9">
-                                        <input type="file" name="img_url" onchange="readURL(this);"
-                                            class="form-control" id="img_url_update">
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">Tên Ứng Viên</label>
+                                    <input class="form-control dbcl_ctl" id="name_ut" type="text" name="name_ut"
+                                        value="">
                                 </div>
-
-                                <div class="col-4">
-                                    <div class="form-update d-none">
-                                        <label for="mans" class="col-sm-4 col-form-label d-none">id :</label>
-                                        <input type="text" readonly name="id" class="form-control d-none"
-                                            id="id_user" required />
-                                    </div>
-                                    <div class="form-update">
-                                        <label for="mans" class="col-sm-4 col-form-label">Mã Nhân Sự :</label>
-                                        <input type="text" readonly id="personnel_codeu" class="form-control"
-                                            id="mans" required />
-                                    </div>
-                                    <div class="form-update">
-                                        <label for="name" class="col-sm-4 col-form-label">Họ Tên :</label>
-                                        <input type="text" name="fullname" id="fullnameu" class="form-control"
-                                            id="name" required />
-                                    </div>
-                                    <div class="form-update">
-                                        <label for="Email" class="col-sm-4 col-form-label">Email :</label>
-                                        <input type="email" name="email" id="emailu" class="form-control"
-                                            id="Email" required />
-                                    </div>
-                                    <div class="form-update">
-                                        <label for="phone" class="col-sm-4 col-form-label">Số Điện
-                                            Thoại:</label>
-                                        <input type="text" name="phone" id="phoneu" class="form-control"
-                                            id="phone" required />
-                                    </div>
-                                    <div class="form-update">
-                                        <label for="phone" class="col-sm-4 col-form-label">Quê Quán:</label>
-                                        <input type="text" name="address" id="addressup" class="form-control"
-                                            id="phone" required />
-                                    </div>
-
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">Email</label>
+                                    <input class="form-control" id="email_ut" name="email_ut" type="text"
+                                        value="">
                                 </div>
-                                <div class="col-4">
-                                    <label for="phongban" class="col-sm-4 col-form-label">Phòng Ban :</label>
-                                    <select class="form-control" name="department_id" id="department_idu">
-                                        @foreach ($phongbans as $pb)
-                                            <option value="{{ $pb->id }}">{{ $pb->name }}</option>
-                                        @endforeach
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">Số Điện Thoại</label>
+                                    <input class="form-control " type="text" id="phone_ut" name="phone_ut"
+                                        value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">Ngày Sinh</label>
+                                    <input class="form-control " type="date" name="date_of_birth_ut"
+                                        id="date_of_birth_ut" value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">Giới Tính</label>
+                                    <select class="form-control " name="gender" id="gender_ut">
+                                        <option value="0">Nam</option>
+                                        <option value="1">Nữ</option>
                                     </select>
-                                    <label for="chucvu" class="col-sm-4 col-form-label">Chức Vụ :</label>
-                                    <select class="form-control" name="position_id" id="position_idu">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">CV</label>
+                                    <input class="form-control" type="file" name="cv_ut" id="cv_ut"
+                                        value="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">Chức Vụ Ứng Tuyển</label>
+                                    <select class="form-control" name="position_ut" id="position_cv">
                                         @foreach ($postions as $po)
                                             <option value="{{ $po->id }}">{{ $po->position }}</option>
                                         @endforeach
                                     </select>
-                                    <label for="chucvu" class="col-sm-4 col-form-label">Chức Danh :</label>
-                                    <input type="text" name="title" class="form-control" id="title" required />
-                                    <label for="trangthai" class="col-sm-4 col-form-label">Trạng Thái :</label>
-                                    <select class="form-control" name="status" id="statusu">
-                                        <option value="0">Chưa Kích Hoạt</option>
-                                        <option value="1">Đang Hoạt Động</option>
-                                        <option value="2">Nghỉ Phép</option>
-                                        <option value="3">Khoá</option>
-                                        <option value="4">Nghỉ việc</option>
-                                    </select>
-                                    <label for="trangthai" class="col-sm-4 col-form-label">Giới Tính :</label>
-                                    <select class="form-control" name="gender" id="gender">
-                                        <option value="0">Không được quy định</option>
-                                        <option value="1">Nam</option>
-                                        <option value="2">Nữ</option>
-                                    </select>
-
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-update">
-                                    <label for="dateofbirth" class="col-sm-4 col-form-label">Ngày Sinh:</label>
-                                    <input type="date" name="date_of_birth" class="form-control"
-                                        id="date_of_birthu" />
-                                </div>
-                            </div>
-
-                            <div class="col-6">
-                                <div class="form-update">
-                                    <label for="recrui" class="col-sm-4 col-form-label">Ngày Tuyển Dụng:</label>
-                                    <input type="date" name="recruitment_date" class="form-control"
-                                        id="recruitment_dateu" />
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="form-control-label">Vị Trí Ứng Truyển</label>
+                                    <select class="form-control" name="nominees_ut" id="nominees_cv">
+                                    </select>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
                                 <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
-                                    Giới
-                                    Thiệu Về bản
-                                    Thân
-                                    :</label>
-                                <textarea class="form-control" name="about" id="about" rows="3"></textarea>
+                                    Địa Chỉ :</label>
+                                <textarea class="form-control" name="address" id="address" rows="3"></textarea>
                             </div>
                         </div>
-                        <div class="btn-group-update mt-5 align-items-center justify-content-center">
-                            <button class="btn btn-primary" id="btn_update_personnel">Cập Nhật</button>
-                            <a data-bs-dismiss="offcanvas" aria-label="Close" class="btn btn-danger">Close</a>
+                        <div id="btn-submit-add">
+                            <button type="submit" id="btn_insert_cv" class="btn btn-primary mt-7">Cập Nhật</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- // Đánh gia  --}}
+    <div id="updatedropdown" class="bg-light fixed-top">
+        <div class="container-fluid">
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarevaluatecv"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i
+                            class="fa fa-times" aria-hidden="true"></i></button>
+                </div>
+                <h1 id="add-title" style="text-align: center">Đánh Giá Hồ Sơ</h1>
+                <div class="offcanvas-body row">
+                    <div class="col-md-6" style="min-height:40rem">
+                        <iframe contextmenu="Hồ Sơ" src="cv/cvdemo.pdf" height="100%" width="100%"></iframe>
+                    </div>
+                    <div class="col-md-6">
+                        <form class="mt-5" method="POST" id="form_edit_cv">
+                            @csrf
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Tên Ứng Viên</label>
+                                        <input class="form-control dbcl_ctl" id="name_ut" type="text"
+                                            name="name_ut" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Email</label>
+                                        <input class="form-control" id="email_ut" name="email_ut" type="text"
+                                            value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Số Điện Thoại</label>
+                                        <input class="form-control " type="text" id="phone_ut" name="phone_ut"
+                                            value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Ngày Sinh</label>
+                                        <input class="form-control " type="date" name="date_of_birth_ut"
+                                            id="date_of_birth_ut" value="">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Giới Tính</label>
+                                        <select class="form-control " name="gender" id="gender_ut">
+                                            <option value="0">Nam</option>
+                                            <option value="1">Nữ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">CV</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Chức Vụ Ứng
+                                            Tuyển</label>
+                                        <select class="form-control" name="position_ut" id="position_cv">
+                                            @foreach ($postions as $po)
+                                                <option value="{{ $po->id }}">{{ $po->position }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">Vị Trí Ứng
+                                            Truyển</label>
+                                        <select class="form-control" name="nominees_ut" id="nominees_cv">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <label for="exampleFormControlTextarea1" id="about-text"
+                                        class="col-sm-4 col-form-label">
+                                        Địa Chỉ :</label>
+                                    <textarea class="form-control" name="address" id="address" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

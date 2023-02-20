@@ -21,10 +21,11 @@ return new class extends Migration
             $table->date('date_of_birth')->nullable();
             $table->bigInteger('position_id')->unsigned()->nullable();
             $table->foreign('position_id')->references('id')->on('positions')->onDelete('set null');
-            $table->string('nominee');
+            $table->bigInteger('nominee')->unsigned()->nullable();
+            $table->integer('gender')->default(0);
             $table->string('address')->nullable();
             $table->integer('status')->default(0);
-            $table->integer('mark')->nullable();
+            $table->string('note')->nullable();
             $table->string('url_cv');
             $table->timestamps();
         });
