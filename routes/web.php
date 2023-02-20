@@ -105,7 +105,7 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get('getbyid/{id?}', [WareHousesController::class, 'GetById']);
 					Route::post('post', [WareHousesController::class, 'Create']);
 					Route::post('update/{id?}', [WareHousesController::class, 'Update']);
-					Route::get('addwarehousedetail', [WareHousesController::class, 'AddWarehouseDetail']);
+					Route::get('getequipment/{perpage?}/{currentpage?}/{id?}/{keyword?}', [WareHousesController::class, 'GetEquiments']);
 				}
 			);
 
