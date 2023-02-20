@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\WareHousesController;
 use Illuminate\Support\Facades\Auth;
@@ -45,7 +46,7 @@ Route::get('/personnel/delete', [App\Http\Controllers\PersonnelController::class
 Route::post('/personnel/add', [App\Http\Controllers\PersonnelController::class, 'store'])->middleware('auth')->name('create.user');
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::get('department', [DepartmentController::class, 'index']);
+	Route::get('department', [DepartmentController::class, 'index'])->name('department');
 	Route::get('overview', [DepartmentController::class, 'overview'])->name('overview');
 	Route::get('getEmployeeInDepartment/{id?}', [DepartmentController::class, 'getEmployeeInDepartment']);
 	Route::get('getDepartment', [DepartmentController::class, 'getDepartment']);
@@ -56,7 +57,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('test', [DepartmentController::class, 'test']);
 	Route::post('searchUser', [DepartmentController::class, 'searchUsers'])->name('department.searchUsers');
 	Route::get('department/{id?}', [DepartmentController::class, 'display'])->name('department.display');
-	Route::get('user', [DepartmentController::class, 'user'])->name('department.user');
+
+	// user
+	Route::get('user/{id?}', [DepartmentController::class, 'user'])->name('department.user');
+	Route::post('addUsers', [DepartmentController::class, 'addUserToDepartment'])->name('department.addUsers');
 
 
 	//personnel
@@ -66,7 +70,13 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/personnel/add', [App\Http\Controllers\Admin\PersonnelController::class, 'store'])->name('create.user');
 	Route::post('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'update'])->name('update.user');
 	Route::get('/personnel/search', [App\Http\Controllers\Admin\PersonnelController::class, 'search'])->name('Search');
+	Route::post('/personnel/profile', [App\Http\Controllers\UserProfileController::class, 'update_profile'])->name('update.profile');
+	Route::post('/personnel/level', [App\Http\Controllers\Admin\PersonnelController::class, 'update_level'])->name('update.level');
 	Route::get('/personnel/fillter', [App\Http\Controllers\Admin\PersonnelController::class, 'fillter'])->name('fillter');
+	Route::get('/personnel/nominees', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees'])->name('nominees');
+	Route::get('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'getAllCVT'])->name('getcv');
+	Route::post('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'saveCV'])->name('savecv');
+
 	Route::group(
 		['middleware' => 'auth'],
 		function () {
@@ -79,8 +89,8 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get(
 						'/',
 						function () {
-									return view('pages.Equiments.Equiment_Type.Index');
-								}
+							return view('pages.Equiments.Equiment_Type.Index');
+						}
 					)->name('equimenttype');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [EquimentTypeController::class, 'Get']);
 					Route::post('post', [EquimentTypeController::class, 'Post']);
@@ -97,8 +107,8 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get(
 						'/',
 						function () {
-									return view('pages.Equiments.warehouse.wavehouse');
-								}
+							return view('pages.Equiments.warehouse.wavehouse');
+						}
 					)->name('warehouse');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [WareHousesController::class, 'Get']);
 					Route::get('delete/{id?}', [WareHousesController::class, 'Delete']);

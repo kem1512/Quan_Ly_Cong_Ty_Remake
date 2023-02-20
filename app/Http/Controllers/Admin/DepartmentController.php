@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Department;
 use Illuminate\Support\Collection;
 use App\Models\User;
-use App\Models\DepartmentUser;
 use Illuminate\Http\Request;
 use  Carbon\Carbon;
 
@@ -70,26 +69,28 @@ class DepartmentController extends Controller
         $search = $request->search;
 
 		if (!empty($search)) {
-            $users = User::orderby('fullname', 'asc')->select('id', 'fullname')->where('fullname', 'like', '%' . $search . '%')->limit(5)->get();
+            $users = User::orderby('fullname', 'asc')->select('id', 'fullname', 'phone', 'gender')->where('fullname', 'like', '%' . $search . '%')->limit(5)->get();
 		}
 
 		$response = array();
 		foreach ($users as $user) {
-			$response[] = array("value" => $user->id, "label" => $user->fullname);
+			$response[] = array("value" => $user->id, "label" => $user->fullname, 'phone' => $user -> phone, 'gender' => $user -> gender);
 		}
 
 		return response()->json($response);
     }
 
-    public function user(){
-        return view('auth.department.user');
+    public function user(Request $request){
+        $department = Department::with('users')->where('id', $request -> id)->limit(1)->get();
+        return view('auth.department.user', compact('department'));
     }
 
     public function addUserToDepartment(Request $request){
-        $department_user = new DeparmentUser;
-        $department_user->id_department = $request -> id_department;
-        $department_user->id_user = $request -> id_user;
-        DepartmentUser->save($department_user);
+        foreach($request->input('users') as $user){
+            $result = User::find($user);
+            $result -> department_id = $request -> department_id;
+            $result -> save();
+        }
     }
 
     public function getEmployeeInDepartment(Request $request){
@@ -140,17 +141,15 @@ class DepartmentController extends Controller
     }
 
     public function test(){
-        // $departments = Department::with('ancestors')->get()->toTree();
+        $departments = Department::with('ancestors')->get()->toTree();
 
-        // $traverse = function ($departments, $prefix = '-') use (&$traverse) {
-        //     foreach ($departments as $department) {
-        //         echo '<br>'.$prefix.' '.$department->name;
+        $traverse = function ($departments, $prefix = '-') use (&$traverse) {
+            foreach ($departments as $department) {
+                echo '<br>'.$prefix.' '.$department->name;
         
-        //         $traverse($department->children, $prefix.'-');
-        //     }
-        // };
-        // $traverse($departments);
-        $test = DepartmentUser::with('userDepeatment')->get();
-        return $test;
+                $traverse($department->children, $prefix.'-');
+            }
+        };
+        $traverse($departments);
     }
 }
