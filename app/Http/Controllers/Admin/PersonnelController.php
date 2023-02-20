@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\saveCV;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\updateUserRequest;
 use App\Models\CurriculumVitae;
 use App\Models\Department;
 use App\Models\nominee;
@@ -28,22 +31,26 @@ class PersonnelController extends Controller
             $user->status = 1;
             $user->save();
         }
-        //get user
+
         if ($rq->ajax()) {
             $data = User::getAll();
             $body = User::UserBuild($data);
             return response()->json(['body' => $body]);
         };
+
+        //lấy số lượng nhân sự có trong db
         $ucount = User::all()->count();
+        $cvcount = CurriculumVitae::all()->count();
+        // lấy tất cả phòng ban
         $phongbans = Department::all();
-        // dd($phongbans);
+        //lấy tất cả chức vụ
         $postions = Position::all();
+        //build table CV
         $cvs = CurriculumVitae::getAllCV();
         $cvut = CurriculumVitae::UTBuild($cvs);
-        // dd($cvut);
         //join chỉ lấy phần chung | leftjoin lấy cả chung và riêng
         $nhansu = User::getAll();
-        return view('pages.personnel.personnel', compact('phongbans', 'postions', 'nhansu', 'cvs', 'ucount',));
+        return view('pages.personnel.personnel', compact('phongbans', 'postions', 'nhansu', 'cvcount', 'cvs', 'ucount',));
     }
 
     /**
@@ -52,36 +59,9 @@ class PersonnelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function getAllCVT()
-    {
-        $cvs = CurriculumVitae::getAllCV();
-        $cvut = CurriculumVitae::UTBuild($cvs);
-        return response()->json(['status' => 'succes', 'cvbody' => $cvut]);
-    }
 
 
-    public function saveCV(Request $request)
-    {
-        $cv = new CurriculumVitae();
-        $cv->name = $request->name_ut;
-        $cv->email = $request->email_ut;
-        $cv->date_of_birth = $request->date_of_birth_ut;
-        $cv->phone = $request->phone_ut;
-        $cv->gender = $request->gender;
-        $cv->position_id = $request->position_ut;
-        $cv->nominee = $request->nominees_ut;
-        $cv->address = $request->address;
-        $cv->save();
-        $cvs = CurriculumVitae::getAllCV();
-        $cvut = CurriculumVitae::UTBuild($cvs);
-        return response()->json(['status' => 'succes', 'cvbody' => $cvut]);
-    }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    //====================PERSONNEL====================================
     public function edit(Request $rq)
     {
         //get user by id , response to form update
@@ -96,22 +76,21 @@ class PersonnelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(updateUserRequest $request)
     {
-        // dd($request);
-        // bug tuổi
+        // check quyền user đăng nhập
         $user = User::findOrFail($request->id);
         $level = Auth::user()->level;
         if ($level == 0) {
-            return response()->json(['status' => 'error', 'message' => 'Không thể thêm do không đủ quyền !']);
+            return response()->json(['status' => 'error', 'message' => 'Không thể sửa do không đủ quyền !']);
         }
 
+        //check tuổi
         $age = floor((time() - strtotime($request->date_of_birth)) / 31556926);
-        // dd($age);
         if ($age < 15) {
             return response()->json(['status' => 'error', 'message' => 'Tuổi của nhân sự phải lớn hơn 15 !']);
         }
-
+        //check email
         if ($user->email !== $request->email) {
             $request->validate([
                 'email' => 'unique:users,email'
@@ -119,52 +98,13 @@ class PersonnelController extends Controller
                 'email.unique' => 'Email đã tồn tại !'
             ]);
         }
-        $request->validate([
-            'img_url' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=3000,max_height=3000',
-            'fullname' => 'required|min:3|max:255',
-            'email' => 'required|email',
-            'date_of_birth' => 'date|required',
-            'recruitment_date' => 'required|date',
-            'status' => 'required|max:2',
-            'nominee_bild' => 'required|min:1|max:100',
-            'gender' => 'required|max:2',
-            'phone' => 'min:5|max:15',
-            'position_id' => 'min:1|max:4',
-            'department_id' => 'required|max:5'
-        ], [
-            'fullname.min' => 'Tên phải có hơn 3 ký tự !',
-            'fullname.required' => 'Tên không được để trống !',
-            'email.email' => 'Email không đúng định dạng !',
-            'email.required' => 'Email không được để trống !',
-            'date_of_birth.required' => 'Ngày sinh không được để trống !',
-            'date_of_birth.date' => 'Ngày sinh không đúng định dạng !',
-            'recruitment_date.date' => 'Ngày tuyển dụng không đúng định dạng !',
-            'recruitment_date.required' => 'Ngày tuyển dụng không được để trống !',
-            'status.required' => 'Trạng Thái không được để trống !',
-            'status.max' => 'Trạng Thái không được lớn hơn 2 ký tự !',
-            'nominee_bild.required' => 'Chức danh không được để trống !',
-            'nominee_bild.max' => 'Chức danh quá dài !',
-            'nominee_bild.min' => 'Chức danh quá ngắn !',
-            'gender.required' => 'giới tính không để trống !',
-            'gender.max' => 'sai định dạng giới tính !',
-            'img_url.image' => 'File ảnh không đúng định dạng!',
-            'img_url.mimes' => 'Ảnh phải có đuôi jpg,png,jpeg,gif,svg !',
-            'img_url.max' => 'Dung lượng ảnh quá lớn !',
-            'img_url.dimensions' => 'Ảnh quá lớn hoặc quá nhỏ !',
-            'phone.min' => 'Số điện thoại quá ngắn !',
-            'phone.max' => 'Số điện thoại quá dài !',
-            'position_id.max' => 'Chức vụ lỗi !',
-            'position_id.min' => 'Chức vụ lỗi !',
-            'department_id.required' => 'Phòng ban không được trống !',
-            'department_id.max' => 'Phòng ban quá dài !'
-        ]);
 
         if (!$request->img_url == '') {
             $fileName = time() . '.' . $request->img_url->extension();
             $request->img_url->move(public_path('img'), $fileName);
             $user->img_url = $fileName;
         }
-        // dd($user);
+
         $user->gender = $request->gender;
         $user->about = $request->about;
         $user->nominee_id = $request->nominee_bild;
@@ -292,14 +232,6 @@ class PersonnelController extends Controller
         }
     }
 
-    public function nominees(Request $request)
-    {
-        $id = $request->id;
-        $result = nominee::where('position_id', '=', "$id")->get();
-
-        $body = nominee::nomineeBuild($result);
-        return response()->json(['body' => $body]);
-    }
 
     public function editLevel(Request $request)
     {
@@ -315,30 +247,8 @@ class PersonnelController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $request->validate([
-            'fullname' => 'required|max:255|min:2',
-            'phone' => 'required|min:6',
-            'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|min:5|max:255',
-            'address' => 'required',
-
-        ], [
-            'email.unique' => 'Email đã tồn tại !',
-            'email.max' => 'Email quá dài !',
-            'email.email' => 'Email không đúng định dạng !',
-            'email.required' => 'Vui lòng nhập email !',
-            'address.required' => 'Vui lòng nhập địa chỉ !',
-            'phone.required' => 'Vui lòng nhập số điện thoại !',
-            'phone.min' => 'Vui lòng nhập lại số điện thoại !',
-            'fullname.required' => 'Vui lòng nhập họ tên !',
-            'fullname.min' => 'Vui lòng nhập trên 2 ký tự !',
-            'fullname.max' => 'Ký tự quá dài !',
-            'password.min' => 'Mật khẩu phải lớn hơn 5 ký tự !',
-            'password.required' => 'Vui lòng nhập mật khẩu !',
-
-        ]);
         $user = new User();
         $max = User::orderBy('id', 'DESC')->first();
         $user->personnel_code = 'SCN' . $max->id + 1;
@@ -353,5 +263,102 @@ class PersonnelController extends Controller
         $nhansu2 = User::getAll();
         $body = User::UserBuild($nhansu2);
         return response()->json(['status' => 'succes', 'body' => $body]);
+    }
+    //====================CV====================================
+    public function getCVbyID(Request $request)
+    {
+        $cv = CurriculumVitae::join('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
+            ->join('positions', 'curriculum_vitaes.position_id', 'positions.id')
+            ->select('curriculum_vitaes.*', 'nominees.nominees', 'positions.position')->where('curriculum_vitaes.id', '=', "$request->id")->get();
+        // dd($cv);
+        return response()->json(['status' => 'succes', 'body' => $cv]);
+    }
+    public function get_cv_update(Request $request)
+    {
+        $cv = CurriculumVitae::find();
+    }
+    public function update_cv(Request $request)
+    {
+        dd($request);
+    }
+    public function update_status_cv(Request $request)
+    {
+        //check quyền
+        $level = Auth::user()->level;
+        if ($level == 0) {
+            return response()->json(['status' => 'error', 'message' => 'Không thể thực hiện thao tác do không đủ quyền !']);;
+        }
+
+        $cv = CurriculumVitae::find($request->id);
+        // dd($request);
+        if ($request->status == 1) {
+            $cv->note = $request->note;
+            $request->validate(
+                [
+                    'note' => 'required|min:5|max:1000'
+                ],
+                [
+                    'note.required' => 'Để từ chối cv này, bạn vui lòng nhập lý do !',
+                    'note.min' => 'Lý do quá ngắn !',
+                    'note.max' => 'Lý do quá dài !',
+                ]
+            );
+        } else if ($request->status == 2) {
+            $cv->interview_date = $request->interview_date;
+            $request->validate(
+                [
+                    'interview_date' => 'required|date'
+                ],
+                [
+                    'interview_date.required' => 'Để chấp thuận cv này, bạn vui lòng chọn ngày phỏng vấn !',
+                    'interview_date.date' => 'Để chấp thuận cv này, bạn vui lòng chọn ngày phỏng vấn !',
+                ]
+            );
+        } else {
+            return
+                response()->json(['status' => 'error', 'message' => "Lỗi trong tham số !"]);
+        }
+        $cv->status = $request->status;
+        $cv->save();
+        $cvs = CurriculumVitae::getAllCV();
+        $cvut = CurriculumVitae::UTBuild($cvs);
+        return
+            response()->json(['status' => 'succes', 'message' => "CV đã duyệt thành công !"]);
+    }
+    public function getAllCVT()
+    {
+        $cvs = CurriculumVitae::getAllCV();
+        $cvut = CurriculumVitae::UTBuild($cvs);
+        return response()->json(['status' => 'succes', 'cvbody' => $cvut]);
+    }
+
+    public function saveCV(saveCV $request)
+    {
+        $cv = new CurriculumVitae();
+
+        $fileName = 'CV' . time() . '.' . $request->cv_ut->extension();
+        $request->cv_ut->move(public_path('cv'), $fileName);
+        $cv->url_cv = $fileName;
+        $cv->name = $request->name_ut;
+        $cv->email = $request->email_ut;
+        $cv->date_of_birth = $request->date_of_birth_ut;
+        $cv->phone = $request->phone_ut;
+        $cv->gender = $request->gender;
+        $cv->position_id = $request->position_ut;
+        $cv->nominee = $request->nominees_ut;
+        $cv->address = $request->address;
+        $cv->save();
+        $cvs = CurriculumVitae::getAllCV();
+        $cvut = CurriculumVitae::UTBuild($cvs);
+        return response()->json(['status' => 'succes', 'cvbody' => $cvut]);
+    }
+    //====================nominees====================================
+    public function nominees(Request $request)
+    {
+        $id = $request->id;
+        $result = nominee::where('position_id', '=', "$id")->get();
+
+        $body = nominee::nomineeBuild($result);
+        return response()->json(['body' => $body]);
     }
 }
