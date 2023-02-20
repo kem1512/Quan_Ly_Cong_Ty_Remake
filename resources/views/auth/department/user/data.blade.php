@@ -16,30 +16,29 @@
                 </span>
             </td>
             <td>
-                <div class="form-group m-0">
-                    <select class="form-control text-secondary text-xs font-weight-bold w-75 text-center"
-                        id="exampleFormControlSelect1">
-                        <option>Nhân Viên</option>
-                        <option>Trưởng Phòng</option>
-                    </select>
-                </div>
+                <select class="form-control" name="position_id" id="position_id">
+                    @foreach ($positions as $position)
+                        <option {{ $position -> id == $user -> position_id ? 'selected' : '' }} value="{{ $position -> id }}" >{{ $position -> position }}</option>
+                    @endforeach
+                </select>
             </td>
             <td>
-                <div class="form-group m-0">
-                    <select class="form-control text-secondary text-xs font-weight-bold w-75 text-center"
-                        id="exampleFormControlSelect1">
-                        <option>Nhân Viên</option>
-                        <option>Trưởng Phòng</option>
-                    </select>
-                </div>
+                <select class="form-control" name="nominee_id">
+                    @foreach ($positions as $position)
+                        @foreach ($position -> nominees as $nominee)
+                            <option data-id="{{ $nominee -> position_id }}" value="{{ $nominee -> id }}" {{ $nominee -> id == $user -> nominee_id ? 'selected' : '' }} {{ $position -> id == $user -> position_id ? '' : 'hidden' }} >{{ $nominee -> nominees }}</option>
+                        @endforeach
+                    @endforeach
+                </select>
             </td>
             <td>
-                <span class="text-secondary text-xs font-weight-bold">{{ $user->phone ?? 'Chưa Có' }}</span>
+                <span class="text-secondary text-xs font-weight-bold ps-2">{{ $user->phone ?? 'Chưa Có' }}</span>
             </td>
             <td>
-                <span class="text-secondary text-xs font-weight-bold">{{ $user->gender ? 'Nam' : 'Nữ' }}</span>
+                <span class="text-secondary text-xs font-weight-bold ps-2">{{ $user->gender ? 'Nam' : 'Nữ' }}</span>
             </td>
             <td>
+                <button class="btn btn-danger staff m-0 update_user" data-id="{{ $user->id }}">Sửa</button>
                 <button class="btn btn-danger staff m-0 delete_user" data-id="{{ $user->id }}">Xóa</button>
             </td>
         </tr>
@@ -51,7 +50,8 @@
     </tr>
 @else
     <tr class="mt-2">
-        <td class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center pt-5" colspan="7">
+        <td class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center pt-5"
+            colspan="7">
             Chưa Có Nhân Viên
         </td>
     </tr>

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FormDataRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Department;
+use App\Models\Position;
+use App\Models\Nominee;
 use Illuminate\Support\Collection;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -69,7 +71,7 @@ class DepartmentController extends Controller
         $search = $request->search;
 
 		if (!empty($search)) {
-            $users = User::orderby('fullname', 'asc')->select('id', 'fullname', 'phone', 'gender')->where('fullname', 'like', '%' . $search . '%')->limit(5)->get();
+            $users = User::orderby('fullname', 'asc')->select('id', 'fullname', 'phone', 'gender')->where('fullname', 'like', '%' . $search . '%')->whereNull('department_id')->limit(5)->get();
 		}
 
 		$response = array();
@@ -81,8 +83,10 @@ class DepartmentController extends Controller
     }
 
     public function user(Request $request){
+        // $this->authorize('create', \Auth::user());
         $department = Department::with('users')->where('id', $request -> id)->limit(1)->get();
-        return view('auth.department.user.index', compact('department'));
+        $positions = Position::with('nominees')->get(); 
+        return view('auth.department.user.index', compact('department', 'positions'));
     }
 
     public function addUser(Request $request){
@@ -114,11 +118,27 @@ class DepartmentController extends Controller
         }
     }
 
+    public function updateUser(Request $request){
+        if($request -> id){
+            $user = User::find($request -> id);
+            $user -> position_id = $request -> position_id;
+            $user -> nominee_id = $request -> nominee_id;
+            if($user -> save()){
+                return response()->json(['status' => 1, 'msg' => 'Sửa thành công']);
+            }else{
+                return response()->json(['status' => 0, 'msg' => 'Sửa thất bại']);
+            }
+        }else{
+            return response()->json(['status' => 0, 'msg' => 'Sửa thất bại']);
+        }
+    }
+
     public function get_users(Request $request){
         if($request -> id){
-            $users = User::where('department_id', $request -> id)->paginate(5);
+            $positions = Position::with('nominees')->get(); 
+            $users = User::with('position')->where('department_id', $request -> id)->paginate(5);
             if($users -> count() > 0)
-                return view('auth.department.user.data', compact('users'));
+                return view('auth.department.user.data', compact('users', 'positions'));
         }
     }
 
@@ -158,18 +178,5 @@ class DepartmentController extends Controller
     public function get_departments(){
         $departments = Department::paginate(5);
         return view('auth.department.data', compact('departments'));
-    }
-
-    public function test(){
-        $departments = Department::with('ancestors')->get()->toTree();
-
-        $traverse = function ($departments, $prefix = '-') use (&$traverse) {
-            foreach ($departments as $department) {
-                echo '<br>'.$prefix.' '.$department->name;
-        
-                $traverse($department->children, $prefix.'-');
-            }
-        };
-        $traverse($departments);
     }
 }
