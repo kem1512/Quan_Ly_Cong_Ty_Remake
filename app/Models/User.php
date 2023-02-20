@@ -38,6 +38,11 @@ class User extends Authenticatable
         'level',
     ];
 
+    public function position(){
+        $test = $this -> belongsTo(Position::class);
+        return $test;
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

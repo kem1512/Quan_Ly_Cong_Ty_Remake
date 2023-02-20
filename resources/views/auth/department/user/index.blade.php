@@ -11,10 +11,11 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <p class="mb-0">Thêm Nhân Viên Vào <span
                                         class="text-bolder">{{ $department[0]->name }}</span></p>
-                                <button class="btn btn-primary btn-sm ms-auto save me-2 add_staff">
-                                    Lưu thông tin
-                                </button>
-                                <button class='btn btn-primary btn-sm clear'>Hủy</button>
+                                <div>
+                                    <button class="btn btn-primary btn-sm ms-auto save me-2 add_staff">
+                                        Thêm Chức Vụ
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">

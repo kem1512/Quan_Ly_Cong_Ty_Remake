@@ -144,7 +144,11 @@
                                 'department_id': $("input[name='department_id' ]").val()
                             },
                             success: function(response) {
-                                $('#table_users').html(response);
+                                $.get("{{ route('department.get_users') }}" + '/' + $(
+                                    "input[name='department_id' ]").val(), function(
+                                    data) {
+                                    $('#table_users').empty().html(data);
+                                })
                             }
                         });
                     }
@@ -167,7 +171,50 @@
                     'id': $(this).attr('data-id')
                 },
                 success: function(data) {
-                    $('#table_users').html(data);
+                    $('#table_users').empty().html(data);
+                    $.get("{{ route('department.get_users') }}" + '/' + $(
+                        "input[name='department_id' ]").val(), function(data) {
+                        $('#table_users').empty().html(data);
+                    })
+                }
+            });
+        })
+
+        $(document).on('change', 'select[name="position_id"]', function(){
+            var options = $(this).closest('tr');
+            var position_id = options.find('select[name="position_id"]').find(":selected").val();
+            var select = options.find('select[name="nominee_id"]');
+            var indexs = 0;
+            $(select.find('option')).each(function(index){
+                var id =  options.find('.update_user').attr('data-id')
+                if($(this).attr('data-id') == position_id){
+                    indexs = index;
+                    $(this).removeAttr('hidden');
+                }else{
+                    $(this).attr('hidden', '')
+                }
+            })
+            select.prop("selectedIndex", indexs)
+        });
+
+        $(document).on('click', '.update_user', function(e) {
+            e.preventDefault();
+            var parent = $(this).closest('tr');
+            $.ajax({
+                url: "{{ route('department.updateUser') }}",
+                type: 'post',
+                dataType: "json",
+                data: {
+                    'id': $(this).attr('data-id'),
+                    'nominee_id': parent.find('select[name="nominee_id"]').find(":selected").val(),
+                    'position_id': parent.find('select[name="position_id"]').find(":selected").val()
+                },
+                success: function(data) {
+                    $('#table_users').empty().html(data);
+                    $.get("{{ route('department.get_users') }}" + '/' + $(
+                        "input[name='department_id' ]").val(), function(data) {
+                        $('#table_users').empty().html(data);
+                    })
                 }
             });
         })
