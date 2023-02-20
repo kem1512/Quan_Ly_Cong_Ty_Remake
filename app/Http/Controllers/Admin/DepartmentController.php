@@ -17,7 +17,7 @@ class DepartmentController extends Controller
         return view('auth.department.form');
     }
 
-    public function createOrUpdate(FormDataRequest $request){    
+    public function create_or_update(FormDataRequest $request){    
         if(!$request -> validated())
         {
             return response()->json(['status' => 0,'msg' => $request->errors()]);
@@ -82,24 +82,44 @@ class DepartmentController extends Controller
 
     public function user(Request $request){
         $department = Department::with('users')->where('id', $request -> id)->limit(1)->get();
-        return view('auth.department.user', compact('department'));
+        return view('auth.department.user.index', compact('department'));
     }
 
-    public function addUserToDepartment(Request $request){
-        foreach($request->input('users') as $user){
-            $result = User::find($user);
-            $result -> department_id = $request -> department_id;
-            $result -> save();
-        }
-    }
-
-    public function getEmployeeInDepartment(Request $request){
+    public function addUser(Request $request){
         if($request -> id){
-            $users = User::where('department_id', $request -> id)->get();
-            if($users -> count() > 0)
-                return response()->json(['status' => 0, 'msg' => 'Lấy Dữ Liệu Thành Công', 'data' => $users]);
+            $user = User::find($request -> id);
+            $user -> department_id = $request -> department_id;
+            if($user -> save()){
+                return response()->json(['status' => 1, 'msg' => 'Thêm thành công']);
+            }else{
+                return response()->json(['status' => 0, 'msg' => 'Thêm thất bại']);
+            }
+        }else{
+            return response()->json(['status' => 0, 'msg' => 'Thêm thất bại']);
         }
-        return response()->json(['status' => 0, 'msg' => 'Lấy Dữ Liệu Thất Bại']);
+    }
+
+    public function deleteUser(Request $request){
+        if($request -> id){
+            $user = User::findOrFail($request -> id);
+            if($user){
+                $user -> department_id = NULL;
+                $user -> save();
+                return response()->json(['status' => 1, 'msg' => 'Xóa thành công']);
+            }else{
+                return response()->json(['status' => 0, 'msg' => 'Xóa thất bại']);
+            }
+        }else{
+            return response()->json(['status' => 0, 'msg' => 'Xóa thất bại']);
+        }
+    }
+
+    public function get_users(Request $request){
+        if($request -> id){
+            $users = User::where('department_id', $request -> id)->paginate(5);
+            if($users -> count() > 0)
+                return view('auth.department.user.data', compact('users'));
+        }
     }
 
     public function display($id)
@@ -135,7 +155,7 @@ class DepartmentController extends Controller
         return view('auth.department.overview', compact('departments'));
     }
 
-    public function getDepartment(){
+    public function get_departments(){
         $departments = Department::paginate(5);
         return view('auth.department.data', compact('departments'));
     }
