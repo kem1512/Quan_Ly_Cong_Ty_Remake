@@ -118,7 +118,7 @@
                         <div class="row">
                             <div class="col">
                                 <h5 class="card-title text-uppercase text-muted mb-0">Ứng Viên</h5>
-                                <span class="h2 font-weight-bold mb-0">350,897</span>
+                                <span class="h2 font-weight-bold mb-0">{{ $cvcount }}</span>
                             </div>
                             <div class="col-auto">
                                 <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
@@ -382,6 +382,9 @@
                                     </select>
                                     <label for="chucvu" class="col-sm-4 col-form-label">Chức Danh :</label>
                                     <select class="form-control" name="nominee_bild" id="nominee_bild">
+                                        {{-- @foreach ($nominees as $no)
+                                            <option value="{{ $no->id }}">{{ $no->nominee }}</option>
+                                        @endforeach --}}
                                     </select>
                                     <label for="trangthai" class="col-sm-4 col-form-label">Trạng Thái :</label>
                                     <select class="form-control" name="status" id="statusu">
@@ -458,35 +461,37 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Tên Ứng Viên</label>
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Tên Ứng
+                                        Viên</label>
                                     <input class="form-control dbcl_ctl" id="name_ut" type="text" name="name_ut"
                                         value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Email</label>
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Email</label>
                                     <input class="form-control" id="email_ut" name="email_ut" type="text"
                                         value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Số Điện Thoại</label>
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Số Điện
+                                        Thoại</label>
                                     <input class="form-control " type="text" id="phone_ut" name="phone_ut"
                                         value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Ngày Sinh</label>
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Ngày Sinh</label>
                                     <input class="form-control " type="date" name="date_of_birth_ut"
                                         id="date_of_birth_ut" value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Giới Tính</label>
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Giới Tính</label>
                                     <select class="form-control " name="gender" id="gender_ut">
                                         <option value="0">Nam</option>
                                         <option value="1">Nữ</option>
@@ -495,14 +500,14 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">CV</label>
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">CV</label>
                                     <input class="form-control" type="file" name="cv_ut" id="cv_ut"
                                         value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Chức Vụ</label>
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Chức Vụ</label>
                                     <select class="form-control" name="position_ut" id="position_cv">
                                         @foreach ($postions as $po)
                                             <option value="{{ $po->id }}">{{ $po->position }}</option>
@@ -512,8 +517,10 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Vị Trí Ứng Truyển</label>
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Vị Trí Ứng
+                                        Truyển</label>
                                     <select class="form-control" name="nominees_ut" id="nominees_cv">
+
                                     </select>
                                 </div>
                             </div>
@@ -521,7 +528,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
-                                    Địa Chỉ :</label>
+                                    Địa Chỉ</label>
                                 <textarea class="form-control" name="address" id="address" rows="3"></textarea>
                             </div>
                         </div>
@@ -549,41 +556,41 @@
                 </div>
                 <div class="offcanvas-body">
                     <h1 id="add-title" style="text-align: center">Sửa Hồ Sơ</h1>
-                    <form class="mt-5" method="POST" id="form_edit_cv">
+                    <form class="mt-5" method="POST" id="form_update_cv">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Tên Ứng Viên</label>
-                                    <input class="form-control dbcl_ctl" id="name_ut" type="text" name="name_ut"
+                                    <input class="form-control dbcl_ctl" id="name_ut" type="text" name="name_cvu"
                                         value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Email</label>
-                                    <input class="form-control" id="email_ut" name="email_ut" type="text"
+                                    <input class="form-control" id="email_ut" name="email_cvu" type="text"
                                         value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Số Điện Thoại</label>
-                                    <input class="form-control " type="text" id="phone_ut" name="phone_ut"
+                                    <input class="form-control " type="text" id="phone_cvu" name="phone_ut"
                                         value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Ngày Sinh</label>
-                                    <input class="form-control " type="date" name="date_of_birth_ut"
+                                    <input class="form-control " type="date" name="date_of_birth_cvu"
                                         id="date_of_birth_ut" value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Giới Tính</label>
-                                    <select class="form-control " name="gender" id="gender_ut">
+                                    <select class="form-control " name="gender" id="gender_cvu">
                                         <option value="0">Nam</option>
                                         <option value="1">Nữ</option>
                                     </select>
@@ -592,14 +599,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">CV</label>
-                                    <input class="form-control" type="file" name="cv_ut" id="cv_ut"
+                                    <input class="form-control" type="file" name="cv_cvu" id="cv_cvu"
                                         value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Chức Vụ Ứng Tuyển</label>
-                                    <select class="form-control" name="position_ut" id="position_cv">
+                                    <select class="form-control" name="position_cvu" id="position_">
                                         @foreach ($postions as $po)
                                             <option value="{{ $po->id }}">{{ $po->position }}</option>
                                         @endforeach
@@ -609,7 +616,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Vị Trí Ứng Truyển</label>
-                                    <select class="form-control" name="nominees_ut" id="nominees_cv">
+                                    <select class="form-control" name="nominees_cvu" id="nominees_cv">
                                     </select>
                                 </div>
                             </div>
@@ -618,11 +625,11 @@
                             <div class="col-12">
                                 <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
                                     Địa Chỉ :</label>
-                                <textarea class="form-control" name="address" id="address" rows="3"></textarea>
+                                <textarea class="form-control" name="address_cvu" id="address" rows="3"></textarea>
                             </div>
                         </div>
                         <div id="btn-submit-add">
-                            <button type="submit" id="btn_insert_cv" class="btn btn-primary mt-7">Cập Nhật</button>
+                            <button type="submit" id="btn_update_cv" class="btn btn-primary mt-7">Cập Nhật</button>
                         </div>
                     </form>
                 </div>
@@ -636,89 +643,93 @@
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarevaluatecv"
                 aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"><i
-                            class="fa fa-times" aria-hidden="true"></i></button>
+                    <button type="button" class="btn-close" onclick="close2form()" data-bs-dismiss="offcanvas"
+                        aria-label="Close"><i class="fa fa-times" aria-hidden="true"></i></button>
                 </div>
                 <h1 id="add-title" style="text-align: center">Đánh Giá Hồ Sơ</h1>
-                <div class="offcanvas-body row">
+                <div id="form_eva" class="offcanvas-body row">
                     <div class="col-md-6" style="min-height:40rem">
-                        <iframe contextmenu="Hồ Sơ" src="cv/cvdemo.pdf" height="100%" width="100%"></iframe>
+                        <embed id="cv_url" src="" height="100%" width="100%"></embed>
                     </div>
                     <div class="col-md-6">
-                        <form class="mt-5" method="POST" id="form_edit_cv">
-                            @csrf
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Tên Ứng Viên</label>
-                                        <input class="form-control dbcl_ctl" id="name_ut" type="text"
-                                            name="name_ut" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Email</label>
-                                        <input class="form-control" id="email_ut" name="email_ut" type="text"
-                                            value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Số Điện Thoại</label>
-                                        <input class="form-control " type="text" id="phone_ut" name="phone_ut"
-                                            value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Ngày Sinh</label>
-                                        <input class="form-control " type="date" name="date_of_birth_ut"
-                                            id="date_of_birth_ut" value="">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Giới Tính</label>
-                                        <select class="form-control " name="gender" id="gender_ut">
-                                            <option value="0">Nam</option>
-                                            <option value="1">Nữ</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">CV</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Chức Vụ Ứng
-                                            Tuyển</label>
-                                        <select class="form-control" name="position_ut" id="position_cv">
-                                            @foreach ($postions as $po)
-                                                <option value="{{ $po->id }}">{{ $po->position }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Vị Trí Ứng
-                                            Truyển</label>
-                                        <select class="form-control" name="nominees_ut" id="nominees_cv">
-                                        </select>
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Tên Ứng Viên</label>
+                                    <input class="form-control" id="name_eva" type="text" name="name_ut" disabled>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <label for="exampleFormControlTextarea1" id="about-text"
-                                        class="col-sm-4 col-form-label">
-                                        Địa Chỉ :</label>
-                                    <textarea class="form-control" name="address" id="address" rows="3"></textarea>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Email</label>
+                                    <input class="form-control" id="email_eva" name="email_ut" type="text"
+                                        value="" disabled>
                                 </div>
                             </div>
-                        </form>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Số Điện Thoại</label>
+                                    <input class="form-control " type="text" id="phone_eva" name="phone_ut"
+                                        value="" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Ngày Sinh</label>
+                                    <input class="form-control " type="date" name="date_of_birth_ut"
+                                        id="date_of_birth_eva" value=""disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Giới Tính</label>
+                                    <select class="form-control " name="gender" id="gender_eva" disabled>
+                                        <option value="0">Nam</option>
+                                        <option value="1">Nữ</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Chức Vụ</label>
+                                    <input class="form-control " type="text" name="position_eva" id="position_eva"
+                                        value=""disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Vị Trí</label>
+                                    <input class="form-control " type="text" name="nominees_eva" id="nominees_eva"
+                                        value=""disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
+                                    Địa Chỉ</label>
+                                <textarea class="form-control" name="address" id="address_eva" rows="3" disabled></textarea>
+                            </div>
+                            <div id="note_cv" class="col-12 d-none">
+                                <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
+                                    Lý do </label>
+                                <textarea class="form-control" name="note" id="note" rows="3"></textarea>
+                                <a id="send_cv" class="btn btn-danger mt-3 accept_cv" data=1>Gửi</a>
+                            </div>
+                            <div id="form_interview" class="col-6 d-none">
+                                <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
+                                    Ngày Phỏng Vấn :</label>
+                                <input class="form-control " type="date" name="interview_date" id="interview_date">
+                                <a id="accept_cv" class="btn btn-danger mt-3 accept_cv" data=2>Gửi</a>
+                            </div>
+                        </div>
+                        <div class="wrapper col-12 mt-5 " style="text-align: center">
+                            <a onclick="openFrom(false);" class="btn btn-success" data=2
+                                style="margin-right: 5%">Duyệt</a>
+                            <a onclick="openFrom(true);" class="btn btn-secondary " style="margin-right: 5%">Trượt</a>
+                            <a class="btn btn-danger" onclick="close2form()" data-bs-dismiss="offcanvas">close</a>
+                        </div>
                     </div>
                 </div>
             </div>

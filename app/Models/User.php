@@ -144,9 +144,9 @@ class User extends Authenticatable
 
                         <td>';
             if ($ns->nominee_id == '') {
-                $html .= '   <p class="text-sm font-weight-bold mb-0">Chưa có chức vụ</p> ';
+                $html .= '   <p class="text-sm font-weight-bold  mb-0" >Chưa có chức vụ</p> ';
             } else {
-                $html .= '   <p class="text-sm font-weight-bold mb-0">' . $ns->nominees . '</p> ';
+                $html .= '   <p class="text-sm font-weight-bold  mb-0" >' . $ns->nominees . '</p> ';
             }
 
             $html .= '</td>
@@ -188,6 +188,7 @@ class User extends Authenticatable
                                 </a>
                                 <a id="btn-edit" data-bs-toggle="offcanvas"
                                     onclick="getdetail(' . $ns->id . ')"
+                                    data-pos="' . $ns->position_id . '"
                                     data-bs-target="#offcanvasNavbarupdate"
                                     class="text-sm font-weight-bold mb-0 ps-2">
                                     Edit

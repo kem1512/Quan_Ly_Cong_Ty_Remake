@@ -12,6 +12,7 @@ class CurriculumVitae extends Model
         'email',
         'name',
         'phone',
+        'interview_date',
         'date_of_birth',
         'position_id',
         'nominee',
@@ -26,7 +27,8 @@ class CurriculumVitae extends Model
     ];
     public static function getAllCV()
     {
-        $cv = CurriculumVitae::leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
+        $cv = CurriculumVitae::where('status', '=', 0)->orWhere('status', '=', 1)->orWhere('status', '=', 2)
+            ->leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
             ->select('curriculum_vitaes.*', 'nominees.nominees');
         return $cv->paginate(12);
     }
@@ -59,15 +61,16 @@ class CurriculumVitae extends Model
 
             if ($cv->status == 0) {
                 $html .= ' <p class="text-sm font-weight-bold mb-0">Chưa Duyệt</p>';
-            } else {
+            } else if ($cv->status == 2) {
                 $html .= ' <p class="text-sm font-weight-bold mb-0">Đã Duyệt</p>';
+            } else if ($cv->status == 1) {
+                $html .= ' <p class="text-sm font-weight-bold mb-0">Từ Chối</p>';
             }
 
             $html .= '  </td>
                         <td class="text-center">';
-            $html .= ' <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbarevaluatecv" class="text-sm font-weight-bold mb-0 ps-2">Evaluate</a>
-                       <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbarviewcv" class="text-sm font-weight-bold mb-0 ps-2">View</a> 
-                       <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbareditcv" class="text-sm font-weight-bold mb-0 ps-2">Edit</a> 
+            $html .= ' <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbarevaluatecv" onclick="get_CV_By_ID_eva(' . $cv->id . ')" class="text-sm font-weight-bold mb-0 ps-2">Evaluate</a>
+                       <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbareditcv" onclick="get_CV_By_ID_edit(' . $cv->id . ')" class="text-sm font-weight-bold mb-0 ps-2">Edit</a> 
                        </td>
 
                     </tr>';
