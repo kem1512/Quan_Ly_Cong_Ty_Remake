@@ -22,7 +22,7 @@ $.ajaxSetup({
         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
     },
 });
-
+//==========================Personnel===================================
 // DELETE Personnel
 function onDelete(id) {
     //sweetalert
@@ -214,36 +214,6 @@ function getdetailview(id) {
         },
     });
 }
-//Active form
-$(document).on("dblclick", ".dbcl_ctl", function () {
-    var id_clicked = "#" + $(this).attr("id");
-    if (id_clicked == "#fullname_profile") {
-        num = 0;
-    } else if (id_clicked == "#department_id_profile") {
-        num = 1;
-    } else if (id_clicked == "#email_profile") {
-        num = 2;
-    } else if (id_clicked == "#phone_profile") {
-        num = 3;
-    } else if (id_clicked == "#date_of_birth_profile") {
-        num = 4;
-    } else if (id_clicked == "#gender_profile") {
-        num = 5;
-    } else if (id_clicked == "#address_profile") {
-        num = 6;
-    } else if (id_clicked == "#position_id_profile") {
-        num = 7;
-    } else if (id_clicked == "#about_profile") {
-        num = 8;
-    }
-    if (dbclick[num] == true) {
-        $(id_clicked).prop("disabled", true);
-        dbclick[num] = false;
-    } else {
-        $(id_clicked).prop("disabled", false);
-        dbclick[num] = true;
-    }
-});
 //UPDATE
 $(document).ready(function () {
     $("#form_update").on("submit", function (e) {
@@ -271,7 +241,7 @@ $(document).ready(function () {
     });
 });
 
-//Search
+//Search HRM
 $(document).ready(function () {
     $("#search").keyup(function () {
         var search = $("#search").val();
@@ -346,17 +316,6 @@ $(document).ready(function () {
     });
 });
 
-function readURL(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-
-        reader.onload = function (e) {
-            $("#img_url").attr("src", e.target.result);
-        };
-
-        reader.readAsDataURL(input.files[0]);
-    }
-}
 //edit level
 $(document).on("change", ".read-checkbox-level", function () {
     var id = $(this).attr("level");
@@ -389,7 +348,7 @@ $(document).on("change", ".read-checkbox-level", function () {
         },
     });
 });
-
+//==========================profile===================================
 //UPDATE profile
 $(document).ready(function () {
     $("#form_update_profile").on("submit", function (e) {
@@ -433,6 +392,91 @@ $(document).ready(function () {
     });
 });
 
+//==========================CV===================================
+// getAllCV
+$(document).ready(function () {
+    $("#profile-tab").on("click", function () {
+        $.ajax({
+            url: "/personnel/cv",
+            method: "GET",
+            success: function (result) {
+                $("#cvut_query").html(result.cvbody);
+            },
+        });
+    });
+});
+function name(params) {}
+// INSERT CV
+$(document).ready(function () {
+    $("#form_insert_cv").on("submit", function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        console.log(formData);
+        $.ajax({
+            type: "POST",
+            url: "/personnel/cv",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: (response) => {
+                if (response.status == "error") {
+                    onAlertError(response.message);
+                } else {
+                    onAlertSuccess("Thông tin của bạn đã được sửa đổi !");
+                    $("#cvut_query").html(response.cvbody);
+                }
+            },
+            error: function (error) {
+                onAlertError(error.responseJSON.message);
+            },
+        });
+    });
+});
+
+//==========================module===================================
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $("#img_url").attr("src", e.target.result);
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+//Active form
+$(document).on("dblclick", ".dbcl_ctl", function () {
+    var id_clicked = "#" + $(this).attr("id");
+    if (id_clicked == "#fullname_profile") {
+        num = 0;
+    } else if (id_clicked == "#department_id_profile") {
+        num = 1;
+    } else if (id_clicked == "#email_profile") {
+        num = 2;
+    } else if (id_clicked == "#phone_profile") {
+        num = 3;
+    } else if (id_clicked == "#date_of_birth_profile") {
+        num = 4;
+    } else if (id_clicked == "#gender_profile") {
+        num = 5;
+    } else if (id_clicked == "#address_profile") {
+        num = 6;
+    } else if (id_clicked == "#position_id_profile") {
+        num = 7;
+    } else if (id_clicked == "#about_profile") {
+        num = 8;
+    }
+    if (dbclick[num] == true) {
+        $(id_clicked).prop("disabled", true);
+        dbclick[num] = false;
+    } else {
+        $(id_clicked).prop("disabled", false);
+        dbclick[num] = true;
+    }
+});
+
 function getMoresUser(page) {
     $.ajax({
         type: "GET",
@@ -467,7 +511,7 @@ function unActiveform() {
     $(about_profile).prop("disabled", true);
 }
 
-//get nominees
+//get nominees personnel
 $(document).ready(function () {
     $("#position_idu").on("change", function () {
         var stt = $("#position_idu").val();
@@ -485,10 +529,10 @@ $(document).ready(function () {
         });
     });
 });
-//get nominees
+//get nominees cv
 $(document).ready(function () {
-    $("#position_ut").on("change", function () {
-        var stt = $("#position_idu").val();
+    $("#position_cv").on("change", function () {
+        var stt = $("#position_cv").val();
         // alert(stt);
         $.ajax({
             type: "GET",
@@ -498,7 +542,7 @@ $(document).ready(function () {
             },
             success: function (result) {
                 // console.log(result);
-                $("#nominees_ut").html(result.body);
+                $("#nominees_cv").html(result.body);
             },
         });
     });

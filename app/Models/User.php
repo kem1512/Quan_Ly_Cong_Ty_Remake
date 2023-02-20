@@ -23,7 +23,7 @@ class User extends Authenticatable
         'position_id',
         'department_id',
         'personnel_code',
-        'title',
+        'nominee_id',
         'email',
         'password',
         'fullname',
@@ -73,6 +73,13 @@ class User extends Authenticatable
         $users = DB::table('users');
         return $users->paginate(7);
     }
+    public static function getAll()
+    {
+        $users = User::leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name');
+        return $users->paginate(7);
+    }
 
     public static function UserBuild($nhansu)
     {
@@ -105,6 +112,8 @@ class User extends Authenticatable
                 </tr>
             </thead>
             <tbody> ';
+
+
         if ($nhansu == null) {
             $html .= '<p>không có dữ liệu</p>';
         }
@@ -134,32 +143,10 @@ class User extends Authenticatable
                         </td>
 
                         <td>';
-            if (!$ns->title == '') {
-                $html .= '   <p class="text-sm font-weight-bold mb-0">' . $ns->title . '</p> ';
+            if ($ns->nominee_id == '') {
+                $html .= '   <p class="text-sm font-weight-bold mb-0">Chưa có chức vụ</p> ';
             } else {
-                if ($ns->position_id === 1) {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Tổng Giám Đốc</p>';
-                } else if ($ns->position_id === 2) {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Giám Đốc</p>';
-                } else if ($ns->position_id === 3) {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Trưởng Phòng</p>';
-                } else if ($ns->position_id === 4) {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Tổ Trưởng</p>';
-                } else if ($ns->position_id === 5) {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Nhóm Trưởng</p>';
-                } else if ($ns->position_id === 6) {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Chuyên Viên</p>';
-                } else if ($ns->position_id === 7) {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Nhân Viên</p>';
-                } else if ($ns->position_id === 8) {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Thử Việc</p>';
-                } else if ($ns->position_id === 9) {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Học Việc</p>';
-                } else if ($ns->position_id === 10) {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Thực Tập Sinh</p>';
-                } else {
-                    $html .= ' <p class="text-sm font-weight-bold mb-0">Chưa Có</p>';
-                }
+                $html .= '   <p class="text-sm font-weight-bold mb-0">' . $ns->nominees . '</p> ';
             }
 
             $html .= '</td>

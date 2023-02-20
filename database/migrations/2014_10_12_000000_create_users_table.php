@@ -30,7 +30,7 @@ return new class extends Migration
             $table->date('recruitment_date')->nullable();
             $table->string('img_url')->nullable();
             $table->string('about')->nullable();
-            $table->string('title')->nullable();
+            $table->bigInteger('nominee_id')->nullable();
             $table->integer('gender')->default(0);
             $table->integer('level')->default(0);
             $table->rememberToken();

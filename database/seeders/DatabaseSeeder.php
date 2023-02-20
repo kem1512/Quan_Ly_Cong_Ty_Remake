@@ -16,14 +16,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(nominees::class);
-        $this->call(nominees::class);
         DB::table('users')->insert([
-            'personnel_code' => 'concac',
             'fullname' => 'admin',
             'email' => 'admin@argon.com',
             'password' => bcrypt('admin'),
-            'personnel_code' => 'NS1'
+            'personnel_code' => 'NS0001',
+            'level' => 2,
         ]);
         $position = [
             ['id' => 1, 'position' => 'Tổng Giám Đốc'],
