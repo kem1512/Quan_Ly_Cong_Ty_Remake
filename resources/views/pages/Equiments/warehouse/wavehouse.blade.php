@@ -70,7 +70,7 @@
                             <div>
                                 <form id="formKho" role="form text-left">
                                     <div class="d-flex justify-content-between">
-                                        <label>Tên kho</label>
+                                        <label>Tên kho (<strong class="text-danger">*</strong>)</label>
                                         <label id="error-name" class="form-control-label text-danger"></label>
                                     </div>
                                     <div class="input-group mb-3">

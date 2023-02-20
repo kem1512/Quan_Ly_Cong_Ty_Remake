@@ -50,9 +50,9 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'equiment' ? 'active' : '' }}" href="equiment">
-                    <i class="fa-solid fa-hard-drive text-primary"></i>
-                    <span class="nav-link-text ms-1">Thiết bị</span>
+                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'transfer' ? 'active' : '' }}" href="transfer">
+                    <i class="fa-solid fa-retweet text-primary"></i>
+                    <span class="nav-link-text ms-1">Chuyển giao thiết bị</span>
                 </a>
             </li>
 

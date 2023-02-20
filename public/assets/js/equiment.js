@@ -3,15 +3,20 @@ import Pagination from './Paginate.js';
 var paginate = new Pagination();
 var orderby = 'asc';
 var keyword = "";
+<<<<<<< Updated upstream
 var title = "Thêm mới thiết bị";
 var create = true;
 var id_equipments = 0;
+=======
+var status = "";
+>>>>>>> Stashed changes
 
 $(document).ready(function () {
     Get();
     Redirect();
     Next();
     Previous();
+<<<<<<< Updated upstream
     ShowModalThem();
     submit();
     cancelValidate();
@@ -19,12 +24,20 @@ $(document).ready(function () {
     CancelModalThem();
     GetById();
     Delete();
+=======
+    ShowModalBanGiao();
+    ShowModalKiemKe();
+    ShowModalThuHoi();
+    filterStatus();
+    Search();
+    ChangePerpage();
+>>>>>>> Stashed changes
 });
 
 function Get() {
     $.ajax({
         type: "get",
-        url: "/equiment/get/" + paginate.perPage + "/" + paginate.currentPage + "/" + keyword,
+        url: "/equiment/get/" + paginate.perPage + "/" + paginate.currentPage + "/" + status + "/" + keyword,
         dataType: "json",
         success: function (response) {
             let html = '';
@@ -148,11 +161,12 @@ function cancelValidate() {
 
 function GetStatus() {
     $('#selectstatus').on('change', function () {
-        keyword = $('#selectstatus').val();
+        status = $('#selectstatus').val();
         Get();
     })
 }
 
+<<<<<<< Updated upstream
 function CancelModalThem() {
     $('#btnHuy').on('click', function () {
         $("#form-equiment")[0].reset();
@@ -217,7 +231,19 @@ function Delete() {
                 });
             }
         })
+=======
+function Search() {
+    $('#txtSearch').on('change', function () {
+
+        keyword = $('#txtSearch').val();
+        Get();
+>>>>>>> Stashed changes
     })
+}
+
+function ChangePerpage() {
+    paginate.perPage = $('#perpage').val();
+    Get();
 }
 
 
