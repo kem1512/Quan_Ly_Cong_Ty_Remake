@@ -68,9 +68,13 @@
     </div>
 @endsection
 
-@section('script')
+@push('department_handler')
     <script>
         $(document).ready(function() {
+            var name_error = $(".name-error")
+            var code_error = $(".code_error")
+            var id_department_parent_error = $(".id_department_parent_error")
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -121,28 +125,27 @@
                 var form = $('#form').serialize();
 
                 $.ajax({
-                    url: '{{ route('department.createOrUpdate') }}',
+                    url: '{{ route('department.create_or_update') }}',
                     type: 'POST',
                     data: form,
                     success: function(response) {
                         if (response.status == 0) {
                             if (response.msg.name) {
-                                $(".name-error").html(response.msg.name)
+                                name_error.html(response.msg.name)
                             } else {
-                                $(".name-error").empty();
+                                name_error.empty();
                             }
 
                             if (response.msg.code) {
-                                $(".code-error").html(response.msg.code)
+                                code_error.html(response.msg.code)
                             } else {
-                                $(".code-error").empty();
+                                code_error.empty();
                             }
 
                             if (response.msg.id_department_parent) {
-                                $(".id_department_parent_error").html(response.msg
-                                    .id_department_parent)
+                                id_department_parent_error.html(response.msg.id_department_parent)
                             } else {
-                                $(".id_department_parent_error").empty();
+                                id_department_parent_error.empty();
                             }
                         } else {
                             showAlert('success', response.msg);
@@ -200,6 +203,7 @@
                 })
             })
 
+            // Chỉnh Sửa trên table
             $(document).on('dblclick', '.edit-table', function() {
                 $(this).removeAttr("disabled");
                 $(this).removeClass('no-border')
@@ -212,7 +216,7 @@
                         showAlert('info', 'Bạn có chắc chắn muốn sửa',
                             function() {
                                 $.ajax({
-                                    url: '{{ route('department.createOrUpdate') }}',
+                                    url: '{{ route('department.create_or_update') }}',
                                     type: 'POST',
                                     data: {
                                         'id': id,
@@ -243,12 +247,13 @@
                 })
             })
 
+            // sửa trạng thái
             $(document).on('change', '.edit-checkbox', function() {
                 var id = $(this).attr('data-id');
                 var checked = this.checked;
                 $.get("{{ route('department.display') }}" + '/' + id).done(function(data) {
                     $.ajax({
-                        url: '{{ route('department.createOrUpdate') }}',
+                        url: '{{ route('department.create_or_update') }}',
                         type: 'POST',
                         data: {
                             'id': id,
@@ -266,16 +271,19 @@
                 })
             })
 
+            // đóng tìm kiếm
             $('#search_close').on('click', function() {
                 $('#department_search').val('');
                 $("input[name='id_department_parent']").val('');
                 $('#search_close').hide();
             })
 
+            // lọc
             $('#filter').on('change', function() {
                 filter();
             })
 
+            // phân trang
             $(document).on('click', '.page-link', function(e) {
                 e.preventDefault();
                 if ($(this).attr('href')) {
@@ -285,21 +293,6 @@
                 }
             })
 
-            $('[id=btn_staff]').on('click', function(e) {
-                e.preventDefault();
-                if ($(this).offset().left < 1500) {
-                    $('#staff').offset({
-                        top: $(this).offset().top,
-                        left: $(this).offset().left
-                    });
-                } else {
-                    $('#staff').offset({
-                        top: $(this).offset().top,
-                        left: $(this).offset().left - 260
-                    });
-                }
-                $('#staff').css('z-index', 3000);
-            }) 
             var clicked = false,
                 clickX;
             $('#drag').on({
@@ -318,34 +311,44 @@
                     $(this).css('cursor', 'grab');
                 }
             });
+            
             $('#staff').on('mouseleave',
                 function() {
                     setTimeout(function() {
                         $('#staff').css('z-index', -999)
                     }, 300)
-                }) 
-                var updateScrollPos = function(e) {
+                })
+            var updateScrollPos = function(e) {
                 $('#drag').css('cursor', 'grabbing');
                 $('#drag').scrollLeft($('#drag').scrollLeft() + (clickX - e.pageX) / 9.5);
             }
+
+            $.get("{{ route('department.get_users') }}" + '/' + $("input[name='department_id' ]").val(), function(data) {
+            $('#table_users').empty().html(data);
+        })
         })
 
         function clear() {
-            $.get("{{ URL::to('getDepartment') }}", function(data) {
+            $.get("{{ URL::to('get_departments') }}", function(data) {
                 $('#departments').empty().html(data);
-            }) 
+            })
             $('#not_found').hide();
             $("input[name='code' ]").val('');
             $("input[name='name' ]").val('');
             $("input[name='department_name' ]").val('');
             $("input[name='id_department_parent' ]").val('');
             $("input[name='status' ]").attr("checked", '');
-            $(".clear").hide() 
+            $(".clear").hide()
             $(".code-error").empty();
             $(".name-error").empty();
             $(".id_department_parent_error").empty();
-            $("#search_close").hide() 
-            $("input[name='id']").remove(); } function filter() { var status=$('select#status').val(); var per_page=$('select#per_page').val();
+            $("#search_close").hide()
+            $("input[name='id']").remove();
+        }
+
+        function filter() {
+            var status = $('select#status').val();
+            var per_page = $('select#per_page').val();
             var name = $('#name').val();
             var datetime = $('#datetime').val();
             $.ajax({
@@ -391,4 +394,4 @@
             }
         }
     </script>
-@endsection
+@endpush

@@ -107,9 +107,10 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
-    @yield('script')
+    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
     @yield('javascript')
     @stack('js')
+    @stack('department_handler')
     <script>
         $("#user_search").autocomplete({
             source: function(request, response) {
@@ -127,63 +128,46 @@
                 });
             },
             select: function(event, ui) {
-                // Set selection
-                $('.users_table tr:last').after(`<tr>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" value=""
-                                                                id="fcustomCheck1">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <span
-                                                            class="text-secondary text-xs font-weight-bold">${ui.item.label}</span>
-                                                    </td>
-                                                    <td>
-                                                        <span class="text-secondary text-xs font-weight-bold">
-                                                            <img src="https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg" style="width: 100px; height: 100px;" class="rounded-circle" alt="">
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group m-0">
-                                                            <select
-                                                                class="form-control text-secondary text-xs font-weight-bold w-75 text-center"
-                                                                id="exampleFormControlSelect1">
-                                                                <option>Nhân Viên</option>
-                                                                <option>Trưởng Phòng</option>
-                                                            </select>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <span
-                                                            class="text-secondary text-xs font-weight-bold">${ui.item.phone}</span>
-                                                    </td>
-                                                    <td>
-                                                        <span
-                                                            class="text-secondary text-xs font-weight-bold">${ui.item.gender ? 'Nam' : 'Nữ'}</span>
-                                                    </td>
-                                                    <td>
-                                                        <button class="btn btn-danger staff m-0">Xóa</button>
-                                                    </td>
-                                                </tr>`);
+                Swal.fire({
+                    title: 'Bạn Có Chắc Muốn Thêm',
+                    showDenyButton: true,
+                    icon: 'info',
+                    confirmButtonText: 'Đồng ý',
+                    denyButtonText: "Hủy",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '{{ route('department.addUser') }}',
+                            type: 'POST',
+                            data: {
+                                'id': ui.item.value,
+                                'department_id': $("input[name='department_id' ]").val()
+                            },
+                            success: function(response) {
+                                $('#table_users').html(response);
+                            }
+                        });
+                    }
+                })
                 return false;
             }
         });
 
-        $(document).on('click', '.staff', function(e) {
-            e.preventDefault();
-            $(this).closest('.align-items-center').remove();
+        $.get("{{ route('department.get_users') }}" + '/' + $("input[name='department_id' ]").val(), function(data) {
+            $('#table_users').empty().html(data);
         })
 
-        $(document).on('click', '.add_staff', function(e) {
+        $(document).on('click', '.delete_user', function(e) {
             e.preventDefault();
-            var form = $('#vip').serialize();
             $.ajax({
-                url: '{{ route('department.addUsers') }}',
-                type: 'POST',
-                data: form,
-                success: function(response) {
-                    $('#container_staff').html('');
+                url: "{{ route('department.deleteUser') }}",
+                type: 'post',
+                dataType: "json",
+                data: {
+                    'id': $(this).attr('data-id')
+                },
+                success: function(data) {
+                    $('#table_users').html(data);
                 }
             });
         })
