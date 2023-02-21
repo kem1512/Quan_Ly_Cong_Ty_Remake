@@ -10,10 +10,12 @@
                         <div class="row mx-4">
                             <div class="col-sm d-flex mx-5 justify-content-between">
                                 <div>
-                                    <button id="btnThem" class="btn bg-gradient-primary btn-sm btn-block mx-1"><i
-                                            class="fa-solid fa-plus"></i></button>
-                                    <button id="btnThemExcel" class="btn bg-gradient-primary btn-sm btn-block mx-1"><i
-                                            class="fa-solid fa-table"></i></button>
+                                    <button id="btnBanGiao" class="btn bg-gradient-primary btn-sm btn-block mx-1">Bàn
+                                        giao</button>
+                                    <button id="btnThuHoi" class="btn bg-gradient-primary btn-sm btn-block mx-1">Thu
+                                        hồi</button>
+                                    <button id="btnKiemKe" class="btn bg-gradient-primary btn-sm btn-block mx-1">Kiểm
+                                        kê</button>
                                 </div>
 
                                 <div class="d-flex row">
@@ -22,14 +24,17 @@
                                             style="width: 150px;">
                                             <option value="">Tất cả</option>
                                             <option value="active">Hoạt động</option>
-                                            <option value="inactive">Không hoạt động</option>
                                             <option value="broken">Hỏng</option>
                                         </select>
                                     </div>
 
                                     <div class="me-1 col-sm">
-                                        <select class="form-control form-control-sm" style="width: 150px;">
-                                            <option value="">Phòng</option>
+                                        <select id="selectstatus" class="form-control form-control-sm"
+                                            style="width: 150px;">
+                                            <option value="">Tất cả</option>
+                                            <option value="5">5</option>
+                                            <option value="10">10</option>
+                                            <option value="15">15</option>
                                         </select>
                                     </div>
 
@@ -50,23 +55,23 @@
                                 <tr>
                                     <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Loại thiết bị
+                                        Thiết bị
                                     </th>
                                     <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Ảnh
+                                        Nhân viên
                                     </th>
                                     <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Tên thiết bị
+                                        Phòng
                                     </th>
                                     <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Trạng thái
                                     </th>
-                                    <th colspan="2"
+                                    <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Thao tác
+                                        Số lượng
                                     </th>
                                 </tr>
                             </thead>
@@ -103,7 +108,13 @@
                 @include('layouts.footers.auth.footer')
             </div>
 
-            <!-- Modal Thêm thiết bị -->
+            @include('components.modal_ban_giao')
+
+            @include('components.modal_kiem_ke')
+
+            @include('components.modal_thu_hoi')
+
+            {{-- <!-- Modal Thêm thiết bị -->
             <div class="modal fade" id="modalThem" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -199,7 +210,7 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         @endsection
 
         @section('javascript')

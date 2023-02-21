@@ -49,18 +49,21 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('department', [DepartmentController::class, 'index'])->name('department');
 	Route::get('overview', [DepartmentController::class, 'overview'])->name('overview');
 	Route::get('getEmployeeInDepartment/{id?}', [DepartmentController::class, 'getEmployeeInDepartment']);
-	Route::get('getDepartment', [DepartmentController::class, 'getDepartment']);
+	Route::get('get_departments', [DepartmentController::class, 'get_departments']);
 	Route::post('search', [DepartmentController::class, 'search'])->name('department.search');
 	Route::get('filter', [DepartmentController::class, 'filter'])->name('department.filter');
-	Route::post('department', [DepartmentController::class, 'createOrUpdate'])->name('department.createOrUpdate');
+	Route::post('department', [DepartmentController::class, 'create_or_update'])->name('department.create_or_update');
 	Route::delete('department', [DepartmentController::class, 'delete'])->name('department.delete');
-	Route::get('test', [DepartmentController::class, 'test']);
+	
 	Route::post('searchUser', [DepartmentController::class, 'searchUsers'])->name('department.searchUsers');
 	Route::get('department/{id?}', [DepartmentController::class, 'display'])->name('department.display');
+	Route::get('department/user/{id?}', [DepartmentController::class, 'user'])->name('department.user');
+	Route::get('department/get_users/{id?}', [DepartmentController::class, 'get_users'])->name('department.get_users');
+	Route::post('addUser', [DepartmentController::class, 'addUser'])->name('department.addUser');
+	Route::post('deleteUser', [DepartmentController::class, 'deleteUser'])->name('department.deleteUser');
+	Route::post('updateUser', [DepartmentController::class, 'updateUser'])->name('department.updateUser');
 
-	// user
-	Route::get('user/{id?}', [DepartmentController::class, 'user'])->name('department.user');
-	Route::post('addUsers', [DepartmentController::class, 'addUserToDepartment'])->name('department.addUsers');
+	//personnel
 
 	Route::get('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'index'])->name('personnel.index');
 	Route::get('/personnel/edit', [App\Http\Controllers\Admin\PersonnelController::class, 'edit'])->name('personnel.edit');
@@ -122,7 +125,7 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get('getbyid/{id?}', [WareHousesController::class, 'GetById']);
 					Route::post('post', [WareHousesController::class, 'Create']);
 					Route::post('update/{id?}', [WareHousesController::class, 'Update']);
-					Route::get('addwarehousedetail', [WareHousesController::class, 'AddWarehouseDetail']);
+					Route::get('getequipment/{perpage?}/{currentpage?}/{id?}/{keyword?}', [WareHousesController::class, 'GetEquiments']);
 				}
 			);
 
