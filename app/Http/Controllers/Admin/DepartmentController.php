@@ -83,9 +83,9 @@ class DepartmentController extends Controller
     }
 
     public function user(Request $request){
-        // $this->authorize('create', \Auth::user());
         $department = Department::with('users')->where('id', $request -> id)->limit(1)->get();
         $positions = Position::with('nominees')->get(); 
+        // $this->authorize('update', $department);
         return view('auth.department.user.index', compact('department', 'positions'));
     }
 
@@ -93,6 +93,9 @@ class DepartmentController extends Controller
         if($request -> id){
             $user = User::find($request -> id);
             $user -> department_id = $request -> department_id;
+            $user -> position_id = 10;
+            $user -> nominee_id = 57;
+
             if($user -> save()){
                 return response()->json(['status' => 1, 'msg' => 'Thêm thành công']);
             }else{
@@ -153,7 +156,7 @@ class DepartmentController extends Controller
         $name = $request -> name ?? '';
         $datetime = $request -> datetime ?? date('Y-m-d H:i:s');
 
-        $departments = Department::with('department_childs')->where([
+        $departments = Department::where([
             ['status', 'like', '%' . $status . '%'],
             ['name', 'like', '%' . $name . '%']
         ])->whereDate('created_at', '<=', $datetime)->orderby('id', 'desc')->paginate($per_page);
@@ -170,7 +173,7 @@ class DepartmentController extends Controller
     }
 
     public function overview(){
-        $departments = Department::with('department_childs')->orderby('id', 'asc')->where('id_department_parent', 1)->get();
+        $departments = Department::with("users")->get()->toTree();
         return view('auth.department.overview', compact('departments'));
     }
 

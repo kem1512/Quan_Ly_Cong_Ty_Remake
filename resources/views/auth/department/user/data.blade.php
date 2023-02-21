@@ -16,14 +16,14 @@
                 </span>
             </td>
             <td>
-                <select class="form-control" name="position_id" id="position_id">
+                <select class="form-control text-secondary text-xs font-weight-bold" name="position_id" id="position_id">
                     @foreach ($positions as $position)
                         <option {{ $position -> id == $user -> position_id ? 'selected' : '' }} value="{{ $position -> id }}" >{{ $position -> position }}</option>
                     @endforeach
                 </select>
             </td>
             <td>
-                <select class="form-control" name="nominee_id">
+                <select class="form-control text-secondary text-xs font-weight-bold" name="nominee_id">
                     @foreach ($positions as $position)
                         @foreach ($position -> nominees as $nominee)
                             <option data-id="{{ $nominee -> position_id }}" value="{{ $nominee -> id }}" {{ $nominee -> id == $user -> nominee_id ? 'selected' : '' }} {{ $position -> id == $user -> position_id ? '' : 'hidden' }} >{{ $nominee -> nominees }}</option>
