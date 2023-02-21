@@ -79,10 +79,6 @@
     @endauth
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.16.6/dist/sweetalert2.all.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
-        integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <!--   Core JS Files   -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
         integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
@@ -107,118 +103,9 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{{ asset('assets/js/argon-dashboard.js') }}"></script>
-    <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
     @yield('javascript')
     @stack('js')
     @stack('department_handler')
-    <script>
-        $("#user_search").autocomplete({
-            source: function(request, response) {
-                // Fetch data
-                $.ajax({
-                    url: "{{ route('department.searchUsers') }}",
-                    type: 'post',
-                    dataType: "json",
-                    data: {
-                        search: request.term
-                    },
-                    success: function(data) {
-                        response(data);
-                    }
-                });
-            },
-            select: function(event, ui) {
-                Swal.fire({
-                    title: 'Bạn Có Chắc Muốn Thêm',
-                    showDenyButton: true,
-                    icon: 'info',
-                    confirmButtonText: 'Đồng ý',
-                    denyButtonText: "Hủy",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '{{ route('department.addUser') }}',
-                            type: 'POST',
-                            data: {
-                                'id': ui.item.value,
-                                'department_id': $("input[name='department_id' ]").val()
-                            },
-                            success: function(response) {
-                                $.get("{{ route('department.get_users') }}" + '/' + $(
-                                    "input[name='department_id' ]").val(), function(
-                                    data) {
-                                    $('#table_users').empty().html(data);
-                                })
-                            }
-                        });
-                    }
-                })
-                return false;
-            }
-        });
-
-        $.get("{{ route('department.get_users') }}" + '/' + $("input[name='department_id' ]").val(), function(data) {
-            $('#table_users').empty().html(data);
-        })
-
-        $(document).on('click', '.delete_user', function(e) {
-            e.preventDefault();
-            $.ajax({
-                url: "{{ route('department.deleteUser') }}",
-                type: 'post',
-                dataType: "json",
-                data: {
-                    'id': $(this).attr('data-id')
-                },
-                success: function(data) {
-                    $('#table_users').empty().html(data);
-                    $.get("{{ route('department.get_users') }}" + '/' + $(
-                        "input[name='department_id' ]").val(), function(data) {
-                        $('#table_users').empty().html(data);
-                    })
-                }
-            });
-        })
-
-        $(document).on('change', 'select[name="position_id"]', function(){
-            var options = $(this).closest('tr');
-            var position_id = options.find('select[name="position_id"]').find(":selected").val();
-            var select = options.find('select[name="nominee_id"]');
-            var indexs = 0;
-            $(select.find('option')).each(function(index){
-                var id =  options.find('.update_user').attr('data-id')
-                if($(this).attr('data-id') == position_id){
-                    indexs = index;
-                    $(this).removeAttr('hidden');
-                }else{
-                    $(this).attr('hidden', '')
-                }
-            })
-            select.prop("selectedIndex", indexs)
-        });
-
-        $(document).on('click', '.update_user', function(e) {
-            e.preventDefault();
-            var parent = $(this).closest('tr');
-            $.ajax({
-                url: "{{ route('department.updateUser') }}",
-                type: 'post',
-                dataType: "json",
-                data: {
-                    'id': $(this).attr('data-id'),
-                    'nominee_id': parent.find('select[name="nominee_id"]').find(":selected").val(),
-                    'position_id': parent.find('select[name="position_id"]').find(":selected").val()
-                },
-                success: function(data) {
-                    $('#table_users').empty().html(data);
-                    $.get("{{ route('department.get_users') }}" + '/' + $(
-                        "input[name='department_id' ]").val(), function(data) {
-                        $('#table_users').empty().html(data);
-                    })
-                }
-            });
-        })
-    </script>
 </body>
 
 </html>
