@@ -13,6 +13,7 @@ class CurriculumVitae extends Model
         'name',
         'phone',
         'interview_date',
+        'interview_time',
         'date_of_birth',
         'position_id',
         'nominee',
@@ -69,8 +70,11 @@ class CurriculumVitae extends Model
 
             $html .= '  </td>
                         <td class="text-center">';
-            $html .= ' <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbarevaluatecv" onclick="get_CV_By_ID_eva(' . $cv->id . ')" class="text-sm font-weight-bold mb-0 ps-2">Evaluate</a>
-                       <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbareditcv" onclick="get_CV_By_ID_edit(' . $cv->id . ')" class="text-sm font-weight-bold mb-0 ps-2">Edit</a> 
+            if ($cv->status == 0) {
+                $html .= ' <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbarevaluatecv" onclick="get_CV_By_ID_eva(' . $cv->id .
+                    ')" class="text-sm font-weight-bold mb-0 ps-2">Evaluate</a>';
+            }
+            $html .= '   <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbareditcv" data-pos="' . $cv->position_id . '" onclick="get_CV_By_ID_edit(' . $cv->id . ')" class="text-sm font-weight-bold mb-0 ps-2">Edit</a> 
                        </td>
 
                     </tr>';

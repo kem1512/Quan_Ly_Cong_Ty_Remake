@@ -185,14 +185,24 @@ class User extends Authenticatable
                 $html .= '<a class="text-sm font-weight-bold mb-0 " id="btn-del"
                                     onclick="onDelete(' . $ns->id . ')">
                                     Delete
-                                </a>
-                                <a id="btn-edit" data-bs-toggle="offcanvas"
+                                </a>';
+                if ($ns->position_id == '') {
+                    $html .= '     <a id="btn-edit" data-bs-toggle="offcanvas"
+                                    onclick="getdetail(' . $ns->id . ')"
+                                    data-pos="xxx"
+                                    data-bs-target="#offcanvasNavbarupdate"
+                                    class="text-sm font-weight-bold mb-0 ps-2">
+                                    Edit
+                                </a> ';
+                } else {
+                    $html .= '     <a id="btn-edit" data-bs-toggle="offcanvas"
                                     onclick="getdetail(' . $ns->id . ')"
                                     data-pos="' . $ns->position_id . '"
                                     data-bs-target="#offcanvasNavbarupdate"
                                     class="text-sm font-weight-bold mb-0 ps-2">
                                     Edit
                                 </a> ';
+                }
             } else {
                 $html .= '      <a id="btn-edit" data-bs-toggle="offcanvas"
                                     onclick="getdetailview(' . $ns->id . ')"

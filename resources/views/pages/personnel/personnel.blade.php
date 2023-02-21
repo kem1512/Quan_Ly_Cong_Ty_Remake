@@ -6,6 +6,27 @@
     @yield('personnel')
 
     <style>
+        .setanimationshow {
+            position: relative;
+            animation-name: formsend;
+            animation-duration: 2s;
+        }
+
+        @keyframes formsend {
+            0% {
+                opacity: 0;
+                left: 0px;
+                top: -10px;
+            }
+
+            25% {
+                opacity: 1;
+                left: 0px;
+                top: 0px;
+            }
+
+        }
+
         #adddropdown {
             top: -100%;
         }
@@ -90,6 +111,9 @@
             height: 23rem;
             margin-left: 8%;
         }
+
+
+        /* ====================================== */
     </style>
 
     <div class="container-fluid">
@@ -102,7 +126,7 @@
                         <div class="row">
                             <div class="col">
                                 <h5 class="card-title text-uppercase text-muted mb-0">Nhân Sự</h5>
-                                <span class="h2 font-weight-bold mb-0">{{ $ucount }}</span>
+                                <span id="usercount" class="h2 font-weight-bold mb-0">{{ $ucount }}</span>
                             </div>
                             <div class="col-auto">
                                 <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
@@ -118,7 +142,7 @@
                         <div class="row">
                             <div class="col">
                                 <h5 class="card-title text-uppercase text-muted mb-0">Ứng Viên</h5>
-                                <span class="h2 font-weight-bold mb-0">{{ $cvcount }}</span>
+                                <span id="cvcount" class="h2 font-weight-bold mb-0">{{ $cvcount }}</span>
                             </div>
                             <div class="col-auto">
                                 <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
@@ -166,7 +190,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <select class="form-control" name="status_select" id="status_select">
-                                            <option selected>Trạng Thái</option>
+                                            <option value="9" selected>Trạng Thái</option>
                                             <option value="0">Chưa Kích Hoạt</option>
                                             <option value="1">Đang Hoạt Động</option>
                                             <option value="2">Nghỉ Phép</option>
@@ -176,7 +200,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <select class="form-control" name="status_select" id="department_select">
-                                            <option selected>Phòng ban</option>
+                                            <option value="9" selected>Phòng ban</option>
                                             @foreach ($phongbans as $pb)
                                                 <option value="{{ $pb->id }}">{{ $pb->name }}</option>
                                             @endforeach
@@ -205,14 +229,15 @@
                                     <h6>Hồ Sơ Ứng Tuyển</h6>
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                            <input class="form-control" placeholder="Search..." id="search">
+                                            <input class="form-control" placeholder="Search..." id="search_cv">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <select class="form-control" name="status_select" id="status_select">
-                                            <option selected>Trạng Thái</option>
-                                            <option value="0">Chưa Kích Hoạt</option>
-                                            <option value="1">Đang Hoạt Động</option>
+                                        <select class="form-control" name="status_select_cv" id="status_select_cv">
+                                            <option value="9">Trạng Thái</option>
+                                            <option value="0">Chưa Duyệt</option>
+                                            <option value="1">Từ Chối</option>
+                                            <option value="2">Đã Duyệt</option>
                                         </select>
                                     </div>
                                     <a id="form-add" class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
@@ -433,7 +458,10 @@
                             </div>
                         </div>
                         <div class="btn-group-update mt-5 align-items-center justify-content-center">
-                            <button class="btn btn-primary" id="btn_update_personnel">Cập Nhật</button>
+                            @if (!Auth::user()->level == 0)
+                                <button class="btn btn-primary" id="btn_update_personnel">Cập Nhật</button>
+                            @endif
+
                             <a data-bs-dismiss="offcanvas" aria-label="Close" class="btn btn-danger">Close</a>
                         </div>
                     </form>
@@ -556,41 +584,43 @@
                 </div>
                 <div class="offcanvas-body">
                     <h1 id="add-title" style="text-align: center">Sửa Hồ Sơ</h1>
-                    <form class="mt-5" method="POST" id="form_update_cv">
+                    <form class="mt-5" method="POST" id="form_update_cvut" enctype="multipart/form-data">
+                        <input class="form-control d-none" id="id_ut_update" type="text" style="opacity: 0"
+                            name="id_ut_update">
                         @csrf
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Tên Ứng Viên</label>
-                                    <input class="form-control dbcl_ctl" id="name_ut" type="text" name="name_cvu"
-                                        value="">
+                                    <input class="form-control dbcl_ctl" id="name_ut_update" type="text"
+                                        name="name_ut_update" value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Email</label>
-                                    <input class="form-control" id="email_ut" name="email_cvu" type="text"
-                                        value="">
+                                    <input class="form-control" id="email_ut_update" name="email_ut_update"
+                                        type="text" value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Số Điện Thoại</label>
-                                    <input class="form-control " type="text" id="phone_cvu" name="phone_ut"
-                                        value="">
+                                    <input class="form-control " type="text" id="phone_ut_update"
+                                        name="phone_ut_update" value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Ngày Sinh</label>
-                                    <input class="form-control " type="date" name="date_of_birth_cvu"
-                                        id="date_of_birth_ut" value="">
+                                    <input class="form-control " type="date" name="date_of_birth_ut_update"
+                                        id="date_of_birth_ut_update" value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Giới Tính</label>
-                                    <select class="form-control " name="gender" id="gender_cvu">
+                                    <select class="form-control " name="gender_ut_update" id="gender_ut_update">
                                         <option value="0">Nam</option>
                                         <option value="1">Nữ</option>
                                     </select>
@@ -599,14 +629,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">CV</label>
-                                    <input class="form-control" type="file" name="cv_cvu" id="cv_cvu"
+                                    <input class="form-control" type="file" name="cv_ut_update" id="cv_ut_update"
                                         value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Chức Vụ Ứng Tuyển</label>
-                                    <select class="form-control" name="position_cvu" id="position_">
+                                    <select class="form-control" name="position_ut_update" id="position_ut_update">
                                         @foreach ($postions as $po)
                                             <option value="{{ $po->id }}">{{ $po->position }}</option>
                                         @endforeach
@@ -616,7 +646,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Vị Trí Ứng Truyển</label>
-                                    <select class="form-control" name="nominees_cvu" id="nominees_cv">
+                                    <select class="form-control" name="nominees_ut_update" id="nominees_ut_update">
                                     </select>
                                 </div>
                             </div>
@@ -625,11 +655,13 @@
                             <div class="col-12">
                                 <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
                                     Địa Chỉ :</label>
-                                <textarea class="form-control" name="address_cvu" id="address" rows="3"></textarea>
+                                <textarea class="form-control" name="address_ut_update" id="address_ut_update" rows="3"></textarea>
                             </div>
                         </div>
                         <div id="btn-submit-add">
                             <button type="submit" id="btn_update_cv" class="btn btn-primary mt-7">Cập Nhật</button>
+                            {{-- <button type="submit" id="btn_reset_cv_status" class="btn btn-primary mt-7">Hoàn
+                                Tác</button> --}}
                         </div>
                     </form>
                 </div>
@@ -711,17 +743,29 @@
                                     Địa Chỉ</label>
                                 <textarea class="form-control" name="address" id="address_eva" rows="3" disabled></textarea>
                             </div>
-                            <div id="note_cv" class="col-12 d-none">
+                            <div id="note_cv" class="col-12 d-none setanimationshow">
                                 <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
                                     Lý do </label>
                                 <textarea class="form-control" name="note" id="note" rows="3"></textarea>
                                 <a id="send_cv" class="btn btn-danger mt-3 accept_cv" data=1>Gửi</a>
                             </div>
-                            <div id="form_interview" class="col-6 d-none">
-                                <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
-                                    Ngày Phỏng Vấn :</label>
-                                <input class="form-control " type="date" name="interview_date" id="interview_date">
-                                <a id="accept_cv" class="btn btn-danger mt-3 accept_cv" data=2>Gửi</a>
+                            <div id="form_interview" class="col-12 d-none d-flex setanimationshow">
+                                <div class="col-6" style="margin-right:1% ">
+                                    <label for="exampleFormControlTextarea1" id="about-text"
+                                        class="col-sm-4 col-form-label">
+                                        Ngày PV </label>
+                                    <input class="form-control " type="date" name="interview_date"
+                                        id="interview_date">
+                                    <a id="accept_cv" class="btn btn-danger mt-3 accept_cv" data=2>Gửi</a>
+                                </div>
+                                <div class="col-6">
+                                    <label for="exampleFormControlTextarea1" id="about-text"
+                                        class="col-sm-4 col-form-label">
+                                        Giờ PV </label>
+                                    <input class="form-control " type="time" name="interview_time"
+                                        id="interview_time">
+                                </div>
+
                             </div>
                         </div>
                         <div class="wrapper col-12 mt-5 " style="text-align: center">
