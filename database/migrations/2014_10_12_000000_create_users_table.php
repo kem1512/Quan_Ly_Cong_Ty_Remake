@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('img_url')->nullable();
             $table->string('about')->nullable();
             $table->bigInteger('nominee_id')->unsigned()->nullable();
+            $table->string('nominee')->nullable();
             $table->integer('gender')->default(0);
             $table->integer('level')->default(0);
             $table->rememberToken();

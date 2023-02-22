@@ -16,9 +16,7 @@
                 <span class="text-secondary text-xs font-weight-bold">{{ $department->updated_at }}</span>
             </td>
             <td class="align-middle text-center">
-                <div class="form-check form-switch mt-1">
-                    <input class="form-check-input edit-checkbox" type="checkbox" name="status" data-id="{{ $department->id }}" id="flexSwitchCheckDefault" {{ $department -> status ? 'checked' : '' }}>
-                </div>
+                <span class="badge badge-pill bg-gradient-{{ $department -> status ? 'success' : 'danger' }}">{{ $department -> status ? 'Đang Hoạt Động' : 'Không Hoạt Động' }}</span>
             </td>
             <td class="align-middle text-center">
                 <div class="mt-2">

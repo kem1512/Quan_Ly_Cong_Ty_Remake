@@ -7,11 +7,12 @@ use App\Http\Requests\FormDataRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Department;
 use App\Models\Position;
-use App\Models\Nominee;
+use App\Models\nominee;
 use Illuminate\Support\Collection;
 use App\Models\User;
 use Illuminate\Http\Request;
 use  Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DepartmentController extends Controller
 {
@@ -19,7 +20,7 @@ class DepartmentController extends Controller
         return view('auth.department.form');
     }
 
-    public function create_or_update(FormDataRequest $request){    
+    public function create_or_update(FormDataRequest $request){   
         if(!$request -> validated())
         {
             return response()->json(['status' => 0,'msg' => $request->errors()]);
@@ -37,16 +38,37 @@ class DepartmentController extends Controller
             $department -> status = $request -> status == 'on' ? 1 : 0;
         
             if($request -> id_department_parent){
-                $department->appendToNode($department_parent)->save();
-                return response()->json(['status' => 1,'msg' => 'Cập nhật thành công']);
+                $result2 = Department::withDepth()->findOrFail($request -> id_department_parent);
+                if($result2 -> depth >= 3){
+                    return response()->json(['status' => 0,'msg' => 'Không Hỗ Trợ Từ 3 Cấp Trở Lên']);
+                }else{
+                    $department->appendToNode($department_parent)->save();
+                    return response()->json(['status' => 1,'msg' => 'Cập nhật thành công']);
+                }
             }else{
-                // #1 Implicit save
-                $department->saveAsRoot();
+                $result = Department::where('code', $request -> code)->get();
+                if($result -> count() <= 0){
 
-                // #2 Explicit save
-                $department->makeRoot()->save();
+                    // #1 Implicit save
+                    $department->saveAsRoot();
 
-                return response()->json(['status' => 1,'msg' => 'Thêm mới thành công']);
+                    // #2 Explicit save
+                    $department->makeRoot()->save();
+                    
+                    return response()->json(['status' => 1,'msg' => 'Thêm mới thành công']);
+                }else{
+                    if($result[0] -> parent_id == null){
+                        // #1 Implicit save
+                        $department->saveAsRoot();
+
+                        // #2 Explicit save
+                        $department->makeRoot()->save();
+                        
+                        return response()->json(['status' => 1,'msg' => 'Sửa thành công']);
+                    }else{
+                        return response()->json(['status' => 0,'msg' => 'Mã Phòng Ban Đã Tồn Tại']);
+                    } 
+                }
             }
             return response()->json(['status' => 0,'msg' => 'Thao tác thất bại']);
         }
@@ -95,6 +117,8 @@ class DepartmentController extends Controller
             $user -> department_id = $request -> department_id;
             $user -> position_id = 10;
             $user -> nominee_id = 57;
+            
+            $user -> nominee = nominee::find(57) -> nominees;
 
             if($user -> save()){
                 return response()->json(['status' => 1, 'msg' => 'Thêm thành công']);
@@ -125,6 +149,7 @@ class DepartmentController extends Controller
             $user = User::find($request -> id);
             $user -> position_id = $request -> position_id;
             $user -> nominee_id = $request -> nominee_id;
+            $user -> nominee = nominee::find($request -> nominee_id) -> nominees;
             if($user -> save()){
                 return response()->json(['status' => 1, 'msg' => 'Sửa thành công']);
             }else{

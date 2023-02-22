@@ -37,8 +37,31 @@
         ul.ui-autocomplete {
             z-index: 1100;
         }
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
 
-        /*========================*/
+         /* width */
+         ::-webkit-scrollbar {
+            height: 6px;
+        }
+        /* Track */
+        ::-webkit-scrollbar-track {
+            /* background: #f1f1f1; */
+            background: transparent;
+        }
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+
         .avtice_loading {
             position: absolute;
             top: 50%;
