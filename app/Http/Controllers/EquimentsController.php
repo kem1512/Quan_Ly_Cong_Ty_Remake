@@ -29,21 +29,9 @@ class EquimentsController extends Controller
         if ($keyword == null) {
             foreach ($equiment_types as $value) {
 
-<<<<<<< Updated upstream
                 $result = DB::table('equipments')
                     ->select(['id', 'image', 'name', 'status'])
                     ->where('equipment_type_id', '=', $value->id)
-=======
-        if ($keyword != null || $status != null) {
-            foreach ($equimens as $value) {
-                $result = DB::table('use_details as ud')
-                    ->join('equipments as e', 'e.id', '=', 'ud.equipment_id')
-                    ->leftJoin('users as u', 'u.id', '=', 'ud.user_id')
-                    ->join('departments as de', 'de.id', '=', 'u.department_id')
-                    ->select(['e.image', 'de.name as namedepartment', 'u.fullname as nameusser', 'e.status', 'ud.amount'])
-                    ->where('e.id', $value->id)
-                    ->where('e.status', $status)
->>>>>>> Stashed changes
                     ->get()
                     ->toArray();
 
@@ -55,7 +43,6 @@ class EquimentsController extends Controller
 
             }
         } else {
-<<<<<<< Updated upstream
             foreach ($equiment_types as $value) {
 
                 $result = DB::table('equipments')
@@ -64,15 +51,6 @@ class EquimentsController extends Controller
                         ['equipment_type_id', '=', $value->id],
                         ['status', $keyword],
                     ])
-=======
-            foreach ($equimens as $value) {
-                $result = DB::table('use_details as ud')
-                    ->join('equipments as e', 'e.id', '=', 'ud.equipment_id')
-                    ->leftJoin('users as u', 'u.id', '=', 'ud.user_id')
-                    ->leftJoin('departments as de', 'de.id', '=', 'u.department_id')
-                    ->select(['e.image', 'de.name as namedepartment', 'u.fullname as nameusser', 'e.status', 'ud.amount'])
-                    ->where('e.id', $value->id)
->>>>>>> Stashed changes
                     ->get()
                     ->toArray();
 
@@ -85,12 +63,6 @@ class EquimentsController extends Controller
 
             }
         }
-<<<<<<< Updated upstream
-=======
-
-
-
->>>>>>> Stashed changes
         return $newtable;
     }
 
