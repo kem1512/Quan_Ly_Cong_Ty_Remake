@@ -7,7 +7,7 @@
             <div class="card-header"></div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-sm" id="divchuyen">
+                    <div class="col-sm">
                         <div class="d-flex justify-content-center">
                             <img src="https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg"
                                 class="rounded-circle img-fluid w-25">
@@ -23,17 +23,8 @@
                                     id="button-addon2">Chọn</button>
                             </div>
                         </div>
-                        <div>
-                            <div>
-                                <label>Người thực hiện (<strong class="text-danger">*</strong>)</label>
-                            </div>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" id="txtInfo" name="{{ $user->id }}"
-                                    value="{{ $user->fullname }}" disabled />
-                            </div>
-                        </div>
                     </div>
-                    <div class="col-sm">
+                    <div class="col-sm" id="divchuyen">
                         <div class="d-flex justify-content-center">
                             <img src="https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg"
                                 class="rounded-circle img-fluid w-25">
@@ -49,6 +40,21 @@
                                     id="button-addon2">Chọn</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm">
+                        <div>
+                            <div>
+                                <label>Người thực hiện (<strong class="text-danger">*</strong>)</label>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="txtInfo" name="{{ $user->id }}"
+                                    value="{{ $user->fullname }}" disabled />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm">
                         <div>
                             <div>
                                 <label>Loại chuyển giao</label>
@@ -60,6 +66,32 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="d-flex mb-2">
+                        <select class="form-control" id="storehouse_select">
+                            @foreach ($storehouse as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                        <input type="text" class="form-control" id="txttimkiem">
+                    </div>
+                    <div>
+                        <table class="table text-center">
+                            <thead>
+                                <tr>
+                                    <td>#</td>
+                                    <td>Ảnh thiết bị</td>
+                                    <td>Tên thiết bị</td>
+                                    <td>Số lượng</td>
+                                    <td>Thao tác</td>
+                                </tr>
+                            </thead>
+                            <tbody id="list_storehouse">
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
