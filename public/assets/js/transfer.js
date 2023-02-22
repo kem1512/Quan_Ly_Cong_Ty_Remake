@@ -72,10 +72,3 @@ function ChonBenNhan() {
         })
     })
 }
-
-function Chon() {
-    $(document).on('click', '#btnChon', function () {
-        let id = $(this).attr('name');
-        console.log(id);
-    });
-}
