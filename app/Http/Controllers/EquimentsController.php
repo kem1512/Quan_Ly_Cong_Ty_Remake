@@ -17,7 +17,7 @@ class EquimentsController extends Controller
         return view('pages.Equiments.Equiment.equiment');
     }
 
-    public function Get($perpage, $curentpage, $keyword = null)
+    public function Get($perpage, $curentpage, $status = null, $keyword = null)
     {
         $equimens = DB::table('equipments')->select(['id', 'name'])->get()->toArray();
 
@@ -37,7 +37,6 @@ class EquimentsController extends Controller
                     // ->where('u.fullname', 'like', '%' . $keyword . '%')
                     ->get()
                     ->toArray();
-
 
                 $list_equiment = $this->paginate($result, $perpage, $curentpage);
 

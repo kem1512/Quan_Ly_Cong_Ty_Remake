@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\TransferController;
 use App\Http\Controllers\WareHousesController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -90,7 +91,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::group(
 		['middleware' => 'auth'],
 		function () {
-			// Route::get('department', 'DepartmentController@Index');
+			//Route::get('department', 'DepartmentController@Index');
 			//Route thiết bị
 			//Loại thiết bị
 			Route::group(
@@ -134,11 +135,26 @@ Route::group(['middleware' => 'auth'], function () {
 				['prefix' => 'equiment'],
 				function () {
 					Route::get('/', [EquimentsController::class, 'Index'])->name('equiment');
-					Route::get('get/{perpage?}/{currentpage?}/{keyword?}', [EquimentsController::class, 'Get']);
+					Route::get('get/{perpage?}/{currentpage?}/{status?}/{keyword?}', [EquimentsController::class, 'Get']);
 					Route::post('post', [EquimentsController::class, 'Create']);
 					Route::get('delete/{id?}', [EquimentsController::class, 'Delete']);
 					Route::get('getbyid/{id?}', [EquimentsController::class, 'GetById']);
 					Route::post('update/{id?}', [EquimentsController::class, 'Update']);
+				}
+			);
+
+			//Chuyển giao
+			Route::group(
+				['prefix' => 'transfer'],
+				function () {
+					Route::get(
+						'/',
+						function () {
+									$user = Auth::user();
+									return view('pages.Equiments.Transfer.transfer', compact('user'));
+								}
+					)->name('transfer');
+					Route::get('/getnhansu/{id?}', [TransferController::class, 'GetNhanSu']);
 				}
 			);
 			//End route thiết bị

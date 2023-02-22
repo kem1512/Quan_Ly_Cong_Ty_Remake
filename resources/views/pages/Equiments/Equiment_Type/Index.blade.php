@@ -22,7 +22,8 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <div class="d-flex justify-content-between">
-                                            <label for="example-text-input" class="form-control-label">Tên loại</label>
+                                            <label for="example-text-input" class="form-control-label">Tên loại (<strong
+                                                    class="text-danger">*</strong>)</label>
                                             <label id="error-name" class="form-control-label text-danger"></label>
                                         </div>
                                         <input class="form-control" type="text" name="name">
@@ -31,7 +32,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Trạng thái</label>
+                                        <label for="example-text-input" class="form-control-label">Trạng thái (<strong
+                                                class="text-danger">*</strong>)</label>
                                         <div class="form-check form-switch mt-1">
                                             <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
                                                 checked name="status">

@@ -11,7 +11,7 @@ class TransferController extends Controller
     public function GetNhanSu($id = null)
     {
         $user = Auth::user();
-        $users = DB::table('users')->select(['img_url', 'id', 'fullname'])->where([['id', '<>', $id], ['id', '<>', $user]])->get();
+        $users = DB::table('users')->select(['img_url', 'id', 'fullname'])->where([['id', '<>', $id], ['id', '<>', $user->id]])->get();
 
         return response()->json([
             'users' => $users,

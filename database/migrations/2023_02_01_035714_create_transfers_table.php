@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->foreign('user_transfer_id')->references('id')->on('users');
             $table->bigInteger('user_receive_id')->unsigned()->nullable();
             $table->foreign('user_receive_id')->references('id')->on('users');
+            $table->bigInteger('performer_id')->unsigned()->nullable();
+            $table->foreign('performer_id')->references('id')->on('users');
             $table->enum('transfer_type', ['hand_over', 'recall']);
             $table->string('transfer_detail', 500);
             $table->timestamps();
