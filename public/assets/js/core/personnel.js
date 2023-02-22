@@ -445,7 +445,100 @@ $(document).ready(function () {
 });
 
 //==========================CV===================================
-
+function setnull_insert_PV() {
+    $("#interview_date").val("");
+    $("interviewer1").val("");
+    $("interviewer2").val("");
+    $("interviewer_date").val("");
+    $("interviewer_time").val("");
+}
+//INSERT PV
+$(document).ready(function () {
+    $("#submit_insert_interview").on("submit", function (e) {
+        e.preventDefault();
+        var interviewer1 = $("#interviewer1").attr("code");
+        var interviewer2 = $("#interviewer2").attr("code");
+        var interview_date = $("#interview_date").val();
+        var interview_time = $("#interview_time").val();
+        var cate_inter = $("#cate_inter").val();
+        var id_cv = $("#btn-interview-in-table").attr("code");
+        var location = $("#interview_location").val();
+        $.ajax({
+            type: "POST",
+            url: "/personnel/interview",
+            data: {
+                id_cv: id_cv,
+                interviewer1: interviewer1,
+                interviewer2: interviewer2,
+                interview_date: interview_date,
+                interview_time: interview_time,
+                cate_inter: cate_inter,
+                location: location,
+            },
+            success: (response) => {
+                if (response.status == "error") {
+                    onAlertError(response.message);
+                } else {
+                    onAlertSuccess(response.message);
+                    setnull_insert_PV();
+                    getallCV();
+                    $("#body_query").html(response.body);
+                }
+            },
+            error: function (error) {
+                onAlertError(error.responseJSON.message);
+            },
+        });
+    });
+});
+// auto find interviewer1
+$("#interviewer1").autocomplete({
+    source: function (request, response) {
+        // Fetch data
+        $.ajax({
+            url: "/personnel/search-interviewer",
+            type: "post",
+            dataType: "json",
+            data: {
+                search: request.term,
+            },
+            success: function (data) {
+                response(data);
+            },
+        });
+    },
+    select: function (event, ui) {
+        // Set selection
+        $("#interviewer1").attr("code", ui.item.value); // display the selected text
+        $("#interviewer1").val(ui.item.label);
+        console.log(ui);
+        return false;
+    },
+});
+// auto find interviewer2
+$("#interviewer2").autocomplete({
+    source: function (request, response) {
+        // Fetch data
+        $.ajax({
+            url: "/personnel/search-interviewer",
+            type: "post",
+            dataType: "json",
+            data: {
+                search: request.term,
+            },
+            success: function (data) {
+                response(data);
+            },
+        });
+    },
+    select: function (event, ui) {
+        // Set selection
+        $("#interviewer2").attr("code", ui.item.value); // display the selected text
+        $("#interviewer2").val(ui.item.label);
+        // console.log(ui);
+        return false;
+    },
+});
 //Search CV
 $(document).ready(function () {
     $("#search_cv").keyup(function () {
@@ -488,12 +581,25 @@ function getallCV() {
         },
     });
 }
+
 // getAllCV
 $(document).ready(function () {
     $("#profile-tab").on("click", function () {
         getallCV();
     });
 });
+// getAllCV
+$(document).ready(function () {
+    $("#cate_inter").on("change", function () {
+        var value = $(this).val();
+        if (value == 1) {
+            $("#location-text").html("Địa Chỉ :");
+        } else {
+            $("#location-text").html("Đường Dẫn :");
+        }
+    });
+});
+
 //UPDATE
 $(document).ready(function () {
     $("#form_update_cv").on("submit", function (e) {
@@ -521,16 +627,12 @@ $(document).ready(function () {
     });
 });
 //duyệt hồ sơ
-$(document).ready(function (e) {
+$(document).ready(function () {
     // openLoading();
-    e.preventDefault();
     $(".accept_cv").on("click", function () {
         var status = $(this).attr("data");
         var id = $(this).attr("code");
         var note = $("#note").val();
-        var interview_date = $("#interview_date").val();
-        var interview_time = $("#interview_time").val();
-
         $.ajax({
             url: "/personnel/cv-id",
             method: "POST",
@@ -538,8 +640,6 @@ $(document).ready(function (e) {
                 id: id,
                 status: status,
                 note: note,
-                interview_date: interview_date,
-                interview_time: interview_time,
             },
             success: function (result) {
                 if (result.status == "succes") {
@@ -564,17 +664,10 @@ function closeNote() {
     $("#note_cv").removeClass("d-block");
     $("#note_cv").addClass("d-none");
 }
-function closeInterview() {
-    $("#form_interview").removeClass("d-block");
-    $("#form_interview").addClass("d-none");
-}
+
 function openNote() {
     $("#note_cv").removeClass("d-none");
     $("#note_cv").addClass("d-block");
-}
-function openInterview() {
-    $("#form_interview").removeClass("d-none");
-    $("#form_interview").addClass("d-block");
 }
 // $(document).ready(function () {
 //     $("#note").focusout(function () {
@@ -584,21 +677,7 @@ function openInterview() {
 //     });
 // });
 function close2form() {
-    closeInterview();
     closeNote();
-}
-function openFrom(accept) {
-    if (accept == true) {
-        openNote();
-        closeInterview();
-        $("#interview_date").val(null);
-        accept = false;
-    } else if (accept == false) {
-        closeNote();
-        openInterview();
-        $("#note").val("");
-        accept = true;
-    }
 }
 function loadchucdanhUV(id) {
     $.ajax({
@@ -675,9 +754,44 @@ function get_CV_By_ID_eva(id) {
         },
     });
 }
+function setnull_insert_CV() {
+    $("#name_ut").val("");
+    $("#email_ut").val("");
+    $("#phone_ut").val("");
+    $("#date_of_birth_ut").val("");
+    $("#cv_ut").val("");
+    $("#position_cv").val("");
+    $("#nominees_cv").val("");
+    $("#about_cv").val("");
+}
+function load() {
+    let timerInterval;
+    Swal.fire({
+        title: "Auto close alert!",
+        html: "I will close in <b></b> milliseconds.",
+        timer: 5000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector("b");
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft();
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        },
+    }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+            console.log("I was closed by the timer");
+        }
+    });
+}
 // INSERT CV
 $(document).ready(function () {
     $("#form_insert_cv").on("submit", function (e) {
+        // openLoading();
         e.preventDefault();
         let formData = new FormData(this);
         $.ajax({
@@ -688,9 +802,13 @@ $(document).ready(function () {
             processData: false,
             success: (response) => {
                 if (response.status == "error") {
+                    console.log(response);
                     onAlertError(response.message);
                 } else {
+                    // closeLoading();
                     onAlertSuccess("Hồ sơ đã được thêm mới !");
+                    setnull_insert_CV();
+                    console.log(response.cvbody);
                     $("#cvut_query").html(response.cvbody);
                 }
             },
@@ -817,6 +935,24 @@ $(document).ready(function () {
             success: function (result) {
                 // console.log(result);
                 $("#nominee_bild").html(result.body);
+            },
+        });
+    });
+});
+//get nominees cv
+$(document).ready(function () {
+    $("#position_ut_update").on("change", function () {
+        var stt = $("#position_ut_update").val();
+        // alert(stt);
+        $.ajax({
+            type: "GET",
+            url: "/personnel/nominees",
+            data: {
+                id: stt,
+            },
+            success: function (result) {
+                // console.log(result);
+                $("#nominees_ut_update").html(result.body);
             },
         });
     });
