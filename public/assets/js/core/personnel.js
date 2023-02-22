@@ -23,6 +23,7 @@ $.ajaxSetup({
         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
     },
 });
+
 //==========================Personnel===================================
 // DELETE Personnel
 function onDelete(id) {
@@ -115,9 +116,11 @@ $("#btn_insert_personnel").on("click", function (e) {
                 password: password,
             },
             success: function (result) {
-                if (result.message == "success") {
+                if (result.message == "succes") {
                     onAlertSuccess("Nhân sự mới của bạn đã thêm thành công !");
                     $("#body_query").html(result.body);
+                    $("#usercount").html(result.usercount);
+                    $("#cvcount").html(result.cvcount);
                     ClearFromA();
                 } else {
                     console.log([result.message][0]);
@@ -130,14 +133,12 @@ $("#btn_insert_personnel").on("click", function (e) {
         });
     }
 });
-function loadchucdanh() {
-    var stt = $(this).attr("data-pos");
-    alert(stt);
+function loadchucdanh(id) {
     $.ajax({
         type: "GET",
-        url: "/personnel/nominees",
+        url: "/personnel/nominees-first",
         data: {
-            id: stt,
+            id: id, //id của nhân sự
         },
         success: function (result) {
             // console.log(result);
@@ -146,8 +147,9 @@ function loadchucdanh() {
     });
 }
 //GET Personnel where id
-function getdetail(id) {
-    loadchucdanh();
+function getdetail({ e, id }) {
+    e.preventDefault();
+    loadchucdanh(id);
     $.ajax({
         url: "/personnel/edit",
         method: "GET",
@@ -155,7 +157,7 @@ function getdetail(id) {
             id: id,
         },
         success: function (result) {
-            var nhansu = result.data[0];
+            var nhansu = result.data;
             console.log(nhansu);
             if (nhansu.img_url == null) {
                 nhansu.img_url = "avatar2.png";
@@ -170,8 +172,18 @@ function getdetail(id) {
             $("#phoneu").val(nhansu.phone);
             $("#emailu").val(nhansu.email);
             $("#passwordu").val(nhansu.password);
-            $("#nominee_bild").val(nhansu.nominees_id);
+
+            $("#nominee_bild")
+                .find("option")
+                .each(function () {
+                    if ($(this).val() == nhansu.nominee_id) {
+                        $(this).attr("selected", "");
+                    } else {
+                        $(this).removeAttr("selected");
+                    }
+                });
             $("#department_idu").val(nhansu.department_id);
+            $("#personnel_codeu").val(nhansu.personnel_code);
             $("#date_of_birthu").val(nhansu.date_of_birth);
             $("#position_idu").val(nhansu.position_id);
             $("#recruitment_dateu").val(nhansu.recruitment_date);
@@ -189,7 +201,9 @@ function getdetail(id) {
     });
 }
 //GET Personnel View
-function getdetailview(id) {
+function getdetailview({ e, id }) {
+    loadchucdanh(id);
+    e.preventDefault();
     $.ajax({
         url: "/personnel/edit",
         method: "GET",
@@ -198,39 +212,54 @@ function getdetailview(id) {
         },
         success: function (result) {
             var nhansu = result.data;
+            console.log(nhansu);
             if (nhansu.img_url == null) {
                 nhansu.img_url = "avatar2.png";
             }
-            $("#img_url")
-                .attr("src", "./img/" + nhansu.img_url)
-                .prop("disabled", true);
+            $("#img_url").attr("src", "./img/" + nhansu.img_url);
             $("#id_user").val(nhansu.id).attr("disabled", true);
             $("#about").val(nhansu.about).attr("disabled", true);
             $("#gender").val(nhansu.gender).attr("disabled", true);
             $("#title").val(nhansu.title).attr("disabled", true);
-            $("#personnel_codeu").val(nhansu.personnel_code);
+            $("#personnel_codeu")
+                .val(nhansu.personnel_code)
+                .attr("disabled", true);
             $("#fullnameu").val(nhansu.fullname).attr("disabled", true);
             $("#phoneu").val(nhansu.phone).attr("disabled", true);
             $("#emailu").val(nhansu.email).attr("disabled", true);
             $("#passwordu").val(nhansu.password).attr("disabled", true);
+
+            $("#nominee_bild")
+                .find("option")
+                .each(function () {
+                    if ($(this).val() == nhansu.nominee_id) {
+                        $(this).attr("selected", "");
+                    } else {
+                        $(this).removeAttr("selected");
+                    }
+                });
+            $("#nominee_bild").attr("disabled", true);
             $("#department_idu")
                 .val(nhansu.department_id)
+                .attr("disabled", true);
+            $("#personnel_codeu")
+                .val(nhansu.personnel_code)
                 .attr("disabled", true);
             $("#date_of_birthu")
                 .val(nhansu.date_of_birth)
                 .attr("disabled", true);
-
             $("#position_idu").val(nhansu.position_id).attr("disabled", true);
             $("#recruitment_dateu")
                 .val(nhansu.recruitment_date)
-                .prop("disabled", true);
+                .attr("disabled", true);
             if ((nhansu.status == 3) | (nhansu.status == 4)) {
                 $("#about-text").html("Lý Do:");
             } else {
                 $("#about-text").html("Giới thiệu về bản thân :");
             }
-            $("#statusu").val(nhansu.status).prop("disabled", true);
-            $("#addressup").val(nhansu.address).prop("disabled", true);
+            $("#statusu").val(nhansu.status).attr("disabled", true);
+            $("#addressup").val(nhansu.address).attr("disabled", true);
+            $("#img_url_update").attr("disabled", true);
         },
         error: function (error) {
             onAlertError("Vui lòng kiểm tra và thử lại !");
@@ -416,7 +445,133 @@ $(document).ready(function () {
 });
 
 //==========================CV===================================
-
+function setnull_insert_PV() {
+    $("#interview_date").val("");
+    $("interviewer1").val("");
+    $("interviewer2").val("");
+    $("interviewer_date").val("");
+    $("interviewer_time").val("");
+}
+//INSERT PV
+$(document).ready(function () {
+    $("#submit_insert_interview").on("submit", function (e) {
+        e.preventDefault();
+        var interviewer1 = $("#interviewer1").attr("code");
+        var interviewer2 = $("#interviewer2").attr("code");
+        var interview_date = $("#interview_date").val();
+        var interview_time = $("#interview_time").val();
+        var cate_inter = $("#cate_inter").val();
+        var id_cv = $("#btn-interview-in-table").attr("code");
+        var location = $("#interview_location").val();
+        $.ajax({
+            type: "POST",
+            url: "/personnel/interview",
+            data: {
+                id_cv: id_cv,
+                interviewer1: interviewer1,
+                interviewer2: interviewer2,
+                interview_date: interview_date,
+                interview_time: interview_time,
+                cate_inter: cate_inter,
+                location: location,
+            },
+            success: (response) => {
+                if (response.status == "error") {
+                    onAlertError(response.message);
+                } else {
+                    onAlertSuccess(response.message);
+                    setnull_insert_PV();
+                    getallCV();
+                    $("#body_query").html(response.body);
+                }
+            },
+            error: function (error) {
+                onAlertError(error.responseJSON.message);
+            },
+        });
+    });
+});
+// auto find interviewer1
+$("#interviewer1").autocomplete({
+    source: function (request, response) {
+        // Fetch data
+        $.ajax({
+            url: "/personnel/search-interviewer",
+            type: "post",
+            dataType: "json",
+            data: {
+                search: request.term,
+            },
+            success: function (data) {
+                response(data);
+            },
+        });
+    },
+    select: function (event, ui) {
+        // Set selection
+        $("#interviewer1").attr("code", ui.item.value); // display the selected text
+        $("#interviewer1").val(ui.item.label);
+        console.log(ui);
+        return false;
+    },
+});
+// auto find interviewer2
+$("#interviewer2").autocomplete({
+    source: function (request, response) {
+        // Fetch data
+        $.ajax({
+            url: "/personnel/search-interviewer",
+            type: "post",
+            dataType: "json",
+            data: {
+                search: request.term,
+            },
+            success: function (data) {
+                response(data);
+            },
+        });
+    },
+    select: function (event, ui) {
+        // Set selection
+        $("#interviewer2").attr("code", ui.item.value); // display the selected text
+        $("#interviewer2").val(ui.item.label);
+        // console.log(ui);
+        return false;
+    },
+});
+//Search CV
+$(document).ready(function () {
+    $("#search_cv").keyup(function () {
+        var search = $("#search_cv").val();
+        $.ajax({
+            url: "/personnel/search-cv",
+            method: "GET",
+            data: {
+                search: search,
+            },
+            success: function (result) {
+                $("#cvut_query").html(result.cvbody);
+            },
+        });
+    });
+});
+//Fillter CV
+$(document).ready(function () {
+    $("#status_select_cv").on("change", function () {
+        var status = $(this).val();
+        $.ajax({
+            url: "/personnel/fillter-cv",
+            method: "GET",
+            data: {
+                status: status,
+            },
+            success: function (result) {
+                $("#cvut_query").html(result.cvbody);
+            },
+        });
+    });
+});
+//get all cv
 function getallCV() {
     $.ajax({
         url: "/personnel/cv",
@@ -426,12 +581,25 @@ function getallCV() {
         },
     });
 }
+
 // getAllCV
 $(document).ready(function () {
     $("#profile-tab").on("click", function () {
         getallCV();
     });
 });
+// getAllCV
+$(document).ready(function () {
+    $("#cate_inter").on("change", function () {
+        var value = $(this).val();
+        if (value == 1) {
+            $("#location-text").html("Địa Chỉ :");
+        } else {
+            $("#location-text").html("Đường Dẫn :");
+        }
+    });
+});
+
 //UPDATE
 $(document).ready(function () {
     $("#form_update_cv").on("submit", function (e) {
@@ -460,11 +628,11 @@ $(document).ready(function () {
 });
 //duyệt hồ sơ
 $(document).ready(function () {
+    // openLoading();
     $(".accept_cv").on("click", function () {
         var status = $(this).attr("data");
         var id = $(this).attr("code");
         var note = $("#note").val();
-        var interview_date = $("#interview_date").val();
         $.ajax({
             url: "/personnel/cv-id",
             method: "POST",
@@ -472,14 +640,20 @@ $(document).ready(function () {
                 id: id,
                 status: status,
                 note: note,
-                interview_date: interview_date,
             },
             success: function (result) {
-                onAlertSuccess(result.message);
-                getallCV();
+                if (result.status == "succes") {
+                    // closeLoading();
+                    onAlertSuccess(result.message);
+                    getallCV();
+                } else {
+                    // closeLoading();
+                    onAlertError(result.message);
+                }
             },
             error: function (result) {
                 console.log(result);
+                // closeLoading();
                 onAlertError(result.responseJSON.message);
             },
         });
@@ -490,17 +664,10 @@ function closeNote() {
     $("#note_cv").removeClass("d-block");
     $("#note_cv").addClass("d-none");
 }
-function closeInterview() {
-    $("#form_interview").removeClass("d-block");
-    $("#form_interview").addClass("d-none");
-}
+
 function openNote() {
     $("#note_cv").removeClass("d-none");
     $("#note_cv").addClass("d-block");
-}
-function openInterview() {
-    $("#form_interview").removeClass("d-none");
-    $("#form_interview").addClass("d-block");
 }
 // $(document).ready(function () {
 //     $("#note").focusout(function () {
@@ -510,25 +677,25 @@ function openInterview() {
 //     });
 // });
 function close2form() {
-    closeInterview();
     closeNote();
 }
-function openFrom(accept) {
-    if (accept == true) {
-        openNote();
-        closeInterview();
-        $("#interview_date").val(null);
-        accept = false;
-    } else if (accept == false) {
-        closeNote();
-        openInterview();
-        $("#note").val("");
-        accept = true;
-    }
+function loadchucdanhUV(id) {
+    $.ajax({
+        type: "GET",
+        url: "/personnel/nominees-cv",
+        data: {
+            id: id, //id của CV
+        },
+        success: function (result) {
+            // console.log(result);
+            $("#nominees_ut_update").html(result.body);
+        },
+    });
 }
 
 // get cv bi id edit
 function get_CV_By_ID_edit(id) {
+    loadchucdanhUV(id);
     $.ajax({
         url: "/personnel/cv-u",
         method: "GET",
@@ -536,21 +703,26 @@ function get_CV_By_ID_edit(id) {
             id: id,
         },
         success: function (response) {
-            var cv = response.body[0];
-            $("#name_eva").val(cv.name);
-            $("#email_eva").val(cv.email);
-            $("#phone_eva").val(cv.phone);
-            $("#date_of_birth_eva").val(cv.date_of_birth);
-            $("#gender_eva").val(cv.gender);
-            $("#position_eva").val(cv.position);
-            $("#nominees_eva").val(cv.nominees);
-            $("#address_eva").val(cv.address);
-            $("#accept_cv").attr("code", cv.id);
-            $("#send_cv").attr("code", cv.id);
-            $("#cv_url").attr(
-                "src",
-                "cv/" + cv.url_cv + "#toolbar=0&navpanes=0&scrollbar=0"
-            );
+            var cv = response.body;
+            $("#name_ut_update").val(cv.name);
+            $("#email_ut_update").val(cv.email);
+            $("#phone_ut_update").val(cv.phone);
+            $("#date_of_birth_ut_update").val(cv.date_of_birth);
+            $("#gender_ut_update").val(cv.gender);
+            $("#position_ut_update").val(cv.position_id);
+            $("#cv_ut_update").val(cv.position);
+            $("#nominees_ut_update")
+                .find("option")
+                .each(function () {
+                    if ($(this).val() == cv.nominee) {
+                        $(this).attr("selected", "");
+                    } else {
+                        $(this).removeAttr("selected");
+                    }
+                });
+
+            $("#address_ut_update").val(cv.address);
+            $("#id_ut_update").val(cv.id);
         },
     });
 }
@@ -582,15 +754,78 @@ function get_CV_By_ID_eva(id) {
         },
     });
 }
+function setnull_insert_CV() {
+    $("#name_ut").val("");
+    $("#email_ut").val("");
+    $("#phone_ut").val("");
+    $("#date_of_birth_ut").val("");
+    $("#cv_ut").val("");
+    $("#position_cv").val("");
+    $("#nominees_cv").val("");
+    $("#about_cv").val("");
+}
+function load() {
+    let timerInterval;
+    Swal.fire({
+        title: "Auto close alert!",
+        html: "I will close in <b></b> milliseconds.",
+        timer: 5000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector("b");
+            timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft();
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        },
+    }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+            console.log("I was closed by the timer");
+        }
+    });
+}
 // INSERT CV
 $(document).ready(function () {
     $("#form_insert_cv").on("submit", function (e) {
+        // openLoading();
         e.preventDefault();
         let formData = new FormData(this);
-        console.log(formData);
         $.ajax({
             type: "POST",
             url: "/personnel/cv",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: (response) => {
+                if (response.status == "error") {
+                    console.log(response);
+                    onAlertError(response.message);
+                } else {
+                    // closeLoading();
+                    onAlertSuccess("Hồ sơ đã được thêm mới !");
+                    setnull_insert_CV();
+                    console.log(response.cvbody);
+                    $("#cvut_query").html(response.cvbody);
+                }
+            },
+            error: function (error) {
+                onAlertError(error.responseJSON.message);
+            },
+        });
+    });
+});
+// update CV
+$(document).ready(function () {
+    $("#form_update_cvut").on("submit", function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        $.ajax({
+            type: "POST",
+            url: "/personnel/cv-update",
             data: formData,
             contentType: false,
             processData: false,
@@ -608,7 +843,6 @@ $(document).ready(function () {
         });
     });
 });
-
 //==========================module===================================
 function readURL(input) {
     if (input.files && input.files[0]) {
@@ -707,6 +941,24 @@ $(document).ready(function () {
 });
 //get nominees cv
 $(document).ready(function () {
+    $("#position_ut_update").on("change", function () {
+        var stt = $("#position_ut_update").val();
+        // alert(stt);
+        $.ajax({
+            type: "GET",
+            url: "/personnel/nominees",
+            data: {
+                id: stt,
+            },
+            success: function (result) {
+                // console.log(result);
+                $("#nominees_ut_update").html(result.body);
+            },
+        });
+    });
+});
+//get nominees cv
+$(document).ready(function () {
     $("#position_cv").on("change", function () {
         var stt = $("#position_cv").val();
         // alert(stt);
@@ -723,3 +975,15 @@ $(document).ready(function () {
         });
     });
 });
+
+function openLoading() {
+    console.log("run");
+    $("#loading").removeClass("hide_loading");
+    $("#loading").addClass("avtice_loading");
+    $("#id_body").addClass("active_body");
+}
+function closeLoading() {
+    $("#loading").removeClass("avtice_loading");
+    $("#id_body").removeClass("active_body");
+    $("#loading").addClass("hide_loading");
+}

@@ -31,7 +31,7 @@ class User extends Authenticatable
         'fullname',
         'phone',
         'date_of_birth',
-        'address',
+        'about',
         'gender',
         'about',
         'status',
@@ -40,8 +40,9 @@ class User extends Authenticatable
         'level',
     ];
 
-    public function position(){
-        $test = $this -> belongsTo(Position::class);
+    public function position()
+    {
+        $test = $this->belongsTo(Position::class);
         return $test;
     }
 
@@ -195,21 +196,31 @@ class User extends Authenticatable
             if (!Auth::user()->level == 0) {
                 $html .= '<a class="text-sm font-weight-bold mb-0 " id="btn-del"
                                     onclick="onDelete(' . $ns->id . ')">
-                                    Delete
-                                </a>
-                                <a id="btn-edit" data-bs-toggle="offcanvas"
+                                    Xóa
+                                </a> |';
+                if ($ns->position_id == '') {
+                    $html .= '     <a id="btn-edit" data-bs-toggle="offcanvas"
+                                    onclick="getdetail(' . $ns->id . ')"
+                                    data-pos="xxx"
+                                    data-bs-target="#offcanvasNavbarupdate"
+                                    class="text-sm font-weight-bold mb-0 ps-2">
+                                    Sửa
+                                </a> ';
+                } else {
+                    $html .= '     <a id="btn-edit" data-bs-toggle="offcanvas"
                                     onclick="getdetail(' . $ns->id . ')"
                                     data-pos="' . $ns->position_id . '"
                                     data-bs-target="#offcanvasNavbarupdate"
                                     class="text-sm font-weight-bold mb-0 ps-2">
-                                    Edit
+                                    Sửa
                                 </a> ';
+                }
             } else {
                 $html .= '      <a id="btn-edit" data-bs-toggle="offcanvas"
                                     onclick="getdetailview(' . $ns->id . ')"
                                     data-bs-target="#offcanvasNavbarupdate"
                                     class="text-sm font-weight-bold mb-0 ps-2">
-                                    view
+                                    Xem
                                 </a> ';
             }
 

@@ -19,15 +19,16 @@ return new class extends Migration
             $table->string('name');
             $table->string('phone');
             $table->date('date_of_birth');
-            $table->date('interview_date')->nullable();
             $table->bigInteger('position_id')->unsigned()->nullable();
             $table->foreign('position_id')->references('id')->on('positions')->onDelete('set null');
             $table->bigInteger('nominee')->unsigned()->nullable();
             $table->integer('gender')->default(0);
-            $table->string('address')->nullable();
+            $table->string('point')->nullable();
+            $table->string('about')->nullable();
             $table->integer('status')->default(0);
             $table->string('note')->nullable();
             $table->string('url_cv');
+            $table->bigInteger('interview_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

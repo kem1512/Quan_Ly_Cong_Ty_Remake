@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\TransferController;
 use App\Http\Controllers\WareHousesController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -55,7 +56,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('filter', [DepartmentController::class, 'filter'])->name('department.filter');
 	Route::post('department', [DepartmentController::class, 'create_or_update'])->name('department.create_or_update');
 	Route::delete('department', [DepartmentController::class, 'delete'])->name('department.delete');
-	
+
 	Route::post('searchUser', [DepartmentController::class, 'searchUsers'])->name('department.searchUsers');
 	Route::get('department/{id?}', [DepartmentController::class, 'display'])->name('department.display');
 	Route::get('department/user/{id?}', [DepartmentController::class, 'user'])->name('department.user');
@@ -67,27 +68,35 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('position', [PositionController::class, 'index'])->name("position");
 
 	//personnel
+
 	Route::get('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'index'])->name('personnel.index');
 	Route::get('/personnel/edit', [App\Http\Controllers\Admin\PersonnelController::class, 'edit'])->name('personnel.edit');
 	Route::delete('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'destroy'])->name('delete');
 	Route::post('/personnel/add', [App\Http\Controllers\Admin\PersonnelController::class, 'store'])->name('create.user');
 	Route::post('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'update'])->name('update.user');
 	Route::get('/personnel/search', [App\Http\Controllers\Admin\PersonnelController::class, 'search'])->name('Search');
+	Route::post('/personnel/search-interviewer', [App\Http\Controllers\Admin\PersonnelController::class, 'search_interviewer'])->name('search_interviewer');
+	Route::get('/personnel/search-cv', [App\Http\Controllers\Admin\PersonnelController::class, 'search_cv'])->name('search_cv');
 	Route::post('/personnel/profile', [App\Http\Controllers\UserProfileController::class, 'update_profile'])->name('update.profile');
 	Route::post('/personnel/level', [App\Http\Controllers\Admin\PersonnelController::class, 'update_level'])->name('update.level');
 	Route::get('/personnel/fillter', [App\Http\Controllers\Admin\PersonnelController::class, 'fillter'])->name('fillter');
+	Route::get('/personnel/fillter-cv', [App\Http\Controllers\Admin\PersonnelController::class, 'fillter_cv'])->name('fillter_cv');
 	Route::get('/personnel/nominees', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees'])->name('nominees');
+	Route::get('/personnel/nominees-first', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees_first'])->name('nominees_first');
+	Route::get('/personnel/nominees-cv', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees_cv'])->name('nominees_cv');
 	Route::get('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'getAllCVT'])->name('getcv');
 	Route::get('/personnel/cv-id', [App\Http\Controllers\Admin\PersonnelController::class, 'getCVbyID'])->name('getCVbyID');
 	Route::post('/personnel/cv-id', [App\Http\Controllers\Admin\PersonnelController::class, 'update_status_cv'])->name('update_status_cv');
 	Route::post('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'saveCV'])->name('savecv');
 	Route::post('/personnel/cv-u', [App\Http\Controllers\Admin\PersonnelController::class, 'update_cv'])->name('update_cv');
 	Route::get('/personnel/cv-u', [App\Http\Controllers\Admin\PersonnelController::class, 'get_cv_update'])->name('get_cv_update');
+	Route::post('/personnel/cv-update', [App\Http\Controllers\Admin\PersonnelController::class, 'update_cv_all'])->name('update_cv_all');
+	Route::post('/personnel/interview', [App\Http\Controllers\Admin\PersonnelController::class, 'Add_interview'])->name('Add_interview');
 
 	Route::group(
 		['middleware' => 'auth'],
 		function () {
-			// Route::get('department', 'DepartmentController@Index');
+			//Route::get('department', 'DepartmentController@Index');
 			//Route thiết bị
 			//Loại thiết bị
 			Route::group(
@@ -131,11 +140,26 @@ Route::group(['middleware' => 'auth'], function () {
 				['prefix' => 'equiment'],
 				function () {
 					Route::get('/', [EquimentsController::class, 'Index'])->name('equiment');
-					Route::get('get/{perpage?}/{currentpage?}/{keyword?}', [EquimentsController::class, 'Get']);
+					Route::get('get/{perpage?}/{currentpage?}/{status?}/{keyword?}', [EquimentsController::class, 'Get']);
 					Route::post('post', [EquimentsController::class, 'Create']);
 					Route::get('delete/{id?}', [EquimentsController::class, 'Delete']);
 					Route::get('getbyid/{id?}', [EquimentsController::class, 'GetById']);
 					Route::post('update/{id?}', [EquimentsController::class, 'Update']);
+				}
+			);
+
+			//Chuyển giao
+			Route::group(
+				['prefix' => 'transfer'],
+				function () {
+					Route::get(
+						'/',
+						function () {
+									$user = Auth::user();
+									return view('pages.Equiments.Transfer.transfer', compact('user'));
+								}
+					)->name('transfer');
+					Route::get('/getnhansu/{id?}', [TransferController::class, 'GetNhanSu']);
 				}
 			);
 			//End route thiết bị

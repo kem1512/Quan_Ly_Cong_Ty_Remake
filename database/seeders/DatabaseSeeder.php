@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('admin'),
             'personnel_code' => 'NS0001',
             'level' => 2,
+            'img_url' => 'marie.jpg',
         ]);
         $position = [
             ['id' => 1, 'position' => 'Tổng Giám Đốc'],
