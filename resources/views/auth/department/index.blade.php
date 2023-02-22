@@ -64,14 +64,17 @@
                 </div>
             </div>
         </div>
-        @include('auth.department.modal')
         @include('layouts.footers.auth.footer')
     </div>
 @endsection
 
-@section('script')
-    <script type="text/javascript">
+@push('department_handler')
+    <script>
         $(document).ready(function() {
+            var name_error = $(".name-error")
+            var code_error = $(".code_error")
+            var id_department_parent_error = $(".id_department_parent_error")
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -121,40 +124,36 @@
                 e.preventDefault()
                 var form = $('#form').serialize();
 
-                showAlert('info', $("input[name='id']").length ? 'Bạn có chắc chắn muốn sửa' :
-                    'Bạn có chắc chắn muốn thêm',
-                    function() {
-                        $.ajax({
-                            url: '{{ route('department.createOrUpdate') }}',
-                            type: 'POST',
-                            data: form,
-                            success: function(response) {
-                                if (response.status == 0) {
-                                    if (response.msg.name) {
-                                        $(".name-error").html(response.msg.name)
-                                    } else {
-                                        $(".name-error").empty();
-                                    }
-
-                                    if (response.msg.code) {
-                                        $(".code-error").html(response.msg.code)
-                                    } else {
-                                        $(".code-error").empty();
-                                    }
-
-                                    if (response.msg.id_department_parent) {
-                                        $(".id_department_parent_error").html(response.msg
-                                            .id_department_parent)
-                                    } else {
-                                        $(".id_department_parent_error").empty();
-                                    }
-                                } else {
-                                    clear();
-                                    showAlert('success', response.msg)
-                                }
+                $.ajax({
+                    url: '{{ route('department.create_or_update') }}',
+                    type: 'POST',
+                    data: form,
+                    success: function(response) {
+                        if (response.status == 0) {
+                            if (response.msg.name) {
+                                name_error.html(response.msg.name)
+                            } else {
+                                name_error.empty();
                             }
-                        });
-                    })
+
+                            if (response.msg.code) {
+                                code_error.html(response.msg.code)
+                            } else {
+                                code_error.empty();
+                            }
+
+                            if (response.msg.id_department_parent) {
+                                id_department_parent_error.html(response.msg
+                                    .id_department_parent)
+                            } else {
+                                id_department_parent_error.empty();
+                            }
+                        } else {
+                            showAlert('success', response.msg);
+                            clear();
+                        }
+                    }
+                });
             })
 
             // Hiển thị phòng ban lên form
@@ -168,7 +167,7 @@
                     } else {
                         $("input[name='status']").attr("checked", '');
                     }
-                    $.get("{{ route('department.display') }}" + '/' + data.id_department_parent)
+                    $.get("{{ route('department.display') }}" + '/' + data.parent_id)
                         .done(function(data) {
                             $("input[name='department_name']").val(data.name);
                             $("input[name='id_department_parent']").val(data.id);
@@ -205,105 +204,19 @@
                 })
             })
 
-            $(document).on('click', '.view', function() {
-                var html = ''
-                $.get('getEmployeeInDepartment' + '/' + $(this).attr('data-id'), function(response) {
-                    if (response.data) {
-                        $.each(response.data, function(i, data) {
-                            html += `<div class="d-flex mb-2">
-                                <div class="w-25">
-                                    <img class="w-100" style="border-radius: 10px" src="https://phunugioi.com/wp-content/uploads/2022/11/Hinh-anh-avatar-ff-1.jpg"/>
-                                </div>
-                                <div>
-                                    <p class="px-3 m-0">Email : ${data.email}</p>
-                                    <p class="px-3 m-0">Tên : ${data.fullname}</p>
-                                    <p class="px-3 m-0 font-weight-bold">Chức Vụ : Chủ Tịch</p>
-                                </div>
-                            </div>`;
-                        });
-                        $('.modal-body').empty().html(html);
-                    } else {
-                        $('.modal-body').empty().html("<p class='m-0'>Không Có Nhân Viên</p>");
-                    }
-                });
-            })
-
-            $(document).on('dblclick', '.edit-table', function() {
-                $(this).removeAttr("disabled");
-                $(this).removeClass('no-border')
-                $(this).focus();
-                var id = $(this).attr('data-id');
-                $(this).focusout(function() {
-                    var name = $(this).attr('id') == 'name' ? $(this).val() : null;
-                    var code = $(this).attr('id') == 'code' ? $(this).val() : null;
-                    $.get("{{ route('department.display') }}" + '/' + id).done(function(data) {
-                        showAlert('info', 'Bạn có chắc chắn muốn sửa',
-                            function() {
-                                $.ajax({
-                                    url: '{{ route('department.createOrUpdate') }}',
-                                    type: 'POST',
-                                    data: {
-                                        'id': id,
-                                        'name': name ?? data.name,
-                                        'id_department_parent': data
-                                            .id_department_parent,
-                                        'code': code ?? data.code,
-                                        'status': data.status == 'on' ? 1 : 0
-                                    },
-                                    success: function(response) {
-                                        if (response.status == 0) {
-                                            if (response.msg.name) {
-                                                console.log(response);
-                                            }
-                                            showAlert('error', response.msg)
-                                        } else {
-                                            clear();
-                                            showAlert('success', response
-                                                .msg)
-                                        }
-                                    }
-                                });
-                            })
-                        clearError();
-                    })
-                    $(this).attr("disabled", '');
-                    $(this).addClass('no-border');
-                })
-            })
-
-            $(document).on('change', '.edit-checkbox', function() {
-                var id = $(this).attr('data-id');
-                var checked = this.checked;
-                $.get("{{ route('department.display') }}" + '/' + id).done(function(data) {
-                    $.ajax({
-                        url: '{{ route('department.createOrUpdate') }}',
-                        type: 'POST',
-                        data: {
-                            'id': id,
-                            'name': data.name,
-                            'id_department_parent': data.id_department_parent,
-                            'code': data.code,
-                            'status': checked ? 'on' : null
-                        },
-                        success: function(response) {
-                            clear();
-                            showAlert('success', response.msg)
-                        }
-                    });
-                    clearError();
-                })
-            })
-
+            // đóng tìm kiếm
             $('#search_close').on('click', function() {
                 $('#department_search').val('');
                 $("input[name='id_department_parent']").val('');
                 $('#search_close').hide();
             })
 
+            // lọc
             $('#filter').on('change', function() {
                 filter();
             })
 
+            // phân trang
             $(document).on('click', '.page-link', function(e) {
                 e.preventDefault();
                 if ($(this).attr('href')) {
@@ -313,61 +226,153 @@
                 }
             })
 
-            $('[id=btn_staff]').on('click', function(e) {
-                e.preventDefault();
-                if ($(this).offset().left < 1500) {
-                    $('#staff').offset({
-                        top: $(this).offset().top,
-                        left: $(this).offset().left
-                    });
-                } else {
-                    $('#staff').offset({
-                        top: $(this).offset().top,
-                        left: $(this).offset().left - 260
-                    });
-                }
-                $('#staff').css('z-index', 3000);
+            $.get("{{ route('department.get_users') }}" + '/' + $("input[name='department_id' ]").val(), function(
+                data) {
+                $('#table_users').empty().html(data);
             })
 
-            var clicked = false,
-                clickX;
-            $('#drag').on({
-                'mousemove': function(e) {
-                    clicked && updateScrollPos(e);
+            $("#user_search").autocomplete({
+                source: function(request, response) {
+                    // Fetch data
+                    $.ajax({
+                        url: "{{ route('department.searchUsers') }}",
+                        type: 'post',
+                        dataType: "json",
+                        data: {
+                            search: request.term
+                        },
+                        success: function(data) {
+                            response(data);
+                        }
+                    });
                 },
-                'mousedown': function(e) {
-                    $(this).css('cursor', 'grab');
-                    clicked = true;
-                    clickX = e.pageX;
-                },
-                'mouseup': function() {
-                    clicked = false;
-                    $(this).css('cursor', 'grab');
+                select: function(event, ui) {
+                    Swal.fire({
+                        title: 'Bạn Có Chắc Muốn Thêm',
+                        showDenyButton: true,
+                        icon: 'info',
+                        confirmButtonText: 'Đồng ý',
+                        denyButtonText: "Hủy",
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '{{ route('department.addUser') }}',
+                                type: 'POST',
+                                data: {
+                                    'id': ui.item.value,
+                                    'department_id': $("input[name='department_id' ]")
+                                        .val()
+                                },
+                                success: function(response) {
+                                    $.get("{{ route('department.get_users') }}" +
+                                        '/' + $(
+                                            "input[name='department_id' ]")
+                                        .val(),
+                                        function(
+                                            data) {
+                                            $('#table_users').empty().html(
+                                                data);
+                                        })
+                                }
+                            });
+                        }
+                    })
+                    return false;
                 }
             });
 
-            $('#staff').on('mouseleave', function() {
-                setTimeout(function() {
-                    $('#staff').css('z-index', -999)
-                }, 300)
+            $.get("{{ route('department.get_users') }}" + '/' + $("input[name='department_id' ]").val(), function(
+                data) {
+                $('#table_users').empty().html(data);
             })
 
-            var updateScrollPos = function(e) {
-                $('#drag').css('cursor', 'grabbing');
-                $('#drag').scrollLeft($('#drag').scrollLeft() + (clickX - e.pageX) / 9.5);
-            }
+            $(document).on('click', '.delete_user', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Bạn Có Chắc Muốn Xóa",
+                    showDenyButton: true,
+                    icon: "info",
+                    confirmButtonText: 'Đồng ý',
+                    denyButtonText: "Hủy",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('department.deleteUser') }}",
+                            type: 'post',
+                            dataType: "json",
+                            data: {
+                                'id': $(this).attr('data-id')
+                            },
+                            success: function(data) {
+                                $.get("{{ route('department.get_users') }}" + '/' + $(
+                                        "input[name='department_id' ]").val(),
+                                    function(data) {
+                                        $('#table_users').empty().html(data);
+                                    })
+                            }
+                        });
+                    }
+                })
+            })
+
+            $(document).on('change', 'select[name="position_id"]', function() {
+                var options = $(this).closest('tr');
+                var position_id = options.find('select[name="position_id"]').find(":selected").val();
+                var select = options.find('select[name="nominee_id"]');
+                var indexs = 0;
+                $(select.find('option')).each(function(index) {
+                    var id = options.find('.update_user').attr('data-id')
+                    if ($(this).attr('data-id') == position_id) {
+                        indexs = index;
+                        $(this).removeAttr('hidden');
+                    } else {
+                        $(this).attr('hidden', '')
+                    }
+                })
+                select.prop("selectedIndex", indexs)
+            });
+
+            $(document).on('click', '.update_user', function(e) {
+                e.preventDefault();
+                var parent = $(this).closest('tr');
+                $.ajax({
+                    url: "{{ route('department.updateUser') }}",
+                    type: 'post',
+                    dataType: "json",
+                    data: {
+                        'id': $(this).attr('data-id'),
+                        'nominee_id': parent.find('select[name="nominee_id"]').find(":selected")
+                            .val(),
+                        'position_id': parent.find('select[name="position_id"]').find(":selected")
+                            .val()
+                    },
+                    success: function(data) {
+                        if (data.status == 0) {
+                            showAlert("error", data.msg)
+                        } else {
+                            $.get("{{ route('department.get_users') }}" + '/' + $(
+                                "input[name='department_id' ]").val(), function(data) {
+                                $('#table_users').empty().html(data);
+                            })
+                            showAlert("success", data.msg)
+                        }
+                    }
+                });
+            })
+
+            
         })
 
         function clear() {
-            $.get("{{ URL::to('getDepartment') }}", function(data) {
+            $.get("{{ URL::to('get_departments') }}", function(data) {
                 $('#departments').empty().html(data);
             })
             $('#not_found').hide();
-            $("input[name='code']").val('');
-            $("input[name='name']").val('');
-            $("input[name='department_name']").val('');
-            $("input[name='id_department_parent']").val('');
-            $("input[name='status']").attr("checked", '');
+            $("input[name='code' ]").val('');
+            $("input[name='name' ]").val('');
+            $("input[name='department_name' ]").val('');
+            $("input[name='id_department_parent' ]").val('');
+            $("input[name='status' ]").attr("checked", '');
             $(".clear").hide()
             $(".code-error").empty();
             $(".name-error").empty();
@@ -424,4 +429,4 @@
             }
         }
     </script>
-@endsection
+@endpush

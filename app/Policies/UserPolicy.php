@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
@@ -19,8 +20,8 @@ class UserPolicy
         //
     }
 
-    public function create(User $user)
+    public function update(User $user, Department $deparment)
     {
-        return $user->level == 1;
+        return true;
     }
 }

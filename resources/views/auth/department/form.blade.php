@@ -19,8 +19,7 @@
                             <div class="form-group">
                                 <div class="d-flex justify-content-between">
                                     <label for="example-text-input" class="form-control-label">Mã phòng ban</label>
-                                    <label for="example-text-input"
-                                        class="form-control-label text-danger code-error"></label>
+                                    <label for="example-text-input" class="form-control-label text-danger code-error"></label>
                                 </div>
                                 <input class="form-control" type="text" name="code">
                             </div>
@@ -44,20 +43,18 @@
                                 <div style="position: relative">
                                     <input class="form-control" type="text" id="department_search"
                                         name="department_name">
-                                    <span id="search_close"
-                                        style="color: red; cursor: pointer; position: absolute; right: 10px; bottom: 15%"><i
-                                            class="fas fa-times"></i></span>
+                                    <span id="search_close" style="color: red; cursor: pointer; position: absolute; right: 10px; bottom: 15%">
+                                        <i class="fas fa-times"></i>
+                                    </span>
                                 </div>
                                 <input class="form-control" type="text" hidden name="id_department_parent">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="example-text-input" class="form-control-label">Trạng thái hoạt
-                                    động</label>
+                                <label for="example-text-input" class="form-control-label">Trạng thái hoạt động</label>
                                 <div class="form-check form-switch mt-1">
-                                    <input class="form-check-input" type="checkbox" name="status"
-                                        id="flexSwitchCheckDefault" checked="">
+                                    <input class="form-check-input" type="checkbox" name="status" id="flexSwitchCheckDefault" checked="">
                                 </div>
                             </div>
                         </div>

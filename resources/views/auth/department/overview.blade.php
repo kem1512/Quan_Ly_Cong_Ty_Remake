@@ -1,592 +1,204 @@
 @extends('auth.department.index')
 
 @section('content')
-    <style>
-        /* width */
-        ::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        /* Track */
-        ::-webkit-scrollbar-track {
-            /* background: #f1f1f1; */
-            background: transparent;
-        }
-
-        /* Handle */
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-        }
-
-        /* Handle on hover */
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-
-        .table-borderless>tbody>tr>td>.card {
-            width: 350px;
-        }
-
-        #drag {
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        #child::before {
-            display: inline-block;
-            content: "";
-            border-top: 2px solid gray;
-            width: 4rem;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .child_last {
-            position: relative;
-        }
-
-        .child_last::after {
-            display: inline-block;
-            content: "";
-            border-left: 2px solid gray;
-            width: 2px;
-            height: 5.66rem;
-            position: absolute;
-            top: 0;
-        }
-
-
-        #parent,
-        #parent_first,
-        #parent_last,
-        #parent_between,
-        #child {
-            position: relative;
-        }
-
-        #parent:after {
-            display: inline-block;
-            content: "";
-            position: absolute;
-            background-color: gray;
-            height: 20px;
-            width: 2px;
-            left: 50%;
-            top: 100%;
-            transform: translate(-30%, 10%);
-        }
-
-        #parent_first:after {
-            display: inline-block;
-            content: "";
-            border-top: 2px solid gray;
-            width: 11.5em;
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
-
-        #parent_first::before {
-            display: inline-block;
-            content: "";
-            border-left: 2px solid gray;
-            width: 2px;
-            height: 80px;
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        #parent_between::before {
-            display: inline-block;
-            content: "";
-            border-left: 2px solid gray;
-            width: 2px;
-            height: 80px;
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        #parent_last:after {
-            display: inline-block;
-            content: "";
-            border-top: 2px solid gray;
-            width: 11.5em;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        #parent_last::before {
-            display: inline-block;
-            content: "";
-            border-left: 2px solid gray;
-            width: 2px;
-            height: 80px;
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-    </style>
     <div class="container-fluid py-4">
         @yield('department')
-        <div class="row">
-            <div class="col-12" style="position: relative">
-                <div style="position: absolute; width: 350px;" id="staff">
-                    <div class="card">
-                        <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                            <p class="text-sm font-weight-bold"></p>
-                        </div>
-
-                        <div class="card-body pt-2">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <img src="{{ $departments[0]->avatar }}" class="w-100" alt="" />
-                                        </div>
-                                        <div class="col-8">
-                                            <span class="text-primary text-uppercase text-xs font-weight-bold my-2">Chưa
-                                                có</span>
-                                            <p class="card-descriptio font-weight-bold mb-0">
-                                                Hải Đăng
-                                            </p>
-                                            <a href="" class="text-info text-sm">
-                                                2 nhân viên
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card mb-4">
-                    <div class="card-header pb-0">
-                        <div class="d-flex justify-content-end">
-                            <a class="btn btn-primary btn-sm ms-auto" href="department">Quay Lại</a>
-                        </div>
-                    </div>
-                    <div class="card-body pt-0 pb-2">
-                        <div class="table-responsive">
-                            <table class="table table-borderless">
-                                <tbody>
-                                    <tr class="d-flex justify-content-center">
-                                        <td>
-                                            <div class="card" id="parent">
-                                                <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                                                    <p class="text-sm font-weight-bold">{{ $departments[0]->name }}</p>
-                                                </div>
-
-                                                <div class="card-body pt-2">
-                                                    <div class="row">
-                                                        <div class="col-12">
-                                                            <div class="row">
-                                                                <div class="col-4">
-                                                                    <img src="{{ $departments[0]->avatar ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png" }}" class="w-100"
-                                                                        alt="" />
-                                                                </div>
-                                                                <div class="col-8">
-                                                                    <span
-                                                                        class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2">Tổng
-                                                                        Giám Đốc</span>
-                                                                    <p class="card-descriptio font-weight-bold mb-0">
-                                                                        Hải Đăng
-                                                                    </p>
-                                                                    <a href="" class="text-info text-sm"
-                                                                        id="btn_staff">
-                                                                        2 nhân viên
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
+        <div class="container">
+            <div class="card">
+                <div class="row">
+                    <div class="card-body">
+                        @foreach ($departments as $department)
+                            <div class="col-md-12">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-3">
+                                        <div class="card flex-sm-row align-items-center">
+                                            <div class="w-25">
+                                                <img src="https://c3kienthuyhp.edu.vn/wp-content/uploads/2022/12/1672365681_454_222-Hinh-Anh-Avatar-FF-Dep-Chat-Ngat-AI-CUNG.jpg"
+                                                    class="card-img-top" alt="...">
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-title text-sm text-bolder">{{ $department->name }}</p>
+                                                <div class="d-flex">
+                                                    <div class="dropdown">
+                                                        <a href="#" data-bs-auto-close="outside"
+                                                            class="btn btn-xs bg-gradient-dark dropdown-toggle me-2"
+                                                            data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
+                                                            {{ $department->users->count() }} Nhân Viên
+                                                        </a>
+                                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+                                                            @foreach ($department->users as $user)
+                                                                <li style="width: 250px">
+                                                                    <div class="d-flex p-2">
+                                                                        <img src="{{ $user->img_url }}"
+                                                                            class="rounded-circle me-3" style="width: 30%"
+                                                                            class="me-2">
+                                                                        <div>
+                                                                            <span
+                                                                                class="text-sm text-bolder">{{ $user->fullname }}</span><br>
+                                                                            <span class="text-xs">Chức Vụ : Ông
+                                                                                Trời</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="table-responsive" id="drag">
-                            <table class="table table-borderless">
-                                <tbody class="d-flex">
-                                    @php
-                                        $new = $departments->shift();
-                                    @endphp
-                                    @foreach ($departments->all() as $department)
-                                        <tr class="d-flex flex-column">
-                                            @if ($loop->index == 0)
-                                                <td id="parent_first">
-                                                    <div class="card" style="width: 350px; margin-top: 1em">
-                                                        <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                                                            <p class="text-sm font-weight-bold text-break">
-                                                                {{ $department->name }}</p>
-                                                        </div>
-                                                        <div class="card-body pt-2">
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    <div class="row">
-                                                                        <div class="col-4">
-                                                                            <img src="{{ $department->avatar ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png" }}"
-                                                                                class="w-100" alt="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    @foreach ($department->children as $child1)
+                                        <div class="col-md-3 mt-3">
+                                            <div class="card flex-sm-row align-items-center mb-3">
+                                                <div class="w-25">
+                                                    <img src="https://c3kienthuyhp.edu.vn/wp-content/uploads/2022/12/1672365681_454_222-Hinh-Anh-Avatar-FF-Dep-Chat-Ngat-AI-CUNG.jpg"
+                                                        class="card-img-top" alt="...">
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="card-title text-sm text-bolder">{{ $child1->name }}
+                                                    </p>
+                                                    <div class="d-flex">
+                                                        <div class="dropdown">
+                                                            <a href="#" data-bs-auto-close="outside"
+                                                                class="btn btn-xs bg-gradient-dark dropdown-toggle me-2"
+                                                                data-bs-toggle="dropdown" id="navbarDropdownMenuLink2"> {{ $child1->users->count() }} Nhân Viên
+                                                            </a>
+                                                            <ul class="dropdown-menu"
+                                                                aria-labelledby="navbarDropdownMenuLink2">
+                                                                @foreach ($child1->users as $user)
+                                                                    <li style="width: 250px">
+                                                                        <div class="d-flex p-2">
+                                                                            <img src="{{ $user->img_url }}"
+                                                                                class="rounded-circle me-3"
+                                                                                style="width: 30%" class="me-2">
+                                                                            <div>
+                                                                                <span
+                                                                                    class="text-sm text-bolder">{{ $user->fullname }}</span><br>
+                                                                                <span class="text-xs">Chức Vụ : Ông
+                                                                                    Trời</span>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="col-8 overflow-auto">
-                                                                            <span
-                                                                                class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2 text-break">
-                                                                                {{ $department->id_leader ? 'Có Leader' : 'Chưa Có Leader' }}
-                                                                            </span>
-                                                                            <p
-                                                                                class="card-descriptio font-weight-bold mb-0 text-break">
-                                                                                Hải Đăng
-                                                                            </p>
-                                                                            <a href="" class="text-info text-sm"
-                                                                                id="btn_staff">
-                                                                                12 nhân viên
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                                    </li>
+                                                                @endforeach
+                                                            </ul>
                                                         </div>
                                                     </div>
-                                                @if ($department->department_childs->count() > 0)
-                                                    @foreach ($department->department_childs as $department_child)
-                                                        @if ($loop->last)
-                                                            <td class="p-0">
-                                                                <div class="pt-3 child_last" id="child">
-                                                                    <div class="card ms-3" style="width: 340px;">
-                                                                        <div
-                                                                            class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                                                                            <p class="text-sm font-weight-bold text-break">
-                                                                                {{ $department_child->name }}</p>
-                                                                        </div>
-                                                                        <div class="card-body pt-2">
-                                                                            <div class="row">
-                                                                                <div class="col-12">
-                                                                                    <div class="row">
-                                                                                        <div class="col-4">
-                                                                                            <img src="{{ $department_child->avatar ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png" }}"
-                                                                                                class="w-100"
-                                                                                                alt="">
-                                                                                        </div>
-                                                                                        <div class="col-8 overflow-auto">
-                                                                                            <span
-                                                                                                class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2 text-break">{{ $department->id_leader ? 'Có Leader' : 'Chưa Có Leader' }}</span>
-                                                                                            <p
-                                                                                                class="card-descriptio font-weight-bold mb-0 text-break">
-                                                                                                Hải Đăng
-                                                                                            </p>
-                                                                                            <a href=""
-                                                                                                class="text-info text-sm"
-                                                                                                id="btn_staff">
-                                                                                                12 nhân viên
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    </div>
+                                                </div>
+                                            </div>
+                                            @foreach ($child1->children as $child2)
+                                                <div class="card flex-sm-row align-items-center">
+                                                    <div style="width: 35%">
+                                                        <img src="https://img6.thuthuatphanmem.vn/uploads/2022/09/21/anh-avatar-ff-cool-ngau-dep_092531137.jpg"
+                                                            class="card-img-top" alt="...">
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <p class="card-title text-sm text-bolder">
+                                                            {{ $child2->name }}</p>
+                                                        <div class="d-flex">
+                                                            <div class="dropdown">
+                                                                <a href="#"
+                                                                    class="btn btn-xs bg-gradient-dark dropdown-toggle me-2"
+                                                                    data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                                                    id="navbarDropdownMenuLink2">
+                                                                    {{ $child2->users->count() }}
+                                                                    Nhân Viên
+                                                                </a>
+                                                                <ul class="dropdown-menu"
+                                                                    aria-labelledby="navbarDropdownMenuLink2">
+                                                                    @foreach ($child2->users as $user)
+                                                                        <li style="width: 250px">
+                                                                            <div class="d-flex p-2">
+                                                                                <img src="{{ $user->img_url }}"
+                                                                                    style="width: 30%"
+                                                                                    class="me-3 rounded-circle">
+                                                                                <div>
+                                                                                    <span
+                                                                                        class="text-sm text-bolder">{{ $user->fullname }}</span><br>
+                                                                                    <span class="text-xs">Chức
+                                                                                        Vụ : Ông
+                                                                                        Trời</span>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        @else
-                                                            <td class="p-0">
-                                                                <div style="border-left: 2px solid gray;" class="pt-3"
-                                                                    id="child">
-                                                                    <div class="card ms-3" style="width: 340px;">
-                                                                        <div
-                                                                            class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                                                                            <p class="text-sm font-weight-bold text-break">
-                                                                                {{ $department_child->name }}</p>
-                                                                        </div>
-                                                                        <div class="card-body pt-2">
-                                                                            <div class="row">
-                                                                                <div class="col-12">
-                                                                                    <div class="row">
-                                                                                        <div class="col-4">
-                                                                                            <img src="{{ $department_child->avatar ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png" }}"
-                                                                                                class="w-100"
-                                                                                                alt="">
-                                                                                        </div>
-                                                                                        <div class="col-8 overflow-auto">
-                                                                                            <span
-                                                                                                class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2 text-break">{{ $department->id_leader ? 'Có Leader' : 'Chưa Có Leader' }}</span>
-                                                                                            <p
-                                                                                                class="card-descriptio font-weight-bold mb-0 text-break">
-                                                                                                Hải Đăng
-                                                                                            </p>
-                                                                                            <a href=""
-                                                                                                class="text-info text-sm"
-                                                                                                id="btn_staff">
-                                                                                                12 nhân viên
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            @elseif ($loop->last)
-                                                <td id="parent_last">
-                                                    <div class="card" style="width: 350px; margin-top: 1em">
-                                                        <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                                                            <p class="text-sm font-weight-bold text-break">
-                                                                {{ $department->name }}</p>
-                                                        </div>
-                                                        <div class="card-body pt-2">
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    <div class="row">
-                                                                        <div class="col-4">
-                                                                            <img src="{{ $department->avatar ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png" }}"
-                                                                                class="w-100" alt="">
-                                                                        </div>
-                                                                        <div class="col-8 overflow-auto">
-                                                                            <span
-                                                                                class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2 text-break">{{ $department->id_leader ? 'Có Leader' : 'Chưa Có Leader' }}</span>
-                                                                            <p
-                                                                                class="card-descriptio font-weight-bold mb-0 text-break">
-                                                                                Hải Đăng
-                                                                            </p>
-                                                                            <a href="" class="text-info text-sm"
-                                                                                id="btn_staff">
-                                                                                12 nhân viên
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
                                                             </div>
+                                                            <button
+                                                                data-bs-target="#flush-collapse-child-{{ $loop->parent->index }}-{{ $loop->index }}"
+                                                                aria-expanded="false"
+                                                                class="btn btn-xs bg-gradient-success dropdown-toggle {{ $child2 -> children -> count() > 0 ? 'd-block' : 'd-none' }}"
+                                                                type="button" id="dropdownMenuButton"
+                                                                data-bs-toggle="collapse" aria-expanded="false">
+                                                            </button>
                                                         </div>
                                                     </div>
-                                                </td>
-                                                @if ($department->department_childs->count() > 0)
-                                                    @foreach ($department->department_childs as $department_child)
-                                                        @if ($loop->last)
-                                                            <td class="p-0">
-                                                                <div class="pt-3 child_last" id="child">
-                                                                    <div class="card ms-3" style="width: 340px;">
-                                                                        <div
-                                                                            class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                                                                            <p class="text-sm font-weight-bold text-break">
-                                                                                {{ $department_child->name }}</p>
-                                                                        </div>
-                                                                        <div class="card-body pt-2">
-                                                                            <div class="row">
-                                                                                <div class="col-12">
-                                                                                    <div class="row">
-                                                                                        <div class="col-4">
-                                                                                            <img src="{{ $department->avatar ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png" }}"
-                                                                                                class="w-100"
-                                                                                                alt="">
-                                                                                        </div>
-                                                                                        <div class="col-8 overflow-auto">
-                                                                                            <span
-                                                                                                class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2 text-break">{{ $department->id_leader ? 'Có Leader' : 'Chưa Có Leader' }}</span>
-                                                                                            <p
-                                                                                                class="card-descriptio font-weight-bold mb-0 text-break">
-                                                                                                Hải Đăng
-                                                                                            </p>
-                                                                                            <a href=""
-                                                                                                class="text-info text-sm"
-                                                                                                id="btn_staff">
-                                                                                                12 nhân viên
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        @else
-                                                            <td class="p-0">
-                                                                <div style="border-left: 2px solid gray;" class="pt-3"
-                                                                    id="child">
-                                                                    <div class="card ms-3" style="width: 340px;">
-                                                                        <div
-                                                                            class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                                                                            <p class="text-sm font-weight-bold text-break">
-                                                                                {{ $department_child->name }}</p>
-                                                                        </div>
-                                                                        <div class="card-body pt-2">
-                                                                            <div class="row">
-                                                                                <div class="col-12">
-                                                                                    <div class="row">
-                                                                                        <div class="col-4">
-                                                                                            <img src="{{ $department_child->avatar ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png" }}"
-                                                                                                class="w-100"
-                                                                                                alt="">
-                                                                                        </div>
-                                                                                        <div class="col-8 overflow-auto">
-                                                                                            <span
-                                                                                                class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2 text-break">Trưởng
-                                                                                                Phòng Công Nghệ</span>
-                                                                                            <p
-                                                                                                class="card-descriptio font-weight-bold mb-0 text-break">
-                                                                                                Hải Đăng
-                                                                                            </p>
-                                                                                            <a href=""
-                                                                                                class="text-info text-sm"
-                                                                                                id="btn_staff">
-                                                                                                12 nhân viên
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            @else
-                                                <td style="border-top: 2px solid gray;" id="parent_between">
-                                                    <div class="card" style="width: 350px; margin-top: 1em">
-                                                        <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                                                            <p class="text-sm font-weight-bold text-break">
-                                                                {{ $department->name }}</p>
-                                                        </div>
-                                                        <div class="card-body pt-2">
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    <div class="row">
-                                                                        <div class="col-4">
-                                                                            <img src="{{ $department->avatar ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png" }}"
-                                                                                class="w-100" alt="">
-                                                                        </div>
-                                                                        <div class="col-8 overflow-auto">
-                                                                            <span
-                                                                                class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2 text-break">{{ $department->id_leader ? 'Có Leader' : 'Chưa Có Leader' }}</span>
-                                                                            <p
-                                                                                class="card-descriptio font-weight-bold mb-0 text-break">
-                                                                                Hải Đăng
-                                                                            </p>
-                                                                            <a href="" class="text-info text-sm"
-                                                                                id="btn_staff">
-                                                                                12 nhân viên
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                @if ($department->department_childs->count() > 0)
-                                                    @foreach ($department->department_childs as $department_child)
-                                                        @if ($loop->last)
-                                                            <td class="p-0">
-                                                                <div class="pt-3 child_last" id="child">
-                                                                    <div class="card ms-3" style="width: 340px;">
-                                                                        <div
-                                                                            class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                                                                            <p class="text-sm font-weight-bold text-break">
-                                                                                {{ $department_child->name }}</p>
-                                                                        </div>
-                                                                        <div class="card-body pt-2">
-                                                                            <div class="row">
-                                                                                <div class="col-12">
-                                                                                    <div class="row">
-                                                                                        <div class="col-4">
-                                                                                            <img src="{{ $department_child->avatar ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png" }}"
-                                                                                                class="w-100"
-                                                                                                alt="">
-                                                                                        </div>
-                                                                                        <div class="col-8 overflow-auto">
-                                                                                            <span
-                                                                                                class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2 text-break">{{ $department->id_leader ? 'Có Leader' : 'Chưa Có Leader' }}</span>
-                                                                                            <p
-                                                                                                class="card-descriptio font-weight-bold mb-0 text-break">
-                                                                                                Hải Đăng
-                                                                                            </p>
-                                                                                            <a href=""
-                                                                                                class="text-info text-sm"
-                                                                                                id="btn_staff">
-                                                                                                12 nhân viên
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        @else
-                                                            <td class="p-0">
-                                                                <div style="border-left: 2px solid gray;" class="pt-3"
-                                                                    id="child">
-                                                                    <div class="card ms-3" style="width: 340px;">
-                                                                        <div
-                                                                            class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                                                                            <p class="text-sm font-weight-bold text-break">
-                                                                                {{ $department_child->name }}</p>
-                                                                        </div>
-                                                                        <div class="card-body pt-2">
-                                                                            <div class="row">
-                                                                                <div class="col-12">
-                                                                                    <div class="row">
-                                                                                        <div class="col-4">
-                                                                                            <img src="{{ $department_child->avatar ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png" }}"
-                                                                                                class="w-100"
-                                                                                                alt="">
-                                                                                        </div>
-                                                                                        <div class="col-8 overflow-auto">
-                                                                                            <span
-                                                                                                class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2 text-break">{{ $department->id_leader ? 'Có Leader' : 'Chưa Có Leader' }}</span>
-                                                                                            <p
-                                                                                                class="card-descriptio font-weight-bold mb-0 text-break">
-                                                                                                Hải Đăng
-                                                                                            </p>
-                                                                                            <a href=""
-                                                                                                class="text-info text-sm"
-                                                                                                id="btn_staff">
-                                                                                                12 nhân viên
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        @endif
-                                                    @endforeach
-                                                @endif
-                                            @endif
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                                </div>
+                                                <div class="accordion accordion-flush mb-3" id="accordionFlushExample">
+                                                    <div class="accordion-item">
 
-                    <div class="card-footer">
+                                                        <div id="flush-collapse-child-{{ $loop->parent->index }}-{{ $loop->index }}"
+                                                            class="accordion-collapse collapse">
+                                                            <div class="accordion-body text-danger">
+                                                                @foreach ($child2->children as $child3)
+                                                                    <div class="card flex-sm-row align-items-center">
+                                                                        <div class="w-25">
+                                                                            <img src="https://kynguyenlamdep.com/wp-content/uploads/2022/08/avatar-ff-ngau.jpg"
+                                                                                class="card-img-top" alt="...">
+                                                                        </div>
+                                                                        <div class="card-body">
+                                                                            <p class="card-title text-sm text-bolder">
+                                                                                {{ $child3->name }}</p>
+                                                                            <div class="d-flex">
+                                                                                <div class="dropdown">
+                                                                                    <a href="#"
+                                                                                        data-bs-auto-close="outside"
+                                                                                        class="btn btn-xs bg-gradient-dark dropdown-toggle me-2"
+                                                                                        data-bs-toggle="dropdown"
+                                                                                        id="navbarDropdownMenuLink2">
+                                                                                        {{ $child3->users->count() }} Nhân
+                                                                                        Viên
+                                                                                    </a>
+                                                                                    <ul class="dropdown-menu"
+                                                                                        aria-labelledby="navbarDropdownMenuLink2">
+                                                                                        @foreach ($child3->users as $user)
+                                                                                            <li style="width: 250px">
+                                                                                                <div class="d-flex p-2">
+                                                                                                    <img src="{{ $user->img_url }}"
+                                                                                                        class="rounded-circle me-3"
+                                                                                                        style="width: 30%"
+                                                                                                        class="me-2">
+                                                                                                    <div>
+                                                                                                        <span
+                                                                                                            class="text-sm text-bolder">{{ $user->fullname }}</span><br>
+                                                                                                        <span
+                                                                                                            class="text-xs">Chức
+                                                                                                            Vụ : Ông
+                                                                                                            Trời</span>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </li>
+                                                                                        @endforeach
+                                                                                    </ul>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
-        @include('layouts.footers.auth.footer')
     </div>
 @endsection
