@@ -37,6 +37,8 @@
         ul.ui-autocomplete {
             z-index: 1100;
         }
+
+        #drag{
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             -khtml-user-select: none;
