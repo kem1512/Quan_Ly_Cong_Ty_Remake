@@ -6,9 +6,20 @@ Lời đầu tiên, chúng tôi xin cảm ơn bạn vì đã quan tâm đến v�
 <br>
 Chúng tôi trân trọng kính mời bạn đến tham gia buổi phỏng vấn của công ty chúng tôi tại:
 <br>
-Địa chỉ: 286 Nguyễn Xiển , Thanh Xuân , Hà Nội
+@if ($inter->cate_inter == 1)
+    Địa Chỉ :{{ $inter->location }}
+@else
+    Đường Dẫn :{{ $inter->location }}
+@endif
 <br>
-Vào lúc : {{ $cver->interview_time }} ngày : {{ $cver->interview_date }}
+Hình thức Phỏng Vấn :
+@if ($inter->cate_inter == 1)
+    Trực Tiếp
+@else
+    online
+@endif
+<br>
+Vào lúc : {{ $inter->interview_time }} ngày : {{ $inter->interview_date }}
 <br>
 Để buổi phỏng vấn được diễn ra thuận lợi, bạn vui lòng phản hồi lại email này ngay khi nhận được. Mọi thắc mắc khác, bạn
 <br>

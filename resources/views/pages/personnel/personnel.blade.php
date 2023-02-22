@@ -77,6 +77,10 @@
             width: 78%
         }
 
+        #offcanvasNavbarphongvan {
+            width: 30%
+        }
+
         @media only screen and (max-width: 1400px) {
 
             #offcanvasNavbarupdate,
@@ -103,6 +107,11 @@
             }
         }
 
+        @media only screen and (max-width: 800px) {
+            #offcanvasNavbarphongvan {
+                width: 100%
+            }
+        }
 
         #imgupdate {
             color: bisque;
@@ -112,6 +121,9 @@
             margin-left: 8%;
         }
 
+        .w-100 {
+            width: 100% !important;
+        }
 
         /* ====================================== */
     </style>
@@ -240,8 +252,13 @@
                                             <option value="2">Đã Duyệt</option>
                                         </select>
                                     </div>
-                                    <a id="form-add" class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                                        data-bs-target="#offcanvasNavbarut">Thêm Hồ Sơ</a>
+                                    <div>
+                                        <a id="open_xep_lich" class="btn btn-primary" type="button"
+                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarphongvan">Xếp
+                                            Lịch</a>
+                                        <a id="form-add" class="btn btn-primary" type="button"
+                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarut">Thêm Hồ Sơ</a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body px-0 pt-0 pb-2" id="cvut_query">
@@ -252,7 +269,46 @@
                     {{-- =================================================================== Tab Ứng tuyển =================================================================== --}}
 
                     {{-- =================================================================== Tab Xét Duyệt =================================================================== --}}
-                    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">contact
+                    <div class="tab-pane fade row d-flex" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="card mb-4 col-12">
+                            <div class="card-header pb-0">
+                                <div class=" d-flex justify-content-between">
+                                    <h6>Danh Sách Xét Duyệt</h6>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <input class="form-control" placeholder="Search..." id="search_cv">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <select class="form-control" name="status_select_cv" id="status_select_cv">
+                                            <option value="9">Trạng Thái</option>
+                                            <option value="0">Chưa Duyệt</option>
+                                            <option value="1">Từ Chối</option>
+                                            <option value="2">Đã Duyệt</option>
+                                        </select>
+                                    </div>
+                                    <a id="form-add" class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasNavbarphongvan">Phỏng Vấn</a>
+                                </div>
+                            </div>
+                            <div class="card-body px-0 pt-0 pb-2 row" id="interview">
+                            </div>
+                        </div>
+                        {{-- // --}}
+                        <div class="card col-4">
+                            <div class="card-header pb-0 " style="background-color: #b3aea7;height: 100px;">
+                                danh sách các buổi phỏng vấn
+                            </div>
+                            <div class="card-body px-0 pt-0 pb-2 row" id="interview">
+                            </div>
+                        </div>
+                        <div class="card col-7" style="background-color: #3a3023;height: 100px;">
+                            <div class="card-header pb-0">
+                                Ứng Viên hiển thị thông qua click ds buổi pv
+                            </div>
+                            <div class="card-body px-0 pt-0 pb-2 row" id="interview">
+                            </div>
+                        </div>
                     </div>
                     {{-- =================================================================== Tab Xét Duyệt =================================================================== --}}
                 </div>
@@ -406,7 +462,7 @@
                                         @endforeach
                                     </select>
                                     <label for="chucvu" class="col-sm-4 col-form-label">Chức Danh :</label>
-                                    <select class="form-control" name="nominee_bild" id="nominee_bild">
+                                    <select class="form-control get_position" name="nominee_bild" id="nominee_bild">
                                         {{-- @foreach ($nominees as $no)
                                             <option value="{{ $no->id }}">{{ $no->nominee }}</option>
                                         @endforeach --}}
@@ -547,7 +603,7 @@
                                 <div class="form-group">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">Vị Trí Ứng
                                         Truyển</label>
-                                    <select class="form-control" name="nominees_ut" id="nominees_cv">
+                                    <select class="form-control get_position" name="nominees_ut" id="nominees_cv">
 
                                     </select>
                                 </div>
@@ -556,8 +612,8 @@
                         <div class="row">
                             <div class="col-12">
                                 <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
-                                    Địa Chỉ</label>
-                                <textarea class="form-control" name="address" id="address" rows="3"></textarea>
+                                    Ghi Chú</label>
+                                <textarea class="form-control" name="about_cv" id="about_cv" rows="3"></textarea>
                             </div>
                         </div>
                         <div id="btn-submit-add">
@@ -646,7 +702,8 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="form-control-label">Vị Trí Ứng Truyển</label>
-                                    <select class="form-control" name="nominees_ut_update" id="nominees_ut_update">
+                                    <select class="form-control get_position" name="nominees_ut_update"
+                                        id="nominees_ut_update">
                                     </select>
                                 </div>
                             </div>
@@ -654,14 +711,12 @@
                         <div class="row">
                             <div class="col-12">
                                 <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
-                                    Địa Chỉ :</label>
-                                <textarea class="form-control" name="address_ut_update" id="address_ut_update" rows="3"></textarea>
+                                    Ghi Chú</label>
+                                <textarea class="form-control" name="about_ut_update" id="about_ut_update" rows="3"></textarea>
                             </div>
                         </div>
                         <div id="btn-submit-add">
                             <button type="submit" id="btn_update_cv" class="btn btn-primary mt-7">Cập Nhật</button>
-                            {{-- <button type="submit" id="btn_reset_cv_status" class="btn btn-primary mt-7">Hoàn
-                                Tác</button> --}}
                         </div>
                     </form>
                 </div>
@@ -740,8 +795,8 @@
                         <div class="row">
                             <div class="col-12">
                                 <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
-                                    Địa Chỉ</label>
-                                <textarea class="form-control" name="address" id="address_eva" rows="3" disabled></textarea>
+                                    Ghi Chú</label>
+                                <textarea class="form-control" name="about_eva" id="about_eva" rows="3" disabled></textarea>
                             </div>
                             <div id="note_cv" class="col-12 d-none setanimationshow">
                                 <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
@@ -749,32 +804,81 @@
                                 <textarea class="form-control" name="note" id="note" rows="3"></textarea>
                                 <a id="send_cv" class="btn btn-danger mt-3 accept_cv" data=1>Gửi</a>
                             </div>
-                            <div id="form_interview" class="col-12 d-none d-flex setanimationshow">
-                                <div class="col-6" style="margin-right:1% ">
-                                    <label for="exampleFormControlTextarea1" id="about-text"
-                                        class="col-sm-4 col-form-label">
-                                        Ngày PV </label>
-                                    <input class="form-control " type="date" name="interview_date"
-                                        id="interview_date">
-                                    <a id="accept_cv" class="btn btn-danger mt-3 accept_cv" data=2>Gửi</a>
-                                </div>
-                                <div class="col-6">
-                                    <label for="exampleFormControlTextarea1" id="about-text"
-                                        class="col-sm-4 col-form-label">
-                                        Giờ PV </label>
-                                    <input class="form-control " type="time" name="interview_time"
-                                        id="interview_time">
-                                </div>
-
-                            </div>
                         </div>
                         <div class="wrapper col-12 mt-5 " style="text-align: center">
-                            <a onclick="openFrom(false);" class="btn btn-success" data=2
-                                style="margin-right: 5%">Duyệt</a>
-                            <a onclick="openFrom(true);" class="btn btn-secondary " style="margin-right: 5%">Trượt</a>
+                            <a id="accept_cv" class="btn btn-success accept_cv" data=2 style="margin-right: 5%">Duyệt</a>
+                            <a onclick="openNote();" class="btn btn-secondary " style="margin-right: 5%">Từ Chối</a>
                             <a class="btn btn-danger" onclick="close2form()" data-bs-dismiss="offcanvas">close</a>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- // Xếp Lịch  --}}
+    <div id="updatedropdown" class="bg-light fixed-top">
+        <div class="container-fluid">
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarphongvan"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <button type="button" class="btn-close" onclick="close2form()" data-bs-dismiss="offcanvas"
+                        aria-label="Close"><i class="fa fa-times" aria-hidden="true"></i></button>
+                </div>
+                <h3 id="add-title" style="text-align: center">Xếp Lịch Phỏng Vấn</h3>
+                <div id="form_eva" class="offcanvas-body">
+                    <form id="submit_insert_interview" class="row d-flex mt-5" action="" method="post">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="example-text-input" class="col-4 col-form-label w-100">Người
+                                    Phỏng Vấn 1</label>
+                                <input class="form-control " name="interviewer1" id="interviewer1" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="example-text-input" class="col-4 col-form-label w-100">Người Phỏng Vấn
+                                    2</label>
+                                <input class="form-control " name="interviewer2" id="interviewer2" value="">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="col-sm-4 col-form-label">Ngày</label>
+                                <input class="form-control " type="date" name="interview_date" id="interview_date"
+                                    value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="col-sm-4 col-form-label">giờ</label>
+                                <input class="form-control " type="time" name="interview_time" id="interview_time"
+                                    value="">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="col-sm-4 col-form-label w-100">Hình
+                                    Thức</label>
+                                <select class="form-control " name="cate_inter" id="cate_inter">
+                                    <option value="1">Trực Tiếp</option>
+                                    <option value="0">online</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label id="location-text" for="example-text-input" class="col-sm-4 col-form-label">Địa
+                                    Chỉ</label>
+                                <input class="form-control " type="text" id="interview_location"
+                                    name="interview_location">
+                            </div>
+                        </div>
+
+                        <div class="wrapper col-md-6 mt-2 ">
+                            <button type="submit" class="btn btn-success">Thêm</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
