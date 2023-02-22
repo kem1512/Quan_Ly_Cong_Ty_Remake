@@ -42,6 +42,7 @@ class FormDataRequest extends FormRequest
 
             'code.min' => 'Tên phải có ít nhất 4 ký tự',
             'code.required' => 'Mã không thể bỏ trống',
+            'code.unique' => 'Mã phòng ban đã tồn tại',
 
             'id_department_parent.different' => 'Phòng ban không thể trùng với phòng ban hiện tại'
         ];

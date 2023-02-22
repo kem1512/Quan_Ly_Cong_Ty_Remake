@@ -72,7 +72,7 @@
     <script>
         $(document).ready(function() {
             var name_error = $(".name-error")
-            var code_error = $(".code_error")
+            var code_error = $(".code-error")
             var id_department_parent_error = $(".id_department_parent_error")
 
             $.ajaxSetup({
@@ -82,6 +82,28 @@
             })
 
             clear();
+
+            var clicked = false,
+                clickX;
+            $('#drag').on({
+                'mousemove': function(e) {
+                    clicked && updateScrollPos(e);
+                },
+                'mousedown': function(e) {
+                    $(this).css('cursor', 'grab');
+                    clicked = true;
+                    clickX = e.pageX;
+                },
+                'mouseup': function() {
+                    clicked = false;
+                    $(this).css('cursor', 'grab');
+                }
+            });
+
+            var updateScrollPos = function(e) {
+                $('#drag').css('cursor', 'grabbing');
+                $('#drag').scrollLeft($('#drag').scrollLeft() + (clickX - e.pageX) / 9);
+            }
 
             // Tự động tìm phòng ban gần đúng
             $("#department_search").on('focus', function() {
@@ -148,6 +170,8 @@
                             } else {
                                 id_department_parent_error.empty();
                             }
+
+                            showAlert('error', typeof response.msg == 'object' ? 'Thao Tác Thất Bại' : response.msg)
                         } else {
                             showAlert('success', response.msg);
                             clear();
@@ -358,9 +382,7 @@
                         }
                     }
                 });
-            })
-
-            
+            })  
         })
 
         function clear() {
@@ -423,8 +445,7 @@
             } else {
                 Swal.fire({
                     icon: status,
-                    title: msg,
-                    timer: 1000
+                    title: msg
                 })
             }
         }

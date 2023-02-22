@@ -28,6 +28,7 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\Admin\PersonnelController;
 use App\Http\Controllers\EquimentTypeController;
 use App\Http\Controllers\EquimentsController;
+use App\Http\Controllers\PositionController;
 
 Route::get('/', function () {
 	return redirect('/dashboard');
@@ -62,6 +63,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('addUser', [DepartmentController::class, 'addUser'])->name('department.addUser');
 	Route::post('deleteUser', [DepartmentController::class, 'deleteUser'])->name('department.deleteUser');
 	Route::post('updateUser', [DepartmentController::class, 'updateUser'])->name('department.updateUser');
+
+	Route::get('position', [PositionController::class, 'index'])->name("position");
 
 	//personnel
 	Route::get('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'index'])->name('personnel.index');

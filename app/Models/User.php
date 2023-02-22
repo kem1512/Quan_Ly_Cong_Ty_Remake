@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\DB;
+use App\Models\Department;
+use App\Models\nominee;
 
 class User extends Authenticatable
 {
@@ -41,6 +43,10 @@ class User extends Authenticatable
     public function position(){
         $test = $this -> belongsTo(Position::class);
         return $test;
+    }
+
+    public function nominees(){
+        return $this -> belongsTo(nominee::class);
     }
 
     /**

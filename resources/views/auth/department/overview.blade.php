@@ -28,15 +28,14 @@
                                                         <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
                                                             @foreach ($department->users as $user)
                                                                 <li style="width: 250px">
-                                                                    <div class="d-flex p-2">
+                                                                    <div class="d-flex p-2 align-items-center">
                                                                         <img src="{{ $user->img_url }}"
                                                                             class="rounded-circle me-3" style="width: 30%"
                                                                             class="me-2">
                                                                         <div>
                                                                             <span
                                                                                 class="text-sm text-bolder">{{ $user->fullname }}</span><br>
-                                                                            <span class="text-xs">Chức Vụ : Ông
-                                                                                Trời</span>
+                                                                            <span class="text-xs">{{ $user -> nominee }}</span>
                                                                         </div>
                                                                     </div>
                                                                 </li>
@@ -48,9 +47,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="d-flex overflow-scroll" id="drag">
                                     @foreach ($department->children as $child1)
-                                        <div class="col-md-3 mt-3">
+                                        <div class="col-md-3 mt-3 me-3">
                                             <div class="card flex-sm-row align-items-center mb-3">
                                                 <div class="w-25">
                                                     <img src="https://c3kienthuyhp.edu.vn/wp-content/uploads/2022/12/1672365681_454_222-Hinh-Anh-Avatar-FF-Dep-Chat-Ngat-AI-CUNG.jpg"
@@ -69,15 +68,14 @@
                                                                 aria-labelledby="navbarDropdownMenuLink2">
                                                                 @foreach ($child1->users as $user)
                                                                     <li style="width: 250px">
-                                                                        <div class="d-flex p-2">
+                                                                        <div class="d-flex p-2 align-items-center">
                                                                             <img src="{{ $user->img_url }}"
                                                                                 class="rounded-circle me-3"
                                                                                 style="width: 30%" class="me-2">
                                                                             <div>
                                                                                 <span
                                                                                     class="text-sm text-bolder">{{ $user->fullname }}</span><br>
-                                                                                <span class="text-xs">Chức Vụ : Ông
-                                                                                    Trời</span>
+                                                                                <span class="text-xs">{{ $user -> nominee }}</span>
                                                                             </div>
                                                                         </div>
                                                                     </li>
@@ -109,16 +107,14 @@
                                                                     aria-labelledby="navbarDropdownMenuLink2">
                                                                     @foreach ($child2->users as $user)
                                                                         <li style="width: 250px">
-                                                                            <div class="d-flex p-2">
+                                                                            <div class="d-flex p-2 align-items-center">
                                                                                 <img src="{{ $user->img_url }}"
                                                                                     style="width: 30%"
                                                                                     class="me-3 rounded-circle">
                                                                                 <div>
                                                                                     <span
                                                                                         class="text-sm text-bolder">{{ $user->fullname }}</span><br>
-                                                                                    <span class="text-xs">Chức
-                                                                                        Vụ : Ông
-                                                                                        Trời</span>
+                                                                                    <span class="text-xs">{{ $user -> nominee }}</span>
                                                                                 </div>
                                                                             </div>
                                                                         </li>
@@ -164,7 +160,7 @@
                                                                                         aria-labelledby="navbarDropdownMenuLink2">
                                                                                         @foreach ($child3->users as $user)
                                                                                             <li style="width: 250px">
-                                                                                                <div class="d-flex p-2">
+                                                                                                <div class="d-flex p-2 align-items-center">
                                                                                                     <img src="{{ $user->img_url }}"
                                                                                                         class="rounded-circle me-3"
                                                                                                         style="width: 30%"
