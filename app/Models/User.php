@@ -46,8 +46,9 @@ class User extends Authenticatable
         return $test;
     }
 
-    public function nominees(){
-        return $this -> belongsTo(nominee::class);
+    public function nominees()
+    {
+        return $this->belongsTo(nominee::class);
     }
 
     /**
@@ -117,8 +118,14 @@ class User extends Authenticatable
                         Phòng Ban</th>
                     <th
                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        Trạng Thái</th>
-                    <th
+                        Trạng Thái</th>';
+        if (Auth::user()->level == 2) {
+            $html .= '  <th
+                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        Chỉnh Sửa</th> ';
+        }
+
+        $html .= '     <th
                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                         Action</th>
                 </tr>
@@ -189,9 +196,21 @@ class User extends Authenticatable
                 $html .= '<span class="badge badge-sm bg-gradient-warning">Không xác định</span> ';
             }
 
+            if (Auth::user()->level == 2) {
+                $html .= '</td>
+             <td><div class="form-check form-switch justify-content-center">';
 
-            $html .= '</td>
-                        <td class="align-middle text-end">
+                if ($ns->level != 0) {
+                    $html .= '  <input class="form-check-input read-checkbox-level" user-data-src="' . $ns->id . '" type="checkbox" id="flexSwitchCheckDefault" checked >';
+                } else {
+                    $html .= '  <input class="form-check-input read-checkbox-level" user-data-src="' . $ns->id . '" type="checkbox" id="flexSwitchCheckDefault" >';
+                }
+                $html .= '</div></td>';
+            }
+
+
+
+            $html .= '   <td class="align-middle text-end">
                             <div class="d-flex px-3 py-1 justify-content-center align-items-center"> ';
             if (!Auth::user()->level == 0) {
                 $html .= '<a class="text-sm font-weight-bold mb-0 " id="btn-del"
