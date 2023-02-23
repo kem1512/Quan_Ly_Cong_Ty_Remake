@@ -5,129 +5,6 @@
 
     @yield('personnel')
 
-    <style>
-        .setanimationshow {
-            position: relative;
-            animation-name: formsend;
-            animation-duration: 2s;
-        }
-
-        @keyframes formsend {
-            0% {
-                opacity: 0;
-                left: 0px;
-                top: -10px;
-            }
-
-            25% {
-                opacity: 1;
-                left: 0px;
-                top: 0px;
-            }
-
-        }
-
-        #adddropdown {
-            top: -100%;
-        }
-
-        #btn-edit,
-        #btn-del {
-            cursor: pointer;
-        }
-
-        .text-muted {
-            /* display: none; */
-        }
-
-        #adddropdown {
-            top: -10%;
-            -webkit-animation-name: rightanimationend;
-            -webkit-animation-duration: 0.4s;
-            animation-name: rightanimation;
-            animation-duration: 0.4s;
-        }
-
-        #offcanvasNavbar {
-            width: 40%;
-        }
-
-        .btn-close {
-            color: #524f4c !important;
-        }
-
-        .swal2-cancel {
-            margin-right: 10% !important;
-        }
-
-        #btn-submit-add {
-            text-align: center;
-        }
-
-        #offcanvasNavbarut,
-        #offcanvasNavbareditcv {
-            width: 50%;
-        }
-
-        #offcanvasNavbarupdate {
-            width: 70%;
-        }
-
-        #offcanvasNavbarevaluatecv {
-            width: 78%
-        }
-
-        #offcanvasNavbarphongvan {
-            width: 30%
-        }
-
-        @media only screen and (max-width: 1400px) {
-
-            #offcanvasNavbarupdate,
-            #offcanvasNavbarevaluatecv,
-            #offcanvasNavbar {
-                width: 78%;
-            }
-        }
-
-        @media only screen and (max-width: 1200px) {
-
-            #offcanvasNavbarupdate,
-            #offcanvasNavbarevaluatecv,
-            #offcanvasNavbarut,
-            #offcanvasNavbar {
-                width: 100%;
-            }
-        }
-
-        @media only screen and (max-width: 1000px) {
-            #imgupdate {
-                width: 12rem;
-                height: 17rem;
-            }
-        }
-
-        @media only screen and (max-width: 800px) {
-            #offcanvasNavbarphongvan {
-                width: 100%
-            }
-        }
-
-        #imgupdate {
-            color: bisque;
-            border: 1px solid #b3aea7;
-            width: 18rem;
-            height: 23rem;
-            margin-left: 8%;
-        }
-
-        .w-100 {
-            width: 100% !important;
-        }
-
-        /* ====================================== */
-    </style>
-
     <div class="container-fluid">
         <div class="header-body">
             <!-- Card stats -->
@@ -165,12 +42,13 @@
                     </button>
                 </li>
                 <li class="nav-item" role="presentation" style="border-radius: 0.5rem;background: gainsboro; ">
-                    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button"
-                        role="tab" aria-controls="contact" aria-selected="false"style="border-radius: 0.5rem ">
+                    <button class="nav-link" id="contact-tab" onclick="getallCV()" data-bs-toggle="tab"
+                        data-bs-target="#contact" type="button" role="tab" aria-controls="contact"
+                        aria-selected="false"style="border-radius: 0.5rem ">
                         <div class="row">
                             <div class="col">
                                 <h5 class="card-title text-uppercase text-muted mb-0">Xét Duyệt</h5>
-                                <span class="h2 font-weight-bold mb-0">350,897</span>
+                                <span id="xdcount" class="h2 font-weight-bold mb-0">{{ $xdcount }}</span>
                             </div>
                             <div class="col-auto">
                                 <div class="icon icon-shape bg-danger text-white rounded-circle shadow">
@@ -202,7 +80,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <select class="form-control" name="status_select" id="status_select">
-                                            <option value="9" selected>Trạng Thái</option>
+                                            <option value="" selected>Tất Cả Trạng Thái</option>
                                             <option value="0">Chưa Kích Hoạt</option>
                                             <option value="1">Đang Hoạt Động</option>
                                             <option value="2">Nghỉ Phép</option>
@@ -211,8 +89,8 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <select class="form-control" name="status_select" id="department_select">
-                                            <option value="9" selected>Phòng ban</option>
+                                        <select class="form-control" name="department_select" id="department_select">
+                                            <option value="" selected>Tất Cả Phòng ban</option>
                                             @foreach ($phongbans as $pb)
                                                 <option value="{{ $pb->id }}">{{ $pb->name }}</option>
                                             @endforeach
@@ -229,9 +107,6 @@
                         </div>
                     </div>
                     {{-- =================================================================== Tab HRM =================================================================== --}}
-
-
-
 
                     {{-- =================================================================== Tab Ứng tuyển =================================================================== --}}
                     <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -253,9 +128,6 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <a id="open_xep_lich" class="btn btn-primary" type="button"
-                                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarphongvan">Xếp
-                                            Lịch</a>
                                         <a id="form-add" class="btn btn-primary" type="button"
                                             data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbarut">Thêm Hồ Sơ</a>
                                     </div>
@@ -269,11 +141,10 @@
                     {{-- =================================================================== Tab Ứng tuyển =================================================================== --}}
 
                     {{-- =================================================================== Tab Xét Duyệt =================================================================== --}}
-                    <div class="tab-pane fade row d-flex" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                    <div class="tab-pane fade row " id="contact" role="tabpanel" aria-labelledby="contact-tab">
                         <div class="card mb-4 col-12">
                             <div class="card-header pb-0">
                                 <div class=" d-flex justify-content-between">
-                                    <h6>Danh Sách Xét Duyệt</h6>
                                     <div class="col-md-2">
                                         <div class="form-group">
                                             <input class="form-control" placeholder="Search..." id="search_cv">
@@ -295,18 +166,11 @@
                             </div>
                         </div>
                         {{-- // --}}
-                        <div class="card col-4">
-                            <div class="card-header pb-0 " style="background-color: #b3aea7;height: 100px;">
-                                danh sách các buổi phỏng vấn
+                        <div class="card col-12">
+                            <div class="card-header pb-0 ">
+                                <h6>Lịch Phỏng Vấn</h6>
                             </div>
-                            <div class="card-body px-0 pt-0 pb-2 row" id="interview">
-                            </div>
-                        </div>
-                        <div class="card col-7" style="background-color: #3a3023;height: 100px;">
-                            <div class="card-header pb-0">
-                                Ứng Viên hiển thị thông qua click ds buổi pv
-                            </div>
-                            <div class="card-body px-0 pt-0 pb-2 row" id="interview">
+                            <div class="card-body px-0 pt-0 pb-2 row" id="interview_table">
                             </div>
                         </div>
                     </div>
@@ -724,7 +588,7 @@
         </div>
     </div>
 
-    {{-- // Đánh gia  --}}
+    {{-- // Duyệt CV  --}}
     <div id="updatedropdown" class="bg-light fixed-top">
         <div class="container-fluid">
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarevaluatecv"
@@ -742,7 +606,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="col-sm-4 col-form-label">Tên Ứng Viên</label>
+                                    <label for="example-text-input" class="col-sm-4 col-form-label w-100">Tên Ứng
+                                        Viên</label>
                                     <input class="form-control" id="name_eva" type="text" name="name_ut" disabled>
                                 </div>
                             </div>
@@ -755,7 +620,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="col-sm-4 col-form-label">Số Điện Thoại</label>
+                                    <label for="example-text-input" class="col-sm-4 col-form-label  w-100">Số Điện
+                                        Thoại</label>
                                     <input class="form-control " type="text" id="phone_eva" name="phone_ut"
                                         value="" disabled>
                                 </div>
@@ -879,6 +745,96 @@
                             <button type="submit" class="btn btn-success">Thêm</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- Đánh Giá PV  --}}
+    <div id="updatedropdown" class="bg-light fixed-top">
+        <div class="container-fluid">
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarInterview"
+                aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <button type="button" class="btn-close" onclick="close2form()" data-bs-dismiss="offcanvas"
+                        aria-label="Close"><i class="fa fa-times" aria-hidden="true"></i></button>
+                </div>
+                <h1 id="add-title" style="text-align: center">Đánh Giá Hồ Sơ</h1>
+                <div id="form_eva" class="offcanvas-body row">
+                    <div class="col-md-6" style="min-height:40rem">
+                        <embed id="cv_url" src="" height="100%" width="100%"></embed>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label w-100">Tên Ứng
+                                        Viên</label>
+                                    <input class="form-control" id="name_eva" type="text" name="name_ut" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Email</label>
+                                    <input class="form-control" id="email_eva" name="email_ut" type="text"
+                                        value="" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label  w-100">Số Điện
+                                        Thoại</label>
+                                    <input class="form-control " type="text" id="phone_eva" name="phone_ut"
+                                        value="" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Ngày Sinh</label>
+                                    <input class="form-control " type="date" name="date_of_birth_ut"
+                                        id="date_of_birth_eva" value=""disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Giới Tính</label>
+                                    <select class="form-control " name="gender" id="gender_eva" disabled>
+                                        <option value="0">Nam</option>
+                                        <option value="1">Nữ</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Vị Trí</label>
+                                    <input class="form-control " type="text" name="nominees_eva" id="nominees_eva"
+                                        value=""disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="example-text-input" class="col-sm-4 col-form-label">Điểm Đánh Giá</label>
+                                    <div class="d-flex justify-content-between">
+                                        <label for="example-text-input">0 Điểm</label>
+                                        <label for="example-text-input" id="point_inter"></label>
+                                        <label for="example-text-input">10 Điểm</label>
+                                    </div>
+                                    <input type="range" class="form-range" min="0" max="10"
+                                        step="0.5" id="customRange3">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="exampleFormControlTextarea1" id="about-text" class="col-sm-4 col-form-label">
+                                Đánh Giá</label>
+                            <textarea class="form-control" name="about_eva" id="about_eva" rows="3"></textarea>
+                        </div>
+                        <div class="wrapper col-12 mt-5 " style="text-align: center">
+                            <a id="accept_cv" class="btn btn-success accept_cv" data=2 style="margin-right: 5%">Duyệt</a>
+                            <a onclick="openNote();" class="btn btn-secondary " style="margin-right: 5%">Từ Chối</a>
+                            <a class="btn btn-danger" onclick="close2form()" data-bs-dismiss="offcanvas">close</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

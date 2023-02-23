@@ -42,10 +42,11 @@ Route::get('/reset-password', [ResetPassword::class, 'show'])->middleware('guest
 Route::post('/reset-password', [ResetPassword::class, 'send'])->middleware('guest')->name('reset.perform');
 Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('guest')->name('change-password');
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
-Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
-Route::get('/personnel', [PersonnelController::class, 'show'])->name('personnel')->middleware('auth');
-Route::get('/personnel/delete', [App\Http\Controllers\PersonnelController::class, 'destroy'])->name('delete')->middleware('auth');
-Route::post('/personnel/add', [App\Http\Controllers\PersonnelController::class, 'store'])->middleware('auth')->name('create.user');
+
+Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
+
+// Route::get('/personnel/delete', [App\Http\Controllers\PersonnelController::class, 'destroy'])->name('delete');
+// Route::post('/personnel/add', [App\Http\Controllers\PersonnelController::class, 'store'])->name('create.user');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('department', [DepartmentController::class, 'index'])->name('department');
@@ -68,7 +69,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('position', [PositionController::class, 'index'])->name("position");
 
 	//personnel
-
+	Route::get('/personnel', [PersonnelController::class, 'show'])->name('personnel');
 	Route::get('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'index'])->name('personnel.index');
 	Route::get('/personnel/edit', [App\Http\Controllers\Admin\PersonnelController::class, 'edit'])->name('personnel.edit');
 	Route::delete('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'destroy'])->name('delete');
@@ -85,6 +86,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/personnel/nominees-first', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees_first'])->name('nominees_first');
 	Route::get('/personnel/nominees-cv', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees_cv'])->name('nominees_cv');
 	Route::get('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'getAllCVT'])->name('getcv');
+	Route::get('/personnel/interview', [App\Http\Controllers\Admin\PersonnelController::class, 'getAllInter'])->name('getcv');
 	Route::get('/personnel/cv-id', [App\Http\Controllers\Admin\PersonnelController::class, 'getCVbyID'])->name('getCVbyID');
 	Route::post('/personnel/cv-id', [App\Http\Controllers\Admin\PersonnelController::class, 'update_status_cv'])->name('update_status_cv');
 	Route::post('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'saveCV'])->name('savecv');
@@ -155,9 +157,9 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get(
 						'/',
 						function () {
-									$user = Auth::user();
-									return view('pages.Equiments.Transfer.transfer', compact('user'));
-								}
+							$user = Auth::user();
+							return view('pages.Equiments.Transfer.transfer', compact('user'));
+						}
 					)->name('transfer');
 					Route::get('/getnhansu/{id?}', [TransferController::class, 'GetNhanSu']);
 				}

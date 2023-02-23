@@ -64,6 +64,9 @@ function onDelete(id) {
                             $("#body_query").html(result.body);
                         }
                     },
+                    error: function () {
+                        onAlertError("Nhân sự này không thể xóa !");
+                    },
                 });
             } else if (
                 /* Read more about handling dismissals below */
@@ -87,6 +90,21 @@ $(document).ready(function () {
         getMoresUser(page);
     });
 });
+
+function getMoresUser(page) {
+    $.ajax({
+        type: "GET",
+        url: page,
+        success: function (result) {
+            if (result.location == "interview") {
+                $("#interview_table").html(result.cvbody);
+            } else if (result.location == "curriculumvitae") {
+                $("#cvut_query").html(result.cvbody);
+            }
+            $("#body_query").html(result.body);
+        },
+    });
+}
 
 // INSERT Personnel
 $("#btn_insert_personnel").on("click", function (e) {
@@ -116,7 +134,7 @@ $("#btn_insert_personnel").on("click", function (e) {
                 password: password,
             },
             success: function (result) {
-                if (result.message == "succes") {
+                if (result.status == "succes") {
                     onAlertSuccess("Nhân sự mới của bạn đã thêm thành công !");
                     $("#body_query").html(result.body);
                     $("#usercount").html(result.usercount);
@@ -147,8 +165,7 @@ function loadchucdanh(id) {
     });
 }
 //GET Personnel where id
-function getdetail({ e, id }) {
-    e.preventDefault();
+function getdetail(id) {
     loadchucdanh(id);
     $.ajax({
         url: "/personnel/edit",
@@ -201,9 +218,8 @@ function getdetail({ e, id }) {
     });
 }
 //GET Personnel View
-function getdetailview({ e, id }) {
+function getdetailview(id) {
     loadchucdanh(id);
-    e.preventDefault();
     $.ajax({
         url: "/personnel/edit",
         method: "GET",
@@ -325,10 +341,8 @@ $(document).ready(function () {
 //Fillter status
 $(document).ready(function () {
     $("#status_select").on("change", function () {
-        fillterst = $(this).val();
-        if (isNaN(fillterst)) {
-            fillterst = "";
-        }
+        fillterst = $("#status_select").val();
+        fillterdp = $("#department_select").val();
         console.log("Status" + fillterst);
         console.log("Phòng ban" + fillterdp);
         $.ajax({
@@ -348,12 +362,9 @@ $(document).ready(function () {
 //Fillter department
 $(document).ready(function () {
     $("#department_select").on("change", function () {
-        fillterdp = $(this).val();
-        if (isNaN(fillterdp)) {
-            fillterdp = "";
-        }
-        console.log("Status" + fillterst);
-        console.log("Phòng ban" + fillterdp);
+        fillterst = $("#status_select").val();
+        fillterdp = $("#department_select").val();
+
         $.ajax({
             url: "/personnel/fillter",
             method: "GET",
@@ -362,6 +373,7 @@ $(document).ready(function () {
                 department_filter: fillterdp,
             },
             success: function (result) {
+                console.log(result);
                 $("#body_query").html(result.body);
             },
         });
@@ -370,7 +382,7 @@ $(document).ready(function () {
 
 //edit level
 $(document).on("change", ".read-checkbox-level", function () {
-    var id = $(this).attr("level");
+    var id = $(this).attr("user-data-src");
     var st = $(this).is(":checked");
     console.log(id);
     console.log(st);
@@ -455,6 +467,28 @@ function setnull_insert_PV() {
 //INSERT PV
 $(document).ready(function () {
     $("#submit_insert_interview").on("submit", function (e) {
+        let timerInterval;
+        Swal.fire({
+            title: "Vui lòng đợi trong giây lát !",
+            html: "Chúng tôi đang gửi lời mời đến ứng viên !",
+            timer: 30000,
+            timerProgressBar: false,
+            didOpen: () => {
+                Swal.showLoading();
+                const b = Swal.getHtmlContainer().querySelector("b");
+                timerInterval = setInterval(() => {
+                    b.textContent = Swal.getTimerLeft();
+                }, 100);
+            },
+            willClose: () => {
+                clearInterval(timerInterval);
+            },
+        }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log("I was closed by the timer");
+            }
+        });
         e.preventDefault();
         var interviewer1 = $("#interviewer1").attr("code");
         var interviewer2 = $("#interviewer2").attr("code");
@@ -541,6 +575,13 @@ $("#interviewer2").autocomplete({
 });
 //Search CV
 $(document).ready(function () {
+    $("#customRange3").on("change", function () {
+        var point = $(this).val();
+        console.log(point);
+    });
+});
+//Search CV
+$(document).ready(function () {
     $("#search_cv").keyup(function () {
         var search = $("#search_cv").val();
         $.ajax({
@@ -572,6 +613,16 @@ $(document).ready(function () {
     });
 });
 //get all cv
+function getallInter() {
+    $.ajax({
+        url: "/personnel/interview",
+        method: "GET",
+        success: function (result) {
+            $("#interview_table").html(result.cvbody);
+        },
+    });
+}
+getallInter();
 function getallCV() {
     $.ajax({
         url: "/personnel/cv",
@@ -581,7 +632,7 @@ function getallCV() {
         },
     });
 }
-
+getallCV();
 // getAllCV
 $(document).ready(function () {
     $("#profile-tab").on("click", function () {
@@ -633,6 +684,30 @@ $(document).ready(function () {
         var status = $(this).attr("data");
         var id = $(this).attr("code");
         var note = $("#note").val();
+        if (status == 1) {
+            let timerInterval;
+            Swal.fire({
+                title: "Vui lòng đợi trong giây lát !",
+                html: "Chúng tôi đang gửi thông báo đến ứng viên !",
+                timer: 30000,
+                timerProgressBar: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    const b = Swal.getHtmlContainer().querySelector("b");
+                    timerInterval = setInterval(() => {
+                        b.textContent = Swal.getTimerLeft();
+                    }, 100);
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                },
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    console.log("I was closed by the timer");
+                }
+            });
+        }
         $.ajax({
             url: "/personnel/cv-id",
             method: "POST",
@@ -887,15 +962,6 @@ $(document).on("dblclick", ".dbcl_ctl", function () {
     }
 });
 
-function getMoresUser(page) {
-    $.ajax({
-        type: "GET",
-        url: page,
-        success: function (result) {
-            $("#body_query").html(result.body);
-        },
-    });
-}
 function onAlertSuccess(text) {
     Swal.fire("Thành Công !", text, "success");
 }
