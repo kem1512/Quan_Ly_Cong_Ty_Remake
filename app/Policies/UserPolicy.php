@@ -20,8 +20,8 @@ class UserPolicy
         //
     }
 
-    public function update(User $user, Department $deparment)
+    public function update(User $user)
     {
-        return true;
+        return $user->level > 3;
     }
 }

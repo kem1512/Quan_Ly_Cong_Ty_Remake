@@ -521,9 +521,8 @@ $(document).ready(function () {
     });
 });
 //duyệt hồ sơ
-$(document).ready(function (e) {
+$(document).ready(function () {
     // openLoading();
-    e.preventDefault();
     $(".accept_cv").on("click", function () {
         var status = $(this).attr("data");
         var id = $(this).attr("code");

@@ -101,6 +101,7 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get(
 						'/',
 						function () {
+
 									return view('pages.Equiments.Equiment_Type.Index');
 								}
 					)->name('equimenttype');
@@ -135,15 +136,11 @@ Route::group(['middleware' => 'auth'], function () {
 			Route::group(
 				['prefix' => 'transfer'],
 				function () {
-					Route::get(
-						'/',
-						function () {
-									$user = Auth::user();
-									$storehouse = storehouse::all();
-									return view('pages.Equiments.Transfer.transfer', compact('user', 'storehouse'));
-								}
-					)->name('transfer');
-					Route::get('/getstorehouse/{id_storehouse?}', [TransferController::class, 'GetStoreHouse']);
+					Route::get('/', [TransferController::class, 'Index'])->name('transfer');
+					Route::get('/getnhansu/{id?}', [TransferController::class, 'GetNhanSu']);
+					Route::get('/getstorehouse/{keyword?}', [TransferController::class, 'GetStoreHouse']);
+					Route::get('/getusedetail/{id?}', [TransferController::class, 'GetUseDetail']);
+					Route::post('/updateamount', [TransferController::class, 'GetUseDetail']);
 				}
 			);
 			//End route thiết bị
