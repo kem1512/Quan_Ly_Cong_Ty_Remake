@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\WareHousesController;
+use App\Models\storehouse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Models\Department;
@@ -55,7 +56,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('filter', [DepartmentController::class, 'filter'])->name('department.filter');
 	Route::post('department', [DepartmentController::class, 'create_or_update'])->name('department.create_or_update');
 	Route::delete('department', [DepartmentController::class, 'delete'])->name('department.delete');
-	
+
 	Route::post('searchUser', [DepartmentController::class, 'searchUsers'])->name('department.searchUsers');
 	Route::get('department/{id?}', [DepartmentController::class, 'display'])->name('department.display');
 	Route::get('department/user/{id?}', [DepartmentController::class, 'user'])->name('department.user');
@@ -100,8 +101,8 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get(
 						'/',
 						function () {
-							return view('pages.Equiments.Equiment_Type.Index');
-						}
+									return view('pages.Equiments.Equiment_Type.Index');
+								}
 					)->name('equimenttype');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [EquimentTypeController::class, 'Get']);
 					Route::post('post', [EquimentTypeController::class, 'Post']);
@@ -118,8 +119,8 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get(
 						'/',
 						function () {
-							return view('pages.Equiments.warehouse.wavehouse');
-						}
+									return view('pages.Equiments.warehouse.wavehouse');
+								}
 					)->name('warehouse');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [WareHousesController::class, 'Get']);
 					Route::get('delete/{id?}', [WareHousesController::class, 'Delete']);
@@ -127,19 +128,6 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::post('post', [WareHousesController::class, 'Create']);
 					Route::post('update/{id?}', [WareHousesController::class, 'Update']);
 					Route::get('getequipment/{perpage?}/{currentpage?}/{id?}/{keyword?}', [WareHousesController::class, 'GetEquiments']);
-				}
-			);
-
-			//Thiết bị
-			Route::group(
-				['prefix' => 'equiment'],
-				function () {
-					Route::get('/', [EquimentsController::class, 'Index'])->name('equiment');
-					Route::get('get/{perpage?}/{currentpage?}/{status?}/{keyword?}', [EquimentsController::class, 'Get']);
-					Route::post('post', [EquimentsController::class, 'Create']);
-					Route::get('delete/{id?}', [EquimentsController::class, 'Delete']);
-					Route::get('getbyid/{id?}', [EquimentsController::class, 'GetById']);
-					Route::post('update/{id?}', [EquimentsController::class, 'Update']);
 				}
 			);
 
@@ -151,10 +139,11 @@ Route::group(['middleware' => 'auth'], function () {
 						'/',
 						function () {
 									$user = Auth::user();
-									return view('pages.Equiments.Transfer.transfer', compact('user'));
+									$storehouse = storehouse::all();
+									return view('pages.Equiments.Transfer.transfer', compact('user', 'storehouse'));
 								}
 					)->name('transfer');
-					Route::get('/getnhansu/{id?}', [TransferController::class, 'GetNhanSu']);
+					Route::get('/getstorehouse/{id_storehouse?}', [TransferController::class, 'GetStoreHouse']);
 				}
 			);
 			//End route thiết bị
