@@ -131,19 +131,6 @@ Route::group(['middleware' => 'auth'], function () {
 				}
 			);
 
-			//Thiết bị
-			Route::group(
-				['prefix' => 'equiment'],
-				function () {
-					Route::get('/', [EquimentsController::class, 'Index'])->name('equiment');
-					Route::get('get/{perpage?}/{currentpage?}/{status?}/{keyword?}', [EquimentsController::class, 'Get']);
-					Route::post('post', [EquimentsController::class, 'Create']);
-					Route::get('delete/{id?}', [EquimentsController::class, 'Delete']);
-					Route::get('getbyid/{id?}', [EquimentsController::class, 'GetById']);
-					Route::post('update/{id?}', [EquimentsController::class, 'Update']);
-				}
-			);
-
 			//Chuyển giao
 			Route::group(
 				['prefix' => 'transfer'],
@@ -156,7 +143,7 @@ Route::group(['middleware' => 'auth'], function () {
 									return view('pages.Equiments.Transfer.transfer', compact('user', 'storehouse'));
 								}
 					)->name('transfer');
-					Route::get('/getnhansu/{id?}', [TransferController::class, 'GetNhanSu']);
+					Route::get('/getstorehouse/{id_storehouse?}', [TransferController::class, 'GetStoreHouse']);
 				}
 			);
 			//End route thiết bị
