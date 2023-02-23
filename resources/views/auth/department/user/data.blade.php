@@ -43,11 +43,6 @@
             </td>
         </tr>
     @endforeach
-    <tr>
-        <td class="pt-4 border-0">
-            {{ $users->links('pagination::bootstrap-4') }}
-        </td>
-    </tr>
 @else
     <tr class="mt-2">
         <td class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center pt-5"
