@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\User;
 use App\Models\Department;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\App;
 
 class UserPolicy
 {
@@ -20,7 +21,9 @@ class UserPolicy
         //
     }
 
+
     public function update(User $user)
+
     {
         return true;
     }

@@ -204,8 +204,7 @@
                     'register',
                     'recover-password',
                     'rtl',
-                    'virtual-reality',
-                    'overview',
+                    'virtual-reality'
                 ]))
             @yield('content')
         @else
