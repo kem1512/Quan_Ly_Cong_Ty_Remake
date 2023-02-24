@@ -7,9 +7,10 @@ use App\Http\Requests\AddInterviewRequest;
 use App\Http\Requests\saveCV;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\updateCVRequest;
+use App\Http\Requests\updateInterviewRequest;
 use App\Http\Requests\updateUserRequest;
 use App\Mail\PersonnelAcceptMailer;
-use App\Mail\PersonnelMailer;
+use App\Mail\PersonnelFaildCVMailer;
 use App\Models\CurriculumVitae;
 use App\Models\Department;
 use App\Models\interview;
@@ -62,14 +63,6 @@ class PersonnelController extends Controller
         return view('pages.personnel.personnel', compact('phongbans', 'postions', 'nhansu', 'xdcount', 'cvcount', 'cvs', 'ucount',));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-
-
     //====================PERSONNEL====================================
     public function edit(Request $rq)
     {
@@ -78,13 +71,6 @@ class PersonnelController extends Controller
         $personneldetail = User::find($id);
         return response()->json(['status' => 'success', 'data' => $personneldetail]);
     }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(updateUserRequest $request)
     {
         // check quyền user đăng nhập
@@ -158,12 +144,6 @@ class PersonnelController extends Controller
         $user->save();
         return response()->json(['status' => 'success', 'message' => 'Thay đổi đã được áp dụng !']);
     }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $rq)
     {
         //check quyền
@@ -249,6 +229,7 @@ class PersonnelController extends Controller
         Mail::to('lutl@s-connect.net')->send(new PersonnelAcceptMailer($cv->id, $id_inter));
         return response()->json(['status' => 'success', 'message' => 'Xếp Lịch Thành Công !']);
     }
+    //auto seach
     public function search_interviewer(Request $request)
     {
         $search = $request->search;
@@ -267,6 +248,60 @@ class PersonnelController extends Controller
         }
 
         return response()->json($response);
+    }
+    public function add_new_user(Request $request)
+    {
+        $user = CurriculumVitae::find($request->id);
+        $max = User::orderBy('id', 'DESC')->first();
+        $new_user = new User();
+        $new_user->personnel_code = 'SCN' . $max->id + 1;
+        $new_user->email = $user->email;
+        $new_user->password = $new_user->personnel_code;
+        $new_user->fullname = $user->name;
+        $new_user->phone = $user->phone;
+        $new_user->date_of_birth = $user->date_of_birth;
+        $new_user->status = 0;
+        $new_user->recruitment_date = Carbon::now();
+        $new_user->position_id = $user->position_id;
+        $new_user->nominee_id = $user->nominee;
+        $new_user->save();
+        $user->delete();
+        return response()->json(['status' => 'success', 'message' => 'Đã Thêm Nhân Sự Mới !']);
+    }
+    public function find_interviewer(Request $request)
+    {
+        $inter = CurriculumVitae::find_interview($request->id);
+        $user1 = User::find($inter[0]->interviewer1);
+        $user2 = User::find($inter[0]->interviewer2);
+        return response()->json(['status' => 'success', 'body' => $inter, 'user1' => $user1, 'user2' => $user2]);
+    }
+    public function send_offer(Request $request)
+    {
+        $offer = CurriculumVitae::find($request->id);
+        $offer->offer = $request->offer;
+        if ($offer->status == 4) {
+            $st = $offer->status;
+            $offer->status = 1 + $st;
+        }
+        $id = $offer->id;
+        Mail::to('lutl@s-connect.net')->send(new PersonnelFaildCVMailer($id));
+        $offer->save();
+        return response()->json(['status' => 'success', 'message' => 'Offer Thành Công !']);
+    }
+    public function update_xd_interview(updateInterviewRequest $request)
+    {
+        $inter = CurriculumVitae::find($request->id);
+        if ($inter->status != 3) {
+            return response()->json(['status' => 'error', 'message' => 'Không thể đánh giá ứng viên này !']);
+        }
+        if (!empty($inter->point)) {
+            return response()->json(['status' => 'error', 'message' => 'Ứng viên đã được đánh giá !']);
+        }
+        $inter->status = 4;
+        $inter->note = $request->note;
+        $inter->point = $request->point;
+        $inter->save();
+        return response()->json(['status' => 'success', 'message' => 'Đánh giá đã được lưu lại !']);
     }
 
     public function fillter(Request $request)
@@ -318,12 +353,6 @@ class PersonnelController extends Controller
         return response()->json(['status' => 'succes', 'message' => 'Thay đổi đã được áp dụng !']);
     }
 
-    /**
-     * Store a newly created resourcestatus in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StorePostRequest $request)
     {
         $user = new User();
@@ -397,6 +426,14 @@ class PersonnelController extends Controller
     {
         // dd($request);
     }
+    public function getcount()
+    {
+        //lấy số lượng nhân sự có trong db
+        $ucount = User::all()->count();
+        $xdcount = CurriculumVitae::where('status', '>', 2)->count();
+        $cvcount = CurriculumVitae::where('status', '=', 0)->orWhere('status', '=', 1)->orWhere('status', '=', 2)->count();
+        return response()->json(['status' => 'success', 'user_count' => $ucount, 'cv_xd_count' => $xdcount, 'cv_uv_count' => $cvcount]);
+    }
     public function update_status_cv(Request $request)
     {
         //check quyền
@@ -406,6 +443,12 @@ class PersonnelController extends Controller
         }
 
         $cv = CurriculumVitae::find($request->id);
+        if ($cv->status > 2) {
+            $cv->status = 6;
+            $cv->save();
+            //mail
+            return response()->json(['status' => 'succes', 'message' => 'Ứng viên đã được từ chối !']);
+        }
         // dd($request);
         if ($cv->status == 1) {
             return response()->json(['status' => 'error', 'message' => 'CV đã bị từ chối trước đó !']);
@@ -439,7 +482,7 @@ class PersonnelController extends Controller
         $cv->save();
         $id = $cv->id;
         if ($cv->status == 1) {
-            Mail::to('lutl@s-connect.net')->send(new PersonnelMailer($id));
+            Mail::to('lutl@s-connect.net')->send(new PersonnelFaildCVMailer($id));
         }
 
         return

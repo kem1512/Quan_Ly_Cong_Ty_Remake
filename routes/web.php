@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\PersonnelController;
 use App\Http\Controllers\EquimentTypeController;
 use App\Http\Controllers\EquimentsController;
 use App\Http\Controllers\PositionController;
+use App\Jobs\SendEmailJob;
 
 Route::get('/', function () {
 	return redirect('/dashboard');
@@ -69,8 +70,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('position', [PositionController::class, 'index'])->name("position");
 
 	//personnel
+
 	Route::get('/personnel', [PersonnelController::class, 'show'])->name('personnel');
 	Route::get('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'index'])->name('personnel.index');
+	Route::post('/personnel/new-user', [App\Http\Controllers\Admin\PersonnelController::class, 'add_new_user'])->name('add_new_user');
 	Route::get('/personnel/edit', [App\Http\Controllers\Admin\PersonnelController::class, 'edit'])->name('personnel.edit');
 	Route::delete('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'destroy'])->name('delete');
 	Route::post('/personnel/add', [App\Http\Controllers\Admin\PersonnelController::class, 'store'])->name('create.user');
@@ -86,6 +89,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/personnel/nominees-first', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees_first'])->name('nominees_first');
 	Route::get('/personnel/nominees-cv', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees_cv'])->name('nominees_cv');
 	Route::get('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'getAllCVT'])->name('getcv');
+	Route::get('/personnel/cv-count', [App\Http\Controllers\Admin\PersonnelController::class, 'getcount'])->name('getcount');
 	Route::get('/personnel/interview', [App\Http\Controllers\Admin\PersonnelController::class, 'getAllInter'])->name('getcv');
 	Route::get('/personnel/cv-id', [App\Http\Controllers\Admin\PersonnelController::class, 'getCVbyID'])->name('getCVbyID');
 	Route::post('/personnel/cv-id', [App\Http\Controllers\Admin\PersonnelController::class, 'update_status_cv'])->name('update_status_cv');
@@ -94,6 +98,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/personnel/cv-u', [App\Http\Controllers\Admin\PersonnelController::class, 'get_cv_update'])->name('get_cv_update');
 	Route::post('/personnel/cv-update', [App\Http\Controllers\Admin\PersonnelController::class, 'update_cv_all'])->name('update_cv_all');
 	Route::post('/personnel/interview', [App\Http\Controllers\Admin\PersonnelController::class, 'Add_interview'])->name('Add_interview');
+	Route::post('/personnel/interview/update', [App\Http\Controllers\Admin\PersonnelController::class, 'update_xd_interview'])->name('update_xd_interview');
+	Route::get('/personnel/interview/find', [App\Http\Controllers\Admin\PersonnelController::class, 'find_interviewer'])->name('find_interviewer');
+	Route::get('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'offer_cv'])->name('offer_cv');
+	Route::post('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'send_offer'])->name('send_offer');
 
 	Route::group(
 		['middleware' => 'auth'],
