@@ -25,6 +25,19 @@ $.ajaxSetup({
 });
 
 //==========================Personnel===================================
+//getcount
+function getcount() {
+    $.ajax({
+        type: "GET",
+        url: "/personnel/cv-count",
+        success: function (result) {
+            $("#usercount").html(result.user_count);
+            $("#cvcount").html(result.cv_uv_count);
+            $("#xdcount").html(result.cv_xd_count);
+        },
+    });
+}
+getcount();
 // DELETE Personnel
 function onDelete(id) {
     //sweetalert
@@ -60,6 +73,7 @@ function onDelete(id) {
                         if (result.status == "error") {
                             onAlertError(result.message);
                         } else {
+                            getcount();
                             onAlertSuccess("Xoá Thành Công !");
                             $("#body_query").html(result.body);
                         }
@@ -86,7 +100,6 @@ $(document).ready(function () {
     $(document).on("click", ".pagination a", function (e) {
         e.preventDefault();
         var page = $(this).attr("href");
-        console.log(page);
         getMoresUser(page);
     });
 });
@@ -135,6 +148,7 @@ $("#btn_insert_personnel").on("click", function (e) {
             },
             success: function (result) {
                 if (result.status == "succes") {
+                    getcount();
                     onAlertSuccess("Nhân sự mới của bạn đã thêm thành công !");
                     $("#body_query").html(result.body);
                     $("#usercount").html(result.usercount);
@@ -516,6 +530,7 @@ $(document).ready(function () {
                     onAlertSuccess(response.message);
                     setnull_insert_PV();
                     getallCV();
+                    getcount();
                     $("#body_query").html(response.body);
                 }
             },
@@ -573,11 +588,177 @@ $("#interviewer2").autocomplete({
         return false;
     },
 });
-//Search CV
+//find interview
+function find_interview(id) {
+    $.ajax({
+        url: "/personnel/interview/find",
+        type: "GET",
+        data: {
+            id: id,
+        },
+        success: (response) => {
+            var inter = response.body[0];
+            $("#xd_name_interview").val(inter.name);
+            $("#xd_email_interview").val(inter.email);
+            $("#xd_phone_interview").val(inter.phone);
+            $("#xd_date_of_birth_interview").val(inter.date_of_birth);
+            $("#xd_nominees_interview").val(inter.nominees);
+            $("#xd_gender_interview").val(inter.gender);
+            $("#id_interview").val(inter.id);
+            $("#faild_interview").attr("code", inter.id);
+            $("#cv_url_interview").attr(
+                "src",
+                "cv/" + inter.url_cv + "#toolbar=0&navpanes=0&scrollbar=0"
+            );
+        },
+    });
+}
+//add cv to personnel
+function addToPersonnel() {
+    var id = $("#accept_personnel").attr("data");
+    $.ajax({
+        url: "/personnel/new-user",
+        type: "POST",
+        data: {
+            id: id,
+        },
+        success: function (response) {
+            console.log(response);
+            if (response.status == "success") {
+                onAlertSuccess(response.message);
+            } else {
+                onAlertError(response.message);
+            }
+        },
+        error: (error) => {
+            onAlertError(error.responseJSON.message);
+        },
+    });
+}
+
+//find offer
+function find_offer(id) {
+    $.ajax({
+        url: "/personnel/interview/find",
+        type: "GET",
+        data: {
+            id: id,
+        },
+        success: (response) => {
+            var inter = response.body[0];
+            var ns1 = response.user1;
+            var ns2 = response.user2;
+            $("#name_offer").val(inter.name);
+            $("#email_offer").val(inter.email);
+            $("#phone_offer").val(inter.phone);
+            $("#date_of_birth_offer").val(inter.date_of_birth);
+            $("#nominees_offer").val(inter.nominees);
+            $("#gender_offer").val(inter.gender);
+            $("#id_offer").val(inter.id);
+            $("#accept_personnel").attr("data", inter.id);
+            $("#point_offer").val(inter.point);
+            $("#note_offer").val(inter.note);
+            if (inter.status == 6) {
+                $("#accept_offer").addClass("d-none");
+                $("#faild_offer").addClass("d-none");
+                $("#send_note_offer").val(inter.offer).attr("disabled", true);
+            } else {
+                $("#accept_offer").removeClass("d-none");
+                $("#faild_offer").removeClass("d-none");
+                $("#send_note_offer").val(inter.offer).attr("disabled", false);
+            }
+            if (inter.status == 5) {
+                $("#accept_personnel").removeClass("d-none");
+            } else {
+                $("#accept_personnel").addClass("d-none");
+            }
+            $("#faild_offer").attr("code", inter.id);
+            $("#cv_url_offer").attr(
+                "src",
+                "cv/" + inter.url_cv + "#toolbar=0&navpanes=0&scrollbar=0"
+            );
+            $("#interviewer1_offer").val(ns1.fullname);
+            $("#interviewer2_offer").val(ns2.fullname);
+        },
+    });
+}
+function faild_interview(id) {
+    $.ajax({
+        url: "/personnel/offer",
+        type: "POST",
+        data: {
+            id: id,
+            offer: offer,
+        },
+    });
+}
+$(document).ready(() => {
+    $("#accept_offer").on("click", () => {
+        var id = $("#id_offer").val();
+        var offer = $("#send_note_offer").val();
+        $.ajax({
+            url: "/personnel/offer",
+            type: "POST",
+            data: {
+                id: id,
+                offer: offer,
+            },
+            success: function (response) {
+                console.log(response);
+                if (response.status == "success") {
+                    onAlertSuccess(response.message);
+                } else {
+                    onAlertError(response.message);
+                }
+            },
+            error: (error) => {
+                onAlertError(error.responseJSON.message);
+            },
+        });
+    });
+});
+function offer_cv(id) {
+    $.ajax({
+        url: "/personnel/offer",
+        type: "GET",
+        data: {
+            id: id,
+        },
+        success: (response) => {},
+    });
+}
+//auto show point
 $(document).ready(function () {
     $("#customRange3").on("change", function () {
         var point = $(this).val();
-        console.log(point);
+        $("#point_inter").html(point + " Điểm");
+    });
+});
+$(document).ready(() => {
+    $("#accept_interview").on("click", () => {
+        var point = $("#customRange3").val();
+        var note = $("#xd_note_interview").val();
+        var id = $("#id_interview").val();
+        $.ajax({
+            url: "/personnel/interview/update",
+            type: "POST",
+            data: {
+                id: id,
+                point: point,
+                note: note,
+            },
+            success: (response) => {
+                if (response.status == "success") {
+                    getallInter();
+                    onAlertSuccess(response.message);
+                } else {
+                    onAlertError(response.message);
+                }
+            },
+            error: (error) => {
+                onAlertError(error.responseJSON.message);
+            },
+        });
     });
 });
 //Search CV
@@ -721,6 +902,8 @@ $(document).ready(function () {
                     // closeLoading();
                     onAlertSuccess(result.message);
                     getallCV();
+                    getallInter();
+                    getcount();
                 } else {
                     // closeLoading();
                     onAlertError(result.message);
@@ -767,7 +950,19 @@ function loadchucdanhUV(id) {
         },
     });
 }
-
+// Tìm ứng viên phỏng vấn
+function get_CV_By_ID_interview(id) {
+    $.ajax({
+        url: "/personnel/cv-u",
+        method: "GET",
+        data: {
+            id: id,
+        },
+        success: function (response) {
+            var cv = response.body;
+        },
+    });
+}
 // get cv bi id edit
 function get_CV_By_ID_edit(id) {
     loadchucdanhUV(id);
@@ -883,6 +1078,7 @@ $(document).ready(function () {
                     // closeLoading();
                     onAlertSuccess("Hồ sơ đã được thêm mới !");
                     setnull_insert_CV();
+                    getcount();
                     console.log(response.cvbody);
                     $("#cvut_query").html(response.cvbody);
                 }
