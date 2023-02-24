@@ -368,7 +368,8 @@
                         'nominee_id': parent.find('select[name="nominee_id"]').find(":selected")
                             .val(),
                         'position_id': parent.find('select[name="position_id"]').find(":selected")
-                            .val()
+                            .val(),
+                        'level': parent.find('input[name="level"]').val()
                     },
                     success: function(data) {
                         if (data.status == 0) {

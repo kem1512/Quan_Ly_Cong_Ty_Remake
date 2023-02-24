@@ -2,9 +2,7 @@
     @foreach ($users as $user)
         <tr>
             <td class="w-10">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1">
-                </div>
+                <input class="form-control w-50" type="text" name="level" value="{{ $user -> level }}">
             </td>
             <td>
                 <span class="text-secondary text-xs font-weight-bold">{{ $user->fullname }}</span>
