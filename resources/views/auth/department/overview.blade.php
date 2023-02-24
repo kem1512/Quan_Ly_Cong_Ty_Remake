@@ -1,8 +1,98 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
+    @include('layouts.navbars.auth.topnav', ['title' => 'Department'])
+    <style>
+        #drag {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
 
-@include('layouts.navbars.auth.topnav', ['title' => 'Department'])
+        /* width */
+        ::-webkit-scrollbar {
+            height: 5px;
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            /* background: #f1f1f1; */
+            background: transparent;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        #child1,
+        #child1_first,
+        #child1_last,
+        #child2,
+        #child2_last {
+            position: relative;
+        }
+
+        #child1::after {
+            display: inline-block;
+            content: "";
+            position: absolute;
+            background-color: gray;
+            height: 17.6px;
+            width: 2px;
+            left: 50%;
+            top: 0;
+            transform: translateY(-90%);
+        }
+
+        #child1_first::after {
+            display: inline-block;
+            content: "";
+            position: absolute;
+            background-color: gray;
+            height: 3px;
+            width: 54%;
+            right: 0;
+            top: 0;
+        }
+
+        #child1_last::after {
+            display: inline-block;
+            content: "";
+            position: absolute;
+            background-color: gray;
+            height: 3px;
+            width: 46%;
+            left: 0;
+            top: 0;
+        }
+
+        #child2::after {
+            display: inline-block;
+            content: "";
+            position: absolute;
+            background-color: gray;
+            height: 3px;
+            width: 8%;
+            left: -7%;
+            top: 50%;
+        }
+
+        #child2_last::after {
+            display: inline-block;
+            content: "";
+            position: absolute;
+            background-color: gray;
+            height: 50%;
+            width: 3px;
+            left: 0;
+            top: 0;
+        }
+    </style>
     <div class="container-fluid py-4">
         @yield('department')
         <div class="container-fluid">
@@ -12,31 +102,59 @@
                         <div class="col-md-12">
                             <div class="row justify-content-center">
                                 <div class="col-md-3">
-                                    <div class="card flex-sm-row align-items-center">
-                                        <div class="w-25">
-                                            <img src="https://c3kienthuyhp.edu.vn/wp-content/uploads/2022/12/1672365681_454_222-Hinh-Anh-Avatar-FF-Dep-Chat-Ngat-AI-CUNG.jpg"
-                                                class="card-img-top" alt="...">
+                                    <div class="card">
+                                        <div class="card-header p-0 px-3 py-2 position-relative z-index-1">
+                                            <a href="javascript:;" class="d-block">
+                                                <span class="text-bolder text-xs">{{ $department->name }}</span>
+                                            </a>
                                         </div>
-                                        <div class="card-body">
-                                            <p class="card-title text-sm text-bolder">{{ $department->name }}</p>
+
+                                        <div class="card-body py-2 px-3 border-top">
+                                            <div class="author align-items-center">
+                                                <img src="{{ $department->users[0]->img_url ?? '' }}" alt="..."
+                                                    class="avatar shadow rounded-circle">
+                                                <div class="name ps-3">
+                                                    <span class="text-xs">{{ $department->users[0]->fullname ?? '' }}</span>
+                                                    <div class="stats text-xs">
+                                                        <small
+                                                            class="text-xxs">{{ $department->users[0]->nominee ?? 'Trống' }}</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-footer p-0 px-3 pb-3">
+                                            <div
+                                                class="text-xxs text-bolder text-danger pb-2 {{ $department->users->count() > 1 ? 'd-block' : 'd-none' }}">
+                                                <span>Nhân Viên</span>
+                                            </div>
                                             <div class="d-flex">
+                                                @foreach ($department->users as $user)
+                                                    @if (!$loop->first && $loop->index < 6)
+                                                        <img src="{{ $user->img_url }}" class="rounded-circle me-2"
+                                                            style="width: 15%">
+                                                    @endif
+                                                @endforeach
+                                            </div>
+
+                                            <div class="text-center mt-2">
                                                 <div class="dropdown">
-                                                    <a href="#" data-bs-auto-close="outside"
-                                                        class="btn btn-xs bg-gradient-dark dropdown-toggle me-2"
-                                                        data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
-                                                        {{ $department->users->count() }} Nhân Viên
+                                                    <a class="dropdown-toggle text-xs text-info" data-bs-auto-close="outside" type="button"
+                                                        id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                        aria-expanded="false">
+                                                        Nhân Viên
                                                     </a>
-                                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
+                                                    <ul class="dropdown-menu" style="max-height: 280px; overflow-y: auto" aria-labelledby="navbarDropdownMenuLink2">
                                                         @foreach ($department->users as $user)
                                                             <li style="width: 250px">
                                                                 <div class="d-flex p-2 align-items-center">
-                                                                    <img src="{{ $user->img_url }}"
-                                                                        class="rounded-circle me-3" style="width: 30%"
+                                                                    <img src="{{ $user->img_url ?? '' }}"
+                                                                        class="rounded-circle me-3" style="width: 25%"
                                                                         class="me-2">
                                                                     <div>
                                                                         <span
-                                                                            class="text-sm text-bolder">{{ $user->fullname }}</span><br>
-                                                                        <span class="text-xs">{{ $user->nominee }}</span>
+                                                                            class="text-xs text-bolder">{{ $user->fullname ?? '' }}</span><br>
+                                                                        <span class="text-xs">{{ $user->nominee ?? '' }}</span>
                                                                     </div>
                                                                 </div>
                                                             </li>
@@ -48,145 +166,148 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="d-flex overflow-hidden" style="overflow-y: hidden !important;" id="drag">
+                            <div class="d-flex overflow-scroll px-4" style="overflow-y: hidden !important;" id="drag">
                                 @foreach ($department->children as $child1)
-                                    <div class="col-md-3 mt-3 me-3" style="border-top: 1px solid">
-                                        <div class="card flex-sm-row align-items-center mb-3">
-                                            <div class="w-25">
-                                                <img src="https://c3kienthuyhp.edu.vn/wp-content/uploads/2022/12/1672365681_454_222-Hinh-Anh-Avatar-FF-Dep-Chat-Ngat-AI-CUNG.jpg"
-                                                    class="card-img-top" alt="...">
-                                            </div>
-                                            <div class="card-body">
-                                                <p class="card-title text-sm text-bolder">{{ $child1->name }}
-                                                </p>
-                                                <div class="d-flex">
-                                                    <div class="dropdown">
-                                                        <a href="#" data-bs-auto-close="outside"
-                                                            class="btn btn-xs bg-gradient-dark dropdown-toggle me-2"
-                                                            data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
-                                                            {{ $child1->users->count() }} Nhân Viên
+                                    <div class="col-md-3 mt-3"
+                                        id="{{ $loop->first ? 'child1_first' : '' }}{{ $loop->last ? 'child1_last' : '' }}"
+                                        style="{{ $loop->first || $loop->last ? '' : 'border-top: 3px solid' }}">
+                                        <div class="pe-4 py-3">
+                                            <div id="child1">
+                                                <div class="card">
+                                                    <div class="card-header p-0 px-3 py-2 position-relative z-index-1">
+                                                        <a href="javascript:;" class="d-block">
+                                                            <span class="text-bolder text-xs">{{ $child1->name }}</span>
                                                         </a>
-                                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink2">
-                                                            @foreach ($child1->users as $user)
-                                                                <li style="width: 250px">
-                                                                    <div class="d-flex p-2 align-items-center">
-                                                                        <img src="{{ $user->img_url }}"
-                                                                            class="rounded-circle me-3" style="width: 30%"
-                                                                            class="me-2">
-                                                                        <div>
-                                                                            <span
-                                                                                class="text-sm text-bolder">{{ $user->fullname }}</span><br>
-                                                                            <span
-                                                                                class="text-xs">{{ $user->nominee }}</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </li>
-                                                            @endforeach
-                                                        </ul>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        @foreach ($child1->children as $child2)
-                                            <div class="card flex-sm-row align-items-center">
-                                                <div style="width: 30%">
-                                                    <img src="https://img6.thuthuatphanmem.vn/uploads/2022/09/21/anh-avatar-ff-cool-ngau-dep_092531137.jpg"
-                                                        class="card-img-top" alt="...">
-                                                </div>
-                                                <div class="card-body">
-                                                    <p class="card-title text-sm text-bolder">
-                                                        {{ $child2->name }}</p>
-                                                    <div class="d-flex">
-                                                        <div class="dropdown">
-                                                            <a href="#"
-                                                                class="btn btn-xs bg-gradient-dark dropdown-toggle me-2"
-                                                                data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                                                                id="navbarDropdownMenuLink2">
-                                                                {{ $child2->users->count() }}
-                                                                Nhân Viên
-                                                            </a>
-                                                            <ul class="dropdown-menu"
-                                                                aria-labelledby="navbarDropdownMenuLink2">
-                                                                @foreach ($child2->users as $user)
-                                                                    <li style="width: 250px">
-                                                                        <div class="d-flex p-2 align-items-center">
-                                                                            <img src="{{ $user->img_url }}"
-                                                                                style="width: 30%"
-                                                                                class="me-3 rounded-circle">
-                                                                            <div>
-                                                                                <span
-                                                                                    class="text-sm text-bolder">{{ $user->fullname }}</span><br>
-                                                                                <span
-                                                                                    class="text-xs">{{ $user->nominee }}</span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </li>
-                                                                @endforeach
-                                                            </ul>
+
+                                                    <div class="card-body py-2 px-3 border-top">
+                                                        <div class="author align-items-center">
+                                                            <img src="{{ $child1->users[0]->img_url ?? 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=' }}"
+                                                                alt="..." class="avatar shadow rounded-circle">
+                                                            <div class="name ps-3">
+                                                                <span
+                                                                    class="text-xs">{{ $child1->users[0]->fullname ?? '' }}</span>
+                                                                <div class="stats text-xs">
+                                                                    <small
+                                                                        class="text-xxs">{{ $child1->users[0]->nominee ?? 'Trống' }}</small>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <button
-                                                            data-bs-target="#flush-collapse-child-{{ $loop->parent->index }}-{{ $loop->index }}"
-                                                            aria-expanded="false"
-                                                            class="btn btn-xs bg-gradient-success dropdown-toggle {{ $child2->children->count() > 0 ? 'd-block' : 'd-none' }}"
-                                                            type="button" id="dropdownMenuButton" data-bs-toggle="collapse"
-                                                            aria-expanded="false">
-                                                        </button>
+                                                    </div>
+
+                                                    <div class="card-footer p-0 px-3 pb-3">
+                                                        <div
+                                                            class="text-xxs text-bolder text-danger pb-2 {{ $child1->users->count() > 1 ? 'd-block' : 'd-none' }}">
+                                                            <span>Nhân Viên</span>
+                                                        </div>
+                                                        <div class="d-flex">
+                                                            @foreach ($child1->users as $user)
+                                                                @if (!$loop->first)
+                                                                    <img src="{{ $user->img_url }}"
+                                                                        class="rounded-circle me-2" style="width: 15%"
+                                                                        class="me-2">
+                                                                @endif
+                                                            @endforeach
+                                                        </div>
+                                                        
+                                                        <div class="text-center mt-2 {{ $child1->users->count() > 1 ? 'd-block' : 'd-none' }}">
+                                                            <div class="dropdown">
+                                                                <a class="dropdown-toggle text-xs text-info" data-bs-auto-close="outside" type="button"
+                                                                    id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                                    aria-expanded="false">
+                                                                    Nhân Viên
+                                                                </a>
+                                                                <ul class="dropdown-menu" style="max-height: 280px; overflow-y: auto" aria-labelledby="navbarDropdownMenuLink2">
+                                                                    @foreach ($child1->users as $user)
+                                                                        <li style="width: 250px">
+                                                                            <div class="d-flex p-2 align-items-center">
+                                                                                <img src="{{ $user->img_url }}"
+                                                                                    class="rounded-circle me-3" style="width: 25%"
+                                                                                    class="me-2">
+                                                                                <div>
+                                                                                    <span
+                                                                                        class="text-xs text-bolder">{{ $user->fullname }}</span><br>
+                                                                                    <span class="text-xs">{{ $user->nominee }}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="accordion accordion-flush mb-3" id="accordionFlushExample">
-                                                <div class="accordion-item">
-                                                    <div id="flush-collapse-child-{{ $loop->parent->index }}-{{ $loop->index }}"
-                                                        class="accordion-collapse collapse">
-                                                        <div class="accordion-body text-danger">
-                                                            @foreach ($child2->children as $child3)
-                                                                <div class="card flex-sm-row align-items-center mb-3">
-                                                                    <div class="w-25">
-                                                                        <img src="https://kynguyenlamdep.com/wp-content/uploads/2022/08/avatar-ff-ngau.jpg"
-                                                                            class="card-img-top" alt="...">
-                                                                    </div>
-                                                                    <div class="card-body">
-                                                                        <p class="card-title text-sm text-bolder">
-                                                                            {{ $child3->name }}</p>
-                                                                        <div class="d-flex">
-                                                                            <div class="dropdown">
-                                                                                <a href="#"
-                                                                                    data-bs-auto-close="outside"
-                                                                                    class="btn btn-xs bg-gradient-dark dropdown-toggle me-2"
-                                                                                    data-bs-toggle="dropdown"
-                                                                                    id="navbarDropdownMenuLink2">
-                                                                                    {{ $child3->users->count() }} Nhân Viên
-                                                                                </a>
-                                                                                <ul class="dropdown-menu"
-                                                                                    aria-labelledby="navbarDropdownMenuLink2">
-                                                                                    @foreach ($child3->users as $user)
-                                                                                        <li style="width: 250px">
-                                                                                            <div
-                                                                                                class="d-flex p-2 align-items-center">
-                                                                                                <img src="{{ $user->img_url }}"
-                                                                                                    class="rounded-circle me-3"
-                                                                                                    style="width: 30%"
-                                                                                                    class="me-2">
-                                                                                                <div>
-                                                                                                    <span
-                                                                                                        class="text-sm text-bolder">{{ $user->fullname }}</span><br>
-                                                                                                    <span
-                                                                                                        class="text-xs">{{ $user -> nomiee}}</span>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </li>
-                                                                                    @endforeach
-                                                                                </ul>
-                                                                            </div>
-                                                                        </div>
+                                            @foreach ($child1->children as $child2)
+                                                <div class="ps-3 py-3" id="{{ $loop->last ? 'child2_last' : '' }}"
+                                                    style="{{ $loop->last ? '' : 'border-left: 3px solid' }}">
+                                                    <div class="card" id="child2">
+                                                        <div class="card-header p-0 px-3 py-2 position-relative z-index-1">
+                                                            <a href="javascript:;" class="d-block">
+                                                                <span
+                                                                    class="text-bolder text-xs">{{ $child2->name }}</span>
+                                                            </a>
+                                                        </div>
+
+                                                        <div class="card-body py-2 px-3 border-top">
+                                                            <div class="author align-items-center">
+                                                                <img src="{{ $child2->users[0]->img_url ?? 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=' }}"
+                                                                    alt="..." class="avatar shadow rounded-circle">
+                                                                <div class="name ps-3">
+                                                                    <span
+                                                                        class="text-xs">{{ $child2->users[0]->fullname ?? '' }}</span>
+                                                                    <div class="stats text-xs">
+                                                                        <small
+                                                                            class="text-xxs">{{ $child2->users[0]->nominee ?? 'Trống' }}</small>
                                                                     </div>
                                                                 </div>
-                                                            @endforeach
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="card-footer p-0 px-3 pb-3">
+                                                            <div
+                                                                class="text-xxs text-bolder text-danger pb-2 {{ $child2->users->count() > 1 ? 'd-block' : 'd-none' }}">
+                                                                <span>Nhân Viên</span>
+                                                            </div>
+                                                            <div class="d-flex">
+                                                                @foreach ($child2->users as $user)
+                                                                    @if (!$loop->first)
+                                                                        <img src="{{ $user->img_url }}"
+                                                                            class="rounded-circle me-2" style="width: 15%"
+                                                                            class="me-2">
+                                                                    @endif
+                                                                @endforeach
+                                                            </div>
+                                                            <div class="text-center mt-2 {{ $child2->users->count() > 1 ? 'd-block' : 'd-none' }}">
+                                                                <div class="dropdown">
+                                                                    <a class="dropdown-toggle text-xs text-info" data-bs-auto-close="outside" type="button"
+                                                                        id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                                                        aria-expanded="false">
+                                                                        Nhân Viên
+                                                                    </a>
+                                                                    <ul class="dropdown-menu" style="max-height: 280px; overflow-y: auto" aria-labelledby="navbarDropdownMenuLink2">
+                                                                        @foreach ($child2->users as $user)
+                                                                            <li style="width: 250px">
+                                                                                <div class="d-flex p-2 align-items-center">
+                                                                                    <img src="{{ $user->img_url }}"
+                                                                                        class="rounded-circle me-3" style="width: 25%"
+                                                                                        class="me-2">
+                                                                                    <div>
+                                                                                        <span
+                                                                                            class="text-xs text-bolder">{{ $user->fullname }}</span><br>
+                                                                                        <span class="text-xs">{{ $user->nominee }}</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        @endforeach
+                                            @endforeach
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>

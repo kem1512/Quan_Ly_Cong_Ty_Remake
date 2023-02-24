@@ -12,11 +12,13 @@ class Position extends Model
     use HasFactory;
 
     public function nominees(){
-        return $this -> hasMany(Nominee::class);
+        return $this -> hasMany(Nominee::class)->orderBy("created_at");
     }
 
     protected $fillable = [
         'id',
         'position',
     ];
+
+    public $timestamps = false;
 }

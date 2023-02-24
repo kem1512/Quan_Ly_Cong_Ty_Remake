@@ -13,6 +13,6 @@ class Department extends Model
     use NodeTrait;
 
     public function users(){
-        return $this -> hasMany(User::class, 'department_id', 'id');
+        return $this -> hasMany(User::class, 'department_id', 'id')->orderBy('level', 'desc');
     }
 }

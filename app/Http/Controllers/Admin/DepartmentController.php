@@ -41,7 +41,7 @@ class DepartmentController extends Controller
             $department->status = $request->status == 'on' ? 1 : 0;
 
             if ($department_parent != null) {
-                if ($department_parent->depth >= 3) {
+                if ($department_parent -> depth >= 3) {
                     return response()->json(['status' => 0, 'msg' => 'Không Hỗ Trợ Từ 3 Cấp Trở Lên']);
                 } else {
                     $department->appendToNode($department_parent)->save();
@@ -57,7 +57,7 @@ class DepartmentController extends Controller
                         // #2 Explicit save
                         $department->makeRoot()->save();
 
-                        return response()->json(['status' => 1, 'msg' => 'Cập Nhật Thành Công']);
+                        return response()->json(['status' => 1, 'msg' => 'Cập Thành Công']);
                     } else {
                         return response()->json(['status' => 0, 'msg' => 'Mã Đã Tồn Tại']);
                     }
@@ -160,6 +160,7 @@ class DepartmentController extends Controller
             $user = User::find($request->id);
             $user->position_id = $request->position_id;
             $user->nominee_id = $request->nominee_id;
+            $user -> level = $request -> level;
             $user->nominee = nominee::find($request->nominee_id)->nominees;
             if ($user->save()) {
                 return response()->json(['status' => 1, 'msg' => 'Sửa thành công']);

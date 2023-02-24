@@ -68,6 +68,13 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('updateUser', [DepartmentController::class, 'updateUser'])->name('department.updateUser');
 
 	Route::get('position', [PositionController::class, 'index'])->name("position");
+	Route::get('get_position', [PositionController::class, 'get_positions']);
+	Route::post('delete_position', [PositionController::class, 'delete_position'])->name('department.delete_position');
+	Route::post('delete_nominee', [PositionController::class, 'delete_nominee'])->name('department.delete_nominee');
+	Route::post('update_position', [PositionController::class, 'update_position'])->name('department.update_position');
+	Route::post('update_nominee', [PositionController::class, 'update_nominee'])->name('department.update_nominee');
+	Route::post('add_position', [PositionController::class, 'add_position'])->name('department.add_position');
+	Route::post('add_nominee', [PositionController::class, 'add_nominee'])->name('department.add_nominee');
 
 	//personnel
 
