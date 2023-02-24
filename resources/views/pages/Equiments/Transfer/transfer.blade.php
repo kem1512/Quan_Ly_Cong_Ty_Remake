@@ -67,7 +67,7 @@
                             </div>
                             <div>
                                 <select id="changtype" class="form-control">
-                                    <option value="hand-over">Bàn giao</option>
+                                    <option value="hand_over">Bàn giao</option>
                                     <option value="recall">Thu hồi</option>
                                 </select>
                             </div>

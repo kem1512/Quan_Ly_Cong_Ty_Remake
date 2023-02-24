@@ -1,5 +1,7 @@
 var id_users = 0;
 var keyword = "";
+var arrEquipment = [];
+var arrStoreHouse = [];
 
 
 $(document).ready(function () {
@@ -13,6 +15,13 @@ $(document).ready(function () {
     GetNhanSuNhan();
     CancelBenNhan();
     chooseEquipment();
+    DisplayEquipmentTranfer();
+    UpdateAmountTransfer();
+    arrEquipment = JSON.parse(sessionStorage.getItem('arr')) == null ? [] : JSON.parse(sessionStorage.getItem('arr'));
+    if (arrEquipment.length != 0) {
+        DisplayEquipmentTranfer();
+    }
+    SaveTransfer();
 });
 
 function changtype() {
@@ -36,11 +45,11 @@ function ChonBenChuyen() {
             success: function (response) {
                 let html = '';
                 $.each(response.users, function (index, value) {
-                    html += '<tr>\
-                                <td><img class="rounded-circle img-fluid w-25" src="'+ (value.img_url == null ? "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" : value.img_url) + '"></td>\
-                                <td>'+ value.fullname + '</td>\
-                                <td><button id="btnChonChuyen" name="'+ value.id + '" class="btn btn-primary"><i class="fa-solid fa-check"></i></button></td>\
-                            </tr>';
+                    html += `<tr>
+                                <td><img class="rounded-circle img-fluid w-25" src="${(value.img_url == null ? "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" : value.img_url)}"></td>
+                                <td>${value.fullname}</td>
+                                <td><button id="btnChonChuyen" name="${value.id}" class="btn btn-primary"><i class="fa-solid fa-check"></i></button></td>
+                            </tr>`;
                 });
                 $('#chooseuser').html(html);
             }
@@ -65,11 +74,11 @@ function ChonBenNhan() {
             success: function (response) {
                 let html = '';
                 $.each(response.users, function (index, value) {
-                    html += '<tr>\
-                                    <td><img class="rounded-circle img-fluid w-25" src="'+ (value.img_url == null ? "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" : value.img_url) + '"></td>\
-                                    <td>'+ value.fullname + '</td>\
-                                    <td><button id="btnChonNhan" name="'+ value.id + '" class="btn btn-primary"><i class="fa-solid fa-check"></i></button></td>\
-                                </tr>';
+                    html += `<tr>
+                                    <td><img class="rounded-circle img-fluid w-25" src="${(value.img_url == null ? "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" : value.img_url)}"></td>
+                                    <td>${value.fullname}</td>
+                                    <td><button id="btnChonNhan" name="${value.id}" class="btn btn-primary"><i class="fa-solid fa-check"></i></button></td>
+                                </tr>`;
                 });
                 $('#chooseuser').html(html);
             }
@@ -84,13 +93,14 @@ function GetStoreHouse() {
         dataType: "json",
         success: function (response) {
             let html = '';
-            $.each(response.equipment, function (index, value) {
+            arrStoreHouse = response.equipment;
+            $.each(arrStoreHouse, function (index, value) {
                 html += `<tr>
                             <td>${index + 1}</td>
                             <td><img class="rounded-circle img-fluid" style="width: 100px;height: 100px" src="${(value.image == null ? "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" : value.image)}"/></td>
                             <td>${value.name}</td>
                             <td>${value.amount}</td>
-                            <td><button id="ChonTrongKho" class="btn btn-primary">Chọn</button></td>
+                            <td><button id="ChonTrongKho" name="${value.id}" amountkho="${value.amount}" class="btn btn-primary">Chọn</button></td>
                         </tr>`;
             });
             $('#list_storehouse').html(html);
@@ -114,16 +124,20 @@ function GetNhanSuBanGiao() {
             url: "/transfer/getusedetail/" + id,
             dataType: "json",
             success: function (response) {
-                if (response.usedetails.length != 0) {
+                sessionStorage.clear();
+                arrEquipment = [];
+                DisplayEquipmentTranfer();
+                if (response.usedetails != 0) {
                     let html = '';
                     $.each(response.usedetails, function (index, value) {
-                        html += '<tr>\
-                                    <td>'+ (index + 1) + '</td>\
-                                    <td>'+ value.image + '</td>\
-                                    <td>'+ value.name + '</td>\
-                                    <td>'+ value.amount + '</td>\
-                                    <td><button class="btn btn-primary">Chọn</button></td>\
-                                </tr>';
+                        html += `<tr>
+                                    <td>${(index + 1)}</td>
+                                    <td><img class="rounded-circle img-fluid" style="width: 100px;height: 100px" src="${(value.image == null ? "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" : value.image)}"</td>
+                                    <td>${value.name}</td>
+                                    <td id="amountnhansu">${value.amount}</td>
+                                    <td><button id="ChonTrongKho" name="${value.id}" class="btn btn-primary">Chọn</button></td>
+                                </tr>`;
+
                         $('#txtNameChuyen').val(value.fullname);
                         $('#txtNameChuyen').prop('disabled', true);
                         $('#txtNameChuyen').attr('name', value.id);
@@ -189,7 +203,12 @@ function CancelBenChuyen() {
         id_users = idbennhan == "" ? 0 : idbennhan;
         $('#imgBenChuyen').attr('src', "");
         $('#imgBenChuyen').css('display', 'none');
+        arrEquipment = [];
+        DisplayEquipmentTranfer();
         GetStoreHouse();
+        sessionStorage.clear();
+        arrEquipment = [];
+        DisplayEquipmentTranfer();
     });
 }
 
@@ -210,5 +229,124 @@ function CancelBenNhan() {
 function chooseEquipment() {
     $(document).on('click', '#ChonTrongKho', function () {
 
+        let id = $(this).attr('name');
+        let amountkho = $(this).attr('amountkho');
+
+        $.ajax({
+            type: "get",
+            url: "transfer/getequipmentbyid/" + id,
+            dataType: "json",
+            success: function (response) {
+
+                let equip = new equipment();
+                equip.id = response.equipment.id;
+                equip.image = response.equipment.image;
+                equip.name = response.equipment.name;
+                equip.amount = 1;
+
+                if (arrEquipment.length == 0) {
+                    arrEquipment.push(equip);
+                    DisplayEquipmentTranfer();
+                } else {
+
+                    let check = arrEquipment.some(e => e.id == equip.id);
+
+                    if (!check) {
+                        let newArr = [];
+                        newArr.push(equip);
+                        for (const equip of newArr) {
+                            arrEquipment.push(equip);
+                        }
+                        DisplayEquipmentTranfer();
+                    } else {
+                        for (const eqip of arrEquipment) {
+                            if (eqip.id == equip.id) {
+                                if (eqip.amount < amountkho) {
+                                    eqip.amount++;
+                                    DisplayEquipmentTranfer();
+                                } else {
+                                    Swal.fire(
+                                        'Cảnh báo!',
+                                        'Đã vượt quá số lượng thiết bị!',
+                                        'warning'
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                window.sessionStorage.setItem('arr', JSON.stringify(arrEquipment));
+            }
+        });
     });
+}
+
+function DisplayEquipmentTranfer() {
+    let html = '';
+    $.each(arrEquipment, function (index, value) {
+        html += `<tr>
+                    <td>${(index + 1)}</td>
+                    <td><img class="rounded-circle img-fluid" style="width: 100px;height: 100px" src="${(value.image == null ? "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" : value.image)}"</td>
+                    <td>${value.name}</td>
+                    <td id="amounttrans">${value.amount}</td>
+                    <td><button id="btnUpdateAmountTransfer" name="${value.id}" amounttransfer="${value.amount}" class="btn btn-primary">Xóa</button></td>
+                </tr>`;
+    });
+    $('#list-equiment-storehouse').html(html);
+}
+
+function UpdateAmountTransfer() {
+    $(document).on('click', '#btnUpdateAmountTransfer', function () {
+        let id = $(this).attr('name');
+        let amount = $(this).attr('amounttransfer');
+        for (const value of arrEquipment) {
+            if (value.id == id) {
+                if (amount > 1) {
+                    amount--;
+                    value.amount = amount;
+                    DisplayEquipmentTranfer();
+                } else {
+                    let newarr = arrEquipment.filter(item => item !== value);
+                    arrEquipment = newarr;
+                    window.sessionStorage.setItem('arr', JSON.stringify(arrEquipment));
+                    DisplayEquipmentTranfer();
+                }
+            }
+        }
+    });
+}
+
+class equipment {
+    id;
+    image;
+    name;
+    amount;
+}
+
+function SaveTransfer() {
+    $('#btnSave').on('click', function () {
+        let user_transfer_id = $('#txtNameChuyen').attr('name');
+        let user_receive_id = $('#txtBenNhan').attr('name');
+        let performer_id = $('#txtInfo').attr('name');
+        let transfer_type = $('#changtype').val();
+        let transfer_detail = $('#txtchitiet').val();
+
+        $.ajax({
+            type: "post",
+            url: "/transfer/createtransfer",
+            data: {
+                user_transfer_id: user_transfer_id,
+                user_receive_id: user_receive_id,
+                performer_id: performer_id,
+                transfer_type: transfer_type,
+                transfer_detail: transfer_detail,
+            },
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+            }
+        });
+
+    })
 }

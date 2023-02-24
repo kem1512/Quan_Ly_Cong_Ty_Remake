@@ -141,6 +141,9 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get('/getstorehouse/{keyword?}', [TransferController::class, 'GetStoreHouse']);
 					Route::get('/getusedetail/{id?}', [TransferController::class, 'GetUseDetail']);
 					Route::post('/updateamount', [TransferController::class, 'GetUseDetail']);
+					Route::get('/getequipmentbyid/{id?}', [TransferController::class, 'GetEquimentById']);
+					Route::post('createtransfer', [TransferController::class, 'CreateTransfer']);
+					Route::post('createtransferdetail', [TransferController::class, 'CreateTransferDetail']);
 				}
 			);
 			//End route thiết bị

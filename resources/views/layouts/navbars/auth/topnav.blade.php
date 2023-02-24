@@ -17,13 +17,14 @@
                         @csrf
                         <span class="nav-link text-white font-weight-bold px-0">
                             <div class="dropdown">
-                                <button class="btn border-0 dropdown-toggle mb-0 shadow-none" style="background-color:transparent; color: white"
-                                    type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
+                                <button class="btn border-0 dropdown-toggle mb-0 shadow-none"
+                                    style="background-color:transparent; color: white" type="button"
+                                    id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa fa-user me-sm-1"></i>
                                     Xin Chào {{ Auth::user()->fullname ?? 'User' }}
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton" style="top: 1rem !important">
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton"
+                                    style="top: 1rem !important">
                                     <li><a class="dropdown-item" href="#">Action</a></li>
                                     <li>
                                         <a href="{{ route('profile') }}" class="dropdown-item">
@@ -32,7 +33,7 @@
                                     </li>
                                     <li>
                                         <a href="{{ route('logout') }}"
-                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                            onclick="event.preventDefault(); document.getElementById('logout-form').submit(); sessionStorage.clear();"
                                             class="dropdown-item">
                                             Đăng Xuất
                                         </a>

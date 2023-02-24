@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\storehouse;
+use App\Models\transfer;
+use App\Models\transfer_detail;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
@@ -33,13 +35,13 @@ class TransferController extends Controller
             $equipment_storehouse = DB::table('storehouse_details as td')
                 ->join('equipments as e', 'e.id', '=', 'td.equipment_id')
                 ->join('storehouses as sh', 'sh.id', '=', 'td.storehouse_id')
-                ->select(['e.name', 'e.image', 'td.amount'])
+                ->select(['e.id', 'e.name', 'e.image', 'td.amount'])
                 ->get();
         } else {
             $equipment_storehouse = DB::table('storehouse_details as td')
                 ->join('equipments as e', 'e.id', '=', 'td.equipment_id')
                 ->join('storehouses as sh', 'sh.id', '=', 'td.storehouse_id')
-                ->select(['e.name', 'e.image', 'td.amount'])
+                ->select(['e.id', 'e.name', 'e.image', 'td.amount'])
                 ->where('sh.id', $keyword)
                 ->get();
         }
@@ -63,14 +65,48 @@ class TransferController extends Controller
         ]);
     }
 
-    public function UpdateAmount(Request $request)
+    public function GetEquimentById($id = null)
     {
-        $result = DB::table('storehouse_details')
-            ->where('id', $request->id)
-            ->update(['amount' => $request->amount]);
+        $equipment = DB::table('equipments')->find($id);
 
         return response()->json([
-            'result' => $result,
+            'equipment' => $equipment,
+        ]);
+    }
+
+    public function CreateTransfer(Request $request)
+    {
+        $user_transfer_id = $request->user_transfer_id;
+        $user_receive_id = $request->user_receive_id;
+        $performer_id = $request->performer_id;
+        $transfer_type = $request->transfer_type;
+        $transfer_detail = $request->transfer_detail;
+
+        $transfer = new transfer();
+        $transfer->user_transfer_id = $user_transfer_id;
+        $transfer->user_receive_id = $user_receive_id;
+        $transfer->performer_id = $performer_id;
+        $transfer->transfer_type = $transfer_type;
+        $transfer->transfer_detail = $transfer_detail;
+        $transfer->save();
+
+        return response()->json([
+            'transfer' => $transfer,
+        ]);
+    }
+
+    public function CreateTransferDetail(Request $request)
+    {
+        $equipment_id = $request->equipment_id;
+        $transfer_id = $request->transfer_id;
+
+        $transfer_detail = new transfer_detail();
+        $transfer_detail->equipment_id = $equipment_id;
+        $transfer_detail->transfer_id = $transfer_id;
+        $transfer_detail->save();
+
+        return response()->json([
+            'transfer_detail' => $transfer_detail,
         ]);
     }
 }
