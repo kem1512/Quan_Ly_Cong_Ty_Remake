@@ -28,46 +28,51 @@ class DepartmentController extends Controller
         if (!$request->validated()) {
             return response()->json(['status' => 0, 'msg' => $request->errors()]);
         } else {
-            $department_parent = Department::withDepth()->find($request->id_department_parent);
-
             if ($request->id) {
                 $department = Department::find($request->id);
             } else {
                 $department = new Department;
             }
 
-            $department->code = $request->code;
+            if($request -> id_department_parent){
+                $department_parent = Department::withDepth()->find($request -> id_department_parent);
+                if($department_parent != null){
+                    if($department_parent -> depth >= 3){
+                        return response()->json(['status' => 0, 'msg' => 'Không Hỗ Trợ Từ 3 Cấp Trở Lên']);
+                    }
+                }
+            }
+
             $department->name = $request->name;
             $department->status = $request->status == 'on' ? 1 : 0;
+            $department->code = $request->code;
 
-            if ($department_parent != null) {
-                if ($department_parent -> depth >= 3) {
-                    return response()->json(['status' => 0, 'msg' => 'Không Hỗ Trợ Từ 3 Cấp Trở Lên']);
-                } else {
+            if($department -> id){
+                $department_exist = Department::where('code', $request -> code)->get();
+                if($department_exist -> count() > 0){
+                    if($department_exist[0] -> code == $department -> code && $department -> id != $department_exist[0] -> id){
+                        return response()->json(['status' => 0, 'msg' => 'Mã Phòng Ban Đã Tồn Tại']);
+                    }else{
+                        $department->save();
+                        return response()->json(['status' => 1, 'msg' => 'Sửa thành công']);
+                    }
+                }else{
                     $department->appendToNode($department_parent)->save();
-                    return response()->json(['status' => 1, 'msg' => 'Cập nhật thành công']);
+                    return response()->json(['status' => 1, 'msg' => 'Sửa thành công']);
                 }
-            } else {
-                $result = Department::withDepth()->where('code', $request->code)->get();
-                if ($result->count() > 0) {
-                    if (Department::find($department->id) != null) {
-                        // #1 Implicit save
+            }else{
+                $department_unique = Department::where('code', $request -> code)->get();
+                if($department_unique -> count() > 0){
+                    return response()->json(['status' => 0, 'msg' => 'Đã Tồn Tại']);
+                }else{
+                    if($request -> id_department_parent){
+                        $department->appendToNode($department_parent)->save();
+                    }else{
                         $department->saveAsRoot();
 
-                        // #2 Explicit save
                         $department->makeRoot()->save();
-
-                        return response()->json(['status' => 1, 'msg' => 'Cập Thành Công']);
-                    } else {
-                        return response()->json(['status' => 0, 'msg' => 'Mã Đã Tồn Tại']);
                     }
-                } else {
-                    // #1 Implicit save
-                    $department->saveAsRoot();
-
-                    // #2 Explicit save
-                    $department->makeRoot()->save();
-                    return response()->json(['status' => 1, 'msg' => 'Thêm Thành Công']);
+                    return response()->json(['status' => 1, 'msg' => 'Thêm thành công']);
                 }
             }
             return response()->json(['status' => 0, 'msg' => 'Thao tác thất bại']);
@@ -160,7 +165,7 @@ class DepartmentController extends Controller
             $user = User::find($request->id);
             $user->position_id = $request->position_id;
             $user->nominee_id = $request->nominee_id;
-            $user -> level = $request -> level;
+            $user -> level_department = $request -> level;
             $user->nominee = nominee::find($request->nominee_id)->nominees;
             if ($user->save()) {
                 return response()->json(['status' => 1, 'msg' => 'Sửa thành công']);

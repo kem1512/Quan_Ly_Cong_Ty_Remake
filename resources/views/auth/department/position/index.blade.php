@@ -9,7 +9,7 @@
                     <div>
                         <div class="card-header pb-0">
                             <div class="d-flex align-items-center justify-content-between">
-                                <p class="mb-0">Thêm Nhân Viên Vào <span class="text-bolder"></span></p>
+                                <p class="mb-0">Thêm Chức Danh</p>
                                 <div>
                                     <button id="save" class="btn btn-primary btn-sm ms-auto save me-2">
                                         Thêm Chức Vụ

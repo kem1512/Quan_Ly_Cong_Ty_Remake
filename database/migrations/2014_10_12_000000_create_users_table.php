@@ -34,6 +34,7 @@ return new class extends Migration
             $table->string('nominee')->nullable();
             $table->integer('gender')->default(0);
             $table->integer('level')->default(0);
+            $table->integer('level_department')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
