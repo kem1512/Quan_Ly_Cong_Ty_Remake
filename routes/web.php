@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\WareHousesController;
+use App\Models\storehouse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Models\Department;
@@ -122,8 +123,9 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get(
 						'/',
 						function () {
-							return view('pages.Equiments.Equiment_Type.Index');
-						}
+
+									return view('pages.Equiments.Equiment_Type.Index');
+								}
 					)->name('equimenttype');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [EquimentTypeController::class, 'Get']);
 					Route::post('post', [EquimentTypeController::class, 'Post']);
@@ -140,8 +142,8 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get(
 						'/',
 						function () {
-							return view('pages.Equiments.warehouse.wavehouse');
-						}
+									return view('pages.Equiments.warehouse.wavehouse');
+								}
 					)->name('warehouse');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [WareHousesController::class, 'Get']);
 					Route::get('delete/{id?}', [WareHousesController::class, 'Delete']);
@@ -152,31 +154,20 @@ Route::group(['middleware' => 'auth'], function () {
 				}
 			);
 
-			//Thiết bị
-			Route::group(
-				['prefix' => 'equiment'],
-				function () {
-					Route::get('/', [EquimentsController::class, 'Index'])->name('equiment');
-					Route::get('get/{perpage?}/{currentpage?}/{status?}/{keyword?}', [EquimentsController::class, 'Get']);
-					Route::post('post', [EquimentsController::class, 'Create']);
-					Route::get('delete/{id?}', [EquimentsController::class, 'Delete']);
-					Route::get('getbyid/{id?}', [EquimentsController::class, 'GetById']);
-					Route::post('update/{id?}', [EquimentsController::class, 'Update']);
-				}
-			);
-
 			//Chuyển giao
 			Route::group(
 				['prefix' => 'transfer'],
 				function () {
-					Route::get(
-						'/',
-						function () {
-							$user = Auth::user();
-							return view('pages.Equiments.Transfer.transfer', compact('user'));
-						}
-					)->name('transfer');
+					Route::get('/', [TransferController::class, 'Index'])->name('transfer');
 					Route::get('/getnhansu/{id?}', [TransferController::class, 'GetNhanSu']);
+					Route::get('/getstorehouse/{keyword?}', [TransferController::class, 'GetStoreHouse']);
+					Route::get('/getusedetail/{id?}', [TransferController::class, 'GetUseDetail']);
+					Route::post('/updateamount', [TransferController::class, 'GetUseDetail']);
+					Route::get('/getequipmentbyid/{id?}', [TransferController::class, 'GetEquimentById']);
+					Route::post('createtransfer', [TransferController::class, 'CreateTransfer']);
+					Route::post('createtransferdetail', [TransferController::class, 'CreateTransferDetail']);
+					Route::get('/updateamountstorehouse/{id_storehouse_detail?}/{amountchoose?}', [TransferController::class, 'UpdateAmountStoreHouse']);
+					Route::post('/addorupdateusedetail', [TransferController::class, 'AddOrUpdateUseDetail']);
 				}
 			);
 			//End route thiết bị

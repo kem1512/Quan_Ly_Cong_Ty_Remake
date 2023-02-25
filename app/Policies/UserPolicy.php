@@ -22,13 +22,15 @@ class UserPolicy
     }
 
 
-    public function update(User $user)
 
+    public function update(User $user)
     {
-        return true;
+        return $user->level > 3;
     }
+
     public function personnel(User $user)
     {
         return $user->department_id == 3 ||  $user->level == 2 || $user->position_id == 1 || $user->position_id == 2 || $user->position_id == 3 || $user->position_id == 4 || $user->position_id == 5 || $user->position_id == 6 || $user->position_id == 7 || $user->position_id == 8;
     }
 }
+
