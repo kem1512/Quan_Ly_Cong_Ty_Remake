@@ -74,28 +74,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <div>
-                            <label>Thiết bị bàn giao (<strong class="text-danger">*</strong>)</label>
-                        </div>
-                        <div>
-                            <table class="table text-center align-items-center">
-                                <thead class="table-primary">
-                                    <tr>
-                                        <td>#</td>
-                                        <td>Ảnh</td>
-                                        <td>Tên thiết bị</td>
-                                        <td>Số lượng</td>
-                                        <td>Thao tác</td>
-                                    </tr>
-                                </thead>
-                                <tbody id="list-equiment-storehouse">
 
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="row mt-5">
                     <div class="col-sm">
                         <div>
                             <div>
@@ -107,6 +87,31 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row mt-5">
+                    <div class="col-sm">
+                        <div>
+                            <label>Thiết bị bàn giao (<strong class="text-danger">*</strong>)</label>
+                        </div>
+                        <div>
+                            <table class="table text-center align-items-center">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <td>#</td>
+                                        <td>Ảnh thiết bị</td>
+                                        <td>Tên thiết bị</td>
+                                        <td>Số lượng</td>
+                                        <td>Thao tác</td>
+                                    </tr>
+                                </thead>
+                                <tbody id="list-equiment-storehouse">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row mt-5">
                     <div class="col-sm">
                         <div class="d-flex justify-content-between align-items-center">
@@ -138,7 +143,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body"></div>
+            <div class="card-footer"></div>
         </div>
         @include('components.modal_chon_nhan_vien')
         @include('layouts.footers.auth.footer')

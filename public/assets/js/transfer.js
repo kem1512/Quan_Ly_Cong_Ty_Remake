@@ -1,7 +1,6 @@
 var id_users = 0;
 var keyword = "";
 var arrEquipment = [];
-var arrStoreHouse = [];
 
 
 $(document).ready(function () {
@@ -93,15 +92,14 @@ function GetStoreHouse() {
         dataType: "json",
         success: function (response) {
             let html = '';
-            arrStoreHouse = response.equipment;
-            $.each(arrStoreHouse, function (index, value) {
+            $.each(response.equipment, function (index, value) {
                 html += `<tr>
-                            <td>${index + 1}</td>
-                            <td><img class="rounded-circle img-fluid" style="width: 100px;height: 100px" src="${(value.image == null ? "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" : value.image)}"/></td>
-                            <td>${value.name}</td>
-                            <td>${value.amount}</td>
-                            <td><button id="ChonTrongKho" name="${value.id}" amountkho="${value.amount}" class="btn btn-primary">Chọn</button></td>
-                        </tr>`;
+                                <td>${index + 1}</td>
+                                <td><img class="rounded-circle img-fluid" style="width: 100px;height: 100px" src="${(value.image == null ? "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" : value.image)}"/></td>
+                                <td>${value.name}</td>
+                                <td>${value.amount}</td>
+                                <td><button id="ChonTrongKho" name="${value.id}" idstorehouse="${value.id_storehouse_detail}" amountkho="${value.amount}" class="btn btn-primary">Chọn</button></td>
+                            </tr>`;
             });
             $('#list_storehouse').html(html);
         }
@@ -229,28 +227,22 @@ function CancelBenNhan() {
 function chooseEquipment() {
     $(document).on('click', '#ChonTrongKho', function () {
 
-        let id = $(this).attr('name');
+        let id = $(this).attr('idstorehouse');
         let amountkho = $(this).attr('amountkho');
+
 
         $.ajax({
             type: "get",
             url: "transfer/getequipmentbyid/" + id,
             dataType: "json",
             success: function (response) {
-
-                let equip = new equipment();
-                equip.id = response.equipment.id;
-                equip.image = response.equipment.image;
-                equip.name = response.equipment.name;
-                equip.amount = 1;
-
+                let equip = new equipment(response.equipment[0].id_storehousedetail, response.equipment[0].id, response.equipment[0].image, response.equipment[0].name, 1);
                 if (arrEquipment.length == 0) {
                     arrEquipment.push(equip);
                     DisplayEquipmentTranfer();
                 } else {
 
-                    let check = arrEquipment.some(e => e.id == equip.id);
-
+                    let check = arrEquipment.some(e => e.id == equip.id && e.id_storehouse == equip.id_storehouse);
                     if (!check) {
                         let newArr = [];
                         newArr.push(equip);
@@ -260,7 +252,7 @@ function chooseEquipment() {
                         DisplayEquipmentTranfer();
                     } else {
                         for (const eqip of arrEquipment) {
-                            if (eqip.id == equip.id) {
+                            if (eqip.id == equip.id && eqip.id_storehouse == equip.id_storehouse) {
                                 if (eqip.amount < amountkho) {
                                     eqip.amount++;
                                     DisplayEquipmentTranfer();
@@ -318,6 +310,16 @@ function UpdateAmountTransfer() {
 }
 
 class equipment {
+
+    constructor(id_storehouse_detail, id, image, name, amount) {
+        this.amount = amount;
+        this.id = id;
+        this.id_storehouse_detail = id_storehouse_detail;
+        this.image = image;
+        this.name = name;
+    }
+
+    id_storehouse_detail;
     id;
     image;
     name;
@@ -344,9 +346,73 @@ function SaveTransfer() {
             },
             dataType: "json",
             success: function (response) {
-                console.log(response);
+                let id_transfer = response.transfer.id;
+                for (const equipment of arrEquipment) {
+                    let id_storehouse_detail = equipment.id_storehouse_detail;
+                    let id_equipment = equipment.id;
+                    let amount = equipment.amount;
+                    $.ajax({
+                        type: "post",
+                        url: "/transfer/createtransferdetail",
+                        data: {
+                            transfer_id: id_transfer,
+                            equipment_id: id_equipment,
+                            amount: amount,
+                        },
+                        dataType: "json",
+                        success: function () {
+                            updateamountstorehouse(id_equipment, user_receive_id, id_storehouse_detail, amount);
+                        }
+                    });
+                }
             }
         });
-
     })
 }
+
+function updateamountstorehouse(id_equipment, user_receive_id, id_storehouse_detail, amount) {
+    $.ajax({
+        type: "get",
+        url: "/transfer/updateamountstorehouse/" + id_storehouse_detail + "/" + amount,
+        dataType: "json",
+        success: function () {
+            AddOrEditUseDetail(id_equipment, user_receive_id, amount);
+        }
+    });
+}
+
+function AddOrEditUseDetail(equipment_id, user_id, amount) {
+    $.ajax({
+        type: "post",
+        url: "/transfer/addorupdateusedetail",
+        data: {
+            equipment_id: equipment_id,
+            user_id: user_id,
+            amount: amount,
+        },
+        dataType: "json",
+        success: function (response) {
+            Swal.fire(
+                'Thành công!',
+                'Chuyển giao thành công!',
+                'success'
+            );
+            $('#txtBenNhan').val("");
+            $('#txtBenNhan').prop('disabled', false);
+            $('#btnBenNhan').css('display', 'block');
+            $('#btnHuyBenNhan').css('display', 'none');
+            $('#txtBenNhan').attr('name', '');
+            $('#imgbennhan').css('display', 'none');
+            let idbenchuyen = $('#txtNameChuyen').attr('name');
+            id_users = idbenchuyen == "" ? 0 : idbenchuyen;
+            $('#imgbennhan').attr('src', "");
+            GetStoreHouse();
+            sessionStorage.clear();
+            arrEquipment = [];
+            DisplayEquipmentTranfer();
+        }
+    });
+}
+
+
+

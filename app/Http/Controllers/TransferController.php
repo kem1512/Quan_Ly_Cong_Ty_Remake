@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\storehouse;
+use App\Models\storehouse_detail;
 use App\Models\transfer;
 use App\Models\transfer_detail;
+use App\Models\use_detail;
+
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Support\Facades\Auth;
@@ -35,14 +38,14 @@ class TransferController extends Controller
             $equipment_storehouse = DB::table('storehouse_details as td')
                 ->join('equipments as e', 'e.id', '=', 'td.equipment_id')
                 ->join('storehouses as sh', 'sh.id', '=', 'td.storehouse_id')
-                ->select(['e.id', 'e.name', 'e.image', 'td.amount'])
+                ->select(['td.id as id_storehouse_detail', 'e.id', 'e.name', 'e.image', 'td.amount'])
                 ->get();
         } else {
             $equipment_storehouse = DB::table('storehouse_details as td')
                 ->join('equipments as e', 'e.id', '=', 'td.equipment_id')
                 ->join('storehouses as sh', 'sh.id', '=', 'td.storehouse_id')
-                ->select(['e.id', 'e.name', 'e.image', 'td.amount'])
-                ->where('sh.id', $keyword)
+                ->select(['td.id as id_storehouse_detail', 'e.id', 'e.name', 'e.image', 'td.amount'])
+                ->where('td.id', $keyword)
                 ->get();
         }
 
@@ -67,7 +70,12 @@ class TransferController extends Controller
 
     public function GetEquimentById($id = null)
     {
-        $equipment = DB::table('equipments')->find($id);
+        $equipment = DB::table('storehouse_details as td')
+            ->join('equipments as e', 'e.id', '=', 'td.equipment_id')
+            ->join('storehouses as sh', 'sh.id', '=', 'td.storehouse_id')
+            ->select(['td.id as id_storehousedetail', 'e.id', 'e.name', 'e.image', 'td.amount'])
+            ->where('td.id', $id)
+            ->get();
 
         return response()->json([
             'equipment' => $equipment,
@@ -99,14 +107,63 @@ class TransferController extends Controller
     {
         $equipment_id = $request->equipment_id;
         $transfer_id = $request->transfer_id;
+        $amount = $request->amount;
 
         $transfer_detail = new transfer_detail();
         $transfer_detail->equipment_id = $equipment_id;
         $transfer_detail->transfer_id = $transfer_id;
+        $transfer_detail->amount = $amount;
         $transfer_detail->save();
 
         return response()->json([
             'transfer_detail' => $transfer_detail,
         ]);
+    }
+
+    public function UpdateAmountStoreHouse($id_storehouse_detail = null, $amountchoose = null)
+    {
+        $storehouse_detail = storehouse_detail::find($id_storehouse_detail);
+        $amount_storeHouse = $storehouse_detail->amount;
+        $amountchange = $amount_storeHouse - $amountchoose;
+
+        if ($amountchange == 0) {
+            $storehouse_detail->delete();
+        } else {
+            $storehouse_detail->amount = $amountchange;
+            $storehouse_detail->save();
+        }
+
+        return response()->json([
+            'storehouse_detail' => $storehouse_detail,
+        ]);
+    }
+
+    public function AddOrUpdateUseDetail(Request $request)
+    {
+        $equipment_id = $request->equipment_id;
+        $user_id = $request->user_id;
+        $amount = $request->amount;
+
+        $usedetail = use_detail::get()
+            ->where('equipment_id', $equipment_id)
+            ->where('user_id', $user_id)
+            ->toArray();
+
+        if (count($usedetail) == 0) {
+            $usedetail = new use_detail();
+            $usedetail->equipment_id = $equipment_id;
+            $usedetail->user_id = $user_id;
+            $usedetail->amount = $amount;
+            $usedetail->save();
+
+            return response()->json(['usedetail' => $usedetail]);
+        } else {
+            $usedetail = DB::table('use_details')
+                ->where('equipment_id', $equipment_id)
+                ->where('user_id', $user_id)
+                ->update(['amount' => $amount]);
+
+            return response()->json(['usedetail' => $usedetail]);
+        }
     }
 }
