@@ -144,31 +144,28 @@
 
                     {{-- =================================================================== Tab Xét Duyệt =================================================================== --}}
                     <div class="tab-pane fade row " id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                        <div class="card mb-4 col-12">
-                            <div class="card-header pb-0">
-                                <div class=" d-flex justify-content-end">
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <input class="form-control" placeholder="Search..." id="search_cv">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <select class="form-control" name="status_select_cv" id="status_select_cv">
-                                            <option value="9">Trạng Thái</option>
-                                            <option value="0">Chưa Duyệt</option>
-                                            <option value="1">Từ Chối</option>
-                                            <option value="2">Đã Duyệt</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body px-0 pt-0 pb-2 row" id="interview">
-                            </div>
-                        </div>
                         {{-- // --}}
                         <div class="card col-12">
                             <div class="card-header pb-0 ">
-                                <h6>Lịch Phỏng Vấn</h6>
+                                <div class=" d-flex bd-highlight " style="align-items: baseline;">
+                                    <div class="card-header flex-grow-1 bd-highlight">
+                                        <h4>Lịch Phỏng Vấn</h4>
+                                    </div>
+                                    <div class="col-md-2 bd-highlight" style="margin-right: 2% ;">
+                                        <div class="form-group">
+                                            <input class="form-control" placeholder="Search..." id="search_offer">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 bd-highlight">
+                                        <select class="form-control" name="status_select_offer" id="status_select_offer">
+                                            <option value="9">Trạng Thái</option>
+                                            <option value="3">Đang Đánh Giá</option>
+                                            <option value="4">Đang Offer</option>
+                                            <option value="5">Đã Offer</option>
+                                            <option value="6">Từ Chối</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                             <div class="card-body px-0 pt-0 pb-2 row" id="interview_table">
                             </div>
