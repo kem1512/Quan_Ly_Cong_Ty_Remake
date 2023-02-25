@@ -230,6 +230,7 @@
     @stack('js')
     @stack('department_handler')
     @stack('position_handler')
+    @stack('overview')
 </body>
 
 </html>

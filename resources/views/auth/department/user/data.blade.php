@@ -2,7 +2,7 @@
     @foreach ($users as $user)
         <tr>
             <td class="w-10">
-                <input class="form-control w-50" type="text" name="level" value="{{ $user -> level }}">
+                <input class="form-control w-50" type="text" name="level" value="{{ $user -> level_department }}">
             </td>
             <td>
                 <span class="text-secondary text-xs font-weight-bold">{{ $user->fullname }}</span>
@@ -10,7 +10,7 @@
             <td>
                 <span class="text-secondary text-xs font-weight-bold">
                     <img src="{{ $user->img_url ?? 'https://cdn-icons-png.flaticon.com/512/147/147144.png' }}"
-                        class="rounded-circle" style="width: 100px; height: 100px;" alt="">
+                        class="rounded-circle" style="width: 50px; height: 50px;" alt="">
                 </span>
             </td>
             <td>

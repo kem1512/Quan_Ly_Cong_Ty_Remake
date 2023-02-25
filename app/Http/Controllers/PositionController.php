@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Position;
 use App\Models\nominee;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class PositionController extends Controller
 {
@@ -72,10 +73,17 @@ class PositionController extends Controller
 
     public function update_nominee(Request $request)
     {
-        $nominee = nominee::findOrFail($request -> id);
+        $nominee = nominee::with('users')->find($request -> id);
         if ($nominee) {
             $nominee->nominees = $request -> name;
             $nominee -> save();
+            if($nominee -> users != null){
+                foreach($nominee -> users as $user){
+                    $userNew = User::find($user -> id);
+                    $userNew -> nominee = $request -> name;
+                    $userNew -> save();
+                }
+            }
             return response()->json(['status' => 1, 'msg' => 'Sửa thành công']);
         }
     }

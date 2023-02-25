@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class nominee extends Model
 {
@@ -21,9 +22,13 @@ class nominee extends Model
         foreach ($nominee as $en) {
 
             $html .= '
-        <option value="' . $en->id . '">' . $en->nominees . '</option>
+            <option value="' . $en->id . '">' . $en->nominees . '</option>
         ';
         }
         return $html;
+    }
+
+    public function users(){
+        return $this -> hasMany(User::class);
     }
 }

@@ -83,28 +83,6 @@
 
             clear();
 
-            var clicked = false,
-                clickX;
-            $('#drag').on({
-                'mousemove': function(e) {
-                    clicked && updateScrollPos(e);
-                },
-                'mousedown': function(e) {
-                    $(this).css('cursor', 'grab');
-                    clicked = true;
-                    clickX = e.pageX;
-                },
-                'mouseup': function() {
-                    clicked = false;
-                    $(this).css('cursor', 'grab');
-                }
-            });
-
-            var updateScrollPos = function(e) {
-                $('#drag').css('cursor', 'grabbing');
-                $('#drag').scrollLeft($('#drag').scrollLeft() + (clickX - e.pageX) / 9);
-            }
-
             // Tự động tìm phòng ban gần đúng
             $("#department_search").on('focus', function() {
                 $('#search_close').show();

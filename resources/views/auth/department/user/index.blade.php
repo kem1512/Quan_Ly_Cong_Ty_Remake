@@ -10,11 +10,11 @@
                         <div class="card-header pb-0">
                             <div class="d-flex align-items-center justify-content-between">
                                 <p class="mb-0">Thêm Nhân Viên Vào <span
-                                        class="text-bolder">{{ $department[0]->name }}</span></p>
+                                        class="text-bolder">{{ $department[0]->name ?? '' }}</span></p>
                                 <div>
-                                    <button class="btn btn-primary btn-sm ms-auto save me-2 add_staff">
+                                    <a href="{{ route('position') }}" class="btn btn-primary btn-sm ms-auto me-2">
                                         Thêm Chức Vụ
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -23,7 +23,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <input class="form-control" id="user_search" type="text">
-                                        <input type="text" name="department_id" value="{{ $department[0]->id }}" hidden>
+                                        <input type="text" name="department_id" value="{{ $department[0]->id ?? '' }}" hidden>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
