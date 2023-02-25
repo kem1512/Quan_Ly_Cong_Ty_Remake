@@ -17,7 +17,6 @@ class TransferController extends Controller
     public function Index()
     {
         $user = Auth::user();
-        $this->authorize('update', $user);
         $storehouse = storehouse::all();
         return view('pages.Equiments.Transfer.transfer', compact('user', 'storehouse'));
     }
@@ -118,52 +117,5 @@ class TransferController extends Controller
         return response()->json([
             'transfer_detail' => $transfer_detail,
         ]);
-    }
-
-    public function UpdateAmountStoreHouse($id_storehouse_detail = null, $amountchoose = null)
-    {
-        $storehouse_detail = storehouse_detail::find($id_storehouse_detail);
-        $amount_storeHouse = $storehouse_detail->amount;
-        $amountchange = $amount_storeHouse - $amountchoose;
-
-        if ($amountchange == 0) {
-            $storehouse_detail->delete();
-        } else {
-            $storehouse_detail->amount = $amountchange;
-            $storehouse_detail->save();
-        }
-
-        return response()->json([
-            'storehouse_detail' => $storehouse_detail,
-        ]);
-    }
-
-    public function AddOrUpdateUseDetail(Request $request)
-    {
-        $equipment_id = $request->equipment_id;
-        $user_id = $request->user_id;
-        $amount = $request->amount;
-
-        $usedetail = use_detail::get()
-            ->where('equipment_id', $equipment_id)
-            ->where('user_id', $user_id)
-            ->toArray();
-
-        if (count($usedetail) == 0) {
-            $usedetail = new use_detail();
-            $usedetail->equipment_id = $equipment_id;
-            $usedetail->user_id = $user_id;
-            $usedetail->amount = $amount;
-            $usedetail->save();
-
-            return response()->json(['usedetail' => $usedetail]);
-        } else {
-            $usedetail = DB::table('use_details')
-                ->where('equipment_id', $equipment_id)
-                ->where('user_id', $user_id)
-                ->update(['amount' => $amount]);
-
-            return response()->json(['usedetail' => $usedetail]);
-        }
     }
 }

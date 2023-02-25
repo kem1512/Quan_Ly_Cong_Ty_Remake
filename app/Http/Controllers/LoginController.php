@@ -22,13 +22,6 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $arr = User::where("email", '=', "$request->email")->get();
-        $user = $arr[0];
-        if ($user->status == 3) {
-            return back()->withErrors([
-                'email' => 'Tài khoản đã bị khóa !',
-            ]);
-        }
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
@@ -40,7 +33,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Tài khoản hoặc mật khẩu không hợp lệ !',
+            'email' => 'The provided credentials do not match our records.',
         ]);
     }
 

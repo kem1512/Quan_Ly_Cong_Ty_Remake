@@ -27,6 +27,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('equiment__types');
+        Schema::dropIfExists('equiment_types');
     }
 };

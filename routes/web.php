@@ -168,8 +168,6 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get('/getequipmentbyid/{id?}', [TransferController::class, 'GetEquimentById']);
 					Route::post('createtransfer', [TransferController::class, 'CreateTransfer']);
 					Route::post('createtransferdetail', [TransferController::class, 'CreateTransferDetail']);
-					Route::get('/updateamountstorehouse/{id_storehouse_detail?}/{amountchoose?}', [TransferController::class, 'UpdateAmountStoreHouse']);
-					Route::post('/addorupdateusedetail', [TransferController::class, 'AddOrUpdateUseDetail']);
 				}
 			);
 			//End route thiết bị

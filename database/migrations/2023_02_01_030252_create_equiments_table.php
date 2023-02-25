@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->string('name', 50);
             $table->string('image', 500);
             $table->string('specifications', 500);
-            $table->string('manufacture', 500);
             $table->enum('status', [
                 'active',
                 'inactive',

@@ -25,7 +25,7 @@ $(document).ready(function () {
 
 function changtype() {
     $('#changtype').on('change', function () {
-        $('#changtype').val() == "hand-over" ? $('#divchuyen').css('display', 'block') : $('#divchuyen').css('display', 'none');
+        $('#changtype').val() == "hand_over" ? $('#divchuyen').css('display', 'block') : $('#divchuyen').css('display', 'none');
         $('#btnSave').text($('#changtype').val() == "hand-over" ? "Thực hiện bàn giao" : "Thực hiện thu hồi");
     });
 }
@@ -236,7 +236,7 @@ function chooseEquipment() {
             url: "transfer/getequipmentbyid/" + id,
             dataType: "json",
             success: function (response) {
-                let equip = new equipment(response.equipment[0].id_storehousedetail, response.equipment[0].id, response.equipment[0].image, response.equipment[0].name, 1);
+                let equip = new equipment(response.equipment[0].id_storehouse_detail, response.equipment[0].id, response.equipment[0].image, response.equipment[0].name, 1);
                 if (arrEquipment.length == 0) {
                     arrEquipment.push(equip);
                     DisplayEquipmentTranfer();
@@ -333,85 +333,7 @@ function SaveTransfer() {
         let performer_id = $('#txtInfo').attr('name');
         let transfer_type = $('#changtype').val();
         let transfer_detail = $('#txtchitiet').val();
-
-        $.ajax({
-            type: "post",
-            url: "/transfer/createtransfer",
-            data: {
-                user_transfer_id: user_transfer_id,
-                user_receive_id: user_receive_id,
-                performer_id: performer_id,
-                transfer_type: transfer_type,
-                transfer_detail: transfer_detail,
-            },
-            dataType: "json",
-            success: function (response) {
-                let id_transfer = response.transfer.id;
-                for (const equipment of arrEquipment) {
-                    let id_storehouse_detail = equipment.id_storehouse_detail;
-                    let id_equipment = equipment.id;
-                    let amount = equipment.amount;
-                    $.ajax({
-                        type: "post",
-                        url: "/transfer/createtransferdetail",
-                        data: {
-                            transfer_id: id_transfer,
-                            equipment_id: id_equipment,
-                            amount: amount,
-                        },
-                        dataType: "json",
-                        success: function () {
-                            updateamountstorehouse(id_equipment, user_receive_id, id_storehouse_detail, amount);
-                        }
-                    });
-                }
-            }
-        });
     })
-}
-
-function updateamountstorehouse(id_equipment, user_receive_id, id_storehouse_detail, amount) {
-    $.ajax({
-        type: "get",
-        url: "/transfer/updateamountstorehouse/" + id_storehouse_detail + "/" + amount,
-        dataType: "json",
-        success: function () {
-            AddOrEditUseDetail(id_equipment, user_receive_id, amount);
-        }
-    });
-}
-
-function AddOrEditUseDetail(equipment_id, user_id, amount) {
-    $.ajax({
-        type: "post",
-        url: "/transfer/addorupdateusedetail",
-        data: {
-            equipment_id: equipment_id,
-            user_id: user_id,
-            amount: amount,
-        },
-        dataType: "json",
-        success: function (response) {
-            Swal.fire(
-                'Thành công!',
-                'Chuyển giao thành công!',
-                'success'
-            );
-            $('#txtBenNhan').val("");
-            $('#txtBenNhan').prop('disabled', false);
-            $('#btnBenNhan').css('display', 'block');
-            $('#btnHuyBenNhan').css('display', 'none');
-            $('#txtBenNhan').attr('name', '');
-            $('#imgbennhan').css('display', 'none');
-            let idbenchuyen = $('#txtNameChuyen').attr('name');
-            id_users = idbenchuyen == "" ? 0 : idbenchuyen;
-            $('#imgbennhan').attr('src', "");
-            GetStoreHouse();
-            sessionStorage.clear();
-            arrEquipment = [];
-            DisplayEquipmentTranfer();
-        }
-    });
 }
 
 
