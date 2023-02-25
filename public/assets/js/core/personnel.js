@@ -193,6 +193,7 @@ function getdetail(id) {
             if (nhansu.img_url == null) {
                 nhansu.img_url = "avatar2.png";
             }
+            $("#img_url_update").val("");
             $("#img_url").attr("src", "./img/" + nhansu.img_url);
             $("#id_user").val(nhansu.id);
             $("#about").val(nhansu.about);
@@ -313,6 +314,7 @@ $(document).ready(function () {
                     onAlertError(response.message);
                 } else {
                     onAlertSuccess("Thông tin của bạn đã được sửa đổi !");
+                    $("#img_url_update").val("");
                     $("#body_query").html(response.body);
                 }
             },
@@ -472,38 +474,42 @@ $(document).ready(function () {
 
 //==========================CV===================================
 function setnull_insert_PV() {
+    $("#interviewer1").val("");
+    $("#interviewer1").attr("code", "");
+    $("#interviewer2").val("");
+    $("#interviewer2").attr("code", "");
     $("#interview_date").val("");
-    $("interviewer1").val("");
-    $("interviewer2").val("");
-    $("interviewer_date").val("");
-    $("interviewer_time").val("");
+    $("#interview_time").val("");
 }
-//INSERT PV
+function notication_interview() {
+    let timerInterval;
+    Swal.fire({
+        title: "Vui lòng đợi trong giây lát !",
+        html: "Chúng tôi đang gửi lời mời đến ứng viên !",
+        timer: 30000,
+        timerProgressBar: false,
+        didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector("b");
+            timerInterval = setInterval(() => {
+                // b.textContent = Swal.getTimerLeft();
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        },
+    }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+            console.log("I was closed by the timer");
+        }
+    });
+}
+//Xếp lịch PV
 $(document).ready(function () {
     $("#submit_insert_interview").on("submit", function (e) {
-        let timerInterval;
-        Swal.fire({
-            title: "Vui lòng đợi trong giây lát !",
-            html: "Chúng tôi đang gửi lời mời đến ứng viên !",
-            timer: 30000,
-            timerProgressBar: false,
-            didOpen: () => {
-                Swal.showLoading();
-                const b = Swal.getHtmlContainer().querySelector("b");
-                timerInterval = setInterval(() => {
-                    b.textContent = Swal.getTimerLeft();
-                }, 100);
-            },
-            willClose: () => {
-                clearInterval(timerInterval);
-            },
-        }).then((result) => {
-            /* Read more about handling dismissals below */
-            if (result.dismiss === Swal.DismissReason.timer) {
-                console.log("I was closed by the timer");
-            }
-        });
         e.preventDefault();
+        notication_interview();
         var interviewer1 = $("#interviewer1").attr("code");
         var interviewer2 = $("#interviewer2").attr("code");
         var interview_date = $("#interview_date").val();
@@ -696,6 +702,28 @@ $(document).ready(() => {
     $("#accept_offer").on("click", () => {
         var id = $("#id_offer").val();
         var offer = $("#send_note_offer").val();
+        let timerInterval;
+        Swal.fire({
+            title: "Vui lòng đợi trong giây lát !",
+            html: "Chúng tôi đang gửi offer đến ứng viên !",
+            timer: 30000,
+            timerProgressBar: false,
+            didOpen: () => {
+                Swal.showLoading();
+                const b = Swal.getHtmlContainer().querySelector("b");
+                timerInterval = setInterval(() => {
+                    // b.textContent = Swal.getTimerLeft();
+                }, 100);
+            },
+            willClose: () => {
+                clearInterval(timerInterval);
+            },
+        }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+                console.log("I was closed by the timer");
+            }
+        });
         $.ajax({
             url: "/personnel/offer",
             type: "POST",
@@ -707,6 +735,7 @@ $(document).ready(() => {
                 console.log(response);
                 if (response.status == "success") {
                     onAlertSuccess(response.message);
+                    getallInter();
                 } else {
                     onAlertError(response.message);
                 }
@@ -772,7 +801,24 @@ $(document).ready(function () {
                 search: search,
             },
             success: function (result) {
+                // log;
                 $("#cvut_query").html(result.cvbody);
+            },
+        });
+    });
+});
+//Search offer
+$(document).ready(function () {
+    $("#search_offer").keyup(function () {
+        var search = $("#search_offer").val();
+        $.ajax({
+            url: "/personnel/search-offer",
+            method: "GET",
+            data: {
+                search: search,
+            },
+            success: function (result) {
+                $("#interview_table").html(result.cvbody);
             },
         });
     });
@@ -789,6 +835,22 @@ $(document).ready(function () {
             },
             success: function (result) {
                 $("#cvut_query").html(result.cvbody);
+            },
+        });
+    });
+});
+//Fillter offer
+$(document).ready(function () {
+    $("#status_select_offer").on("change", function () {
+        var status = $(this).val();
+        $.ajax({
+            url: "/personnel/fillter-offer",
+            method: "GET",
+            data: {
+                status: status,
+            },
+            success: function (result) {
+                $("#interview_table").html(result.cvbody);
             },
         });
     });
@@ -865,7 +927,7 @@ $(document).ready(function () {
         var status = $(this).attr("data");
         var id = $(this).attr("code");
         var note = $("#note").val();
-        if (status == 1) {
+        if (status == 1 || status == 6) {
             let timerInterval;
             Swal.fire({
                 title: "Vui lòng đợi trong giây lát !",
@@ -876,7 +938,7 @@ $(document).ready(function () {
                     Swal.showLoading();
                     const b = Swal.getHtmlContainer().querySelector("b");
                     timerInterval = setInterval(() => {
-                        b.textContent = Swal.getTimerLeft();
+                        // b.textContent = Swal.getTimerLeft();
                     }, 100);
                 },
                 willClose: () => {

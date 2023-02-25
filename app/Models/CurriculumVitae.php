@@ -34,6 +34,51 @@ class CurriculumVitae extends Model
             ->select('curriculum_vitaes.*', 'nominees.nominees');
         return $cv->paginate(12);
     }
+    public static function fillter_cv($search)
+    {
+        $cv = CurriculumVitae::leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
+            ->select('curriculum_vitaes.*', 'nominees.nominees')
+            ->where('status', '=', "$search");
+        return $cv->paginate(12);
+    }
+    public static function search_cv($search)
+    {
+        $cv = CurriculumVitae::where('curriculum_vitaes.status', '<', 3)
+            ->where('curriculum_vitaes.name', 'like', "%$search%")
+            // ->orWhere('curriculum_vitaes.email', 'like', "%$search%")
+            ->leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
+            ->select('curriculum_vitaes.*', 'nominees.nominees')
+            ->paginate(12);
+        return $cv;
+    }
+    public static function getCVByID($id)
+    {
+        $cv = CurriculumVitae::join('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
+            ->join('positions', 'curriculum_vitaes.position_id', 'positions.id')
+            ->select('curriculum_vitaes.*', 'nominees.nominees', 'positions.position')->where('curriculum_vitaes.id', '=', "$id")->get();
+        return $cv;
+    }
+    public static function search_offer($search)
+    {
+        $cv = CurriculumVitae::where('curriculum_vitaes.name', 'like', "%$search%")
+            ->orWhere('curriculum_vitaes.email', 'like', "%$search%")
+            ->where('curriculum_vitaes.status', '>', 2)
+            ->leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
+            ->leftjoin('interviews', 'curriculum_vitaes.interview_id', 'interviews.id')
+            ->orderBy('interviews.interview_date')->orderBy('interviews.interview_time')
+            ->select('curriculum_vitaes.*', 'nominees.nominees', 'interviews.interview_date', 'interviews.interview_time', 'interviews.interviewer1', 'interviews.interviewer2');
+        return $cv->paginate(12);
+    }
+    public static function fillter_offer($search)
+    {
+        $cv = CurriculumVitae::where('curriculum_vitaes.status', '=', "$search")
+            ->leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
+            ->leftjoin('interviews', 'curriculum_vitaes.interview_id', 'interviews.id')
+            ->orderBy('interviews.interview_date')->orderBy('interviews.interview_time')
+            ->select('curriculum_vitaes.*', 'nominees.nominees', 'interviews.interview_date', 'interviews.interview_time', 'interviews.interviewer1', 'interviews.interviewer2')
+            ->paginate(12);
+        return $cv;
+    }
     public static function find_interview($id)
     {
         $inter = CurriculumVitae::where('curriculum_vitaes.id', '=', "$id")
@@ -101,7 +146,7 @@ class CurriculumVitae extends Model
                     ')" class="text-sm font-weight-bold mb-0 ps-2">Duyệt</a> |';
             }
             if ($cv->status == 2) {
-                $html .= ' <a id="btn-interview-in-table" data-bs-toggle="offcanvas" code="' . $cv->id . '" data-bs-target="#offcanvasNavbarphongvan"   style="cursor: pointer" class="text-sm font-weight-bold mb-0 ps-2">Xếp Lịch</a> |';
+                $html .= ' <a id="btn-interview-in-table" data-bs-toggle="offcanvas" code="' . $cv->id . '" data-bs-target="#offcanvasNavbarphongvan" onclick="setnull_insert_PV()"  style="cursor: pointer" class="text-sm font-weight-bold mb-0 ps-2">Xếp Lịch</a> |';
             }
             if ($cv->status !== 1) {
                 $html .= '   <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbareditcv" data-pos="' . $cv->position_id . '" onclick="get_CV_By_ID_edit(' . $cv->id .
@@ -153,13 +198,13 @@ class CurriculumVitae extends Model
                         <td><p class="text-sm font-weight-bold mb-0" style="text-align: center;">' . $user_name1 . '</p></td>
                         <td><p class="text-sm font-weight-bold mb-0"style="text-align: center;">' . $user_name2 . '</p></td>';
                 if ($cv->status === 3) {
-                    $html .= '<td><p class="badge bg-gradient-secondary" style="margin-bottom: -100%;">Đang đánh giá</p></td>';
+                    $html .= '<td><p class="badge bg-gradient-primary" style="margin-bottom: -100%;">Đang đánh giá</p></td>';
                 } else if ($cv->status === 4) {
                     $html .= '<td><p class="badge bg-gradient-secondary" style="margin-bottom: -100%;">Đang offer</p></td>';
                 } else if ($cv->status === 5) {
-                    $html .= '<td><p class="badge bg-gradient-secondary" style="margin-bottom: -100%;">Đã Offer</p></td>';
+                    $html .= '<td><p class="badge bg-gradient-success" style="margin-bottom: -100%;">Đã Offer</p></td>';
                 } else if ($cv->status === 6) {
-                    $html .= '<td><p class="badge bg-gradient-secondary" style="margin-bottom: -100%;">Từ Chối</p></td>';
+                    $html .= '<td><p class="badge bg-gradient-danger" style="margin-bottom: -100%;">Từ Chối</p></td>';
                 }
                 $html .= ' <td>';
                 if ($cv->status == 3) {
