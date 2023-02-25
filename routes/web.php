@@ -30,6 +30,8 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\Admin\PersonnelController;
 use App\Http\Controllers\EquimentTypeController;
 use App\Http\Controllers\EquimentsController;
+use App\Http\Controllers\PositionController;
+use App\Jobs\SendEmailJob;
 
 Route::get('/', function () {
 	return redirect('/dashboard');
@@ -42,10 +44,11 @@ Route::get('/reset-password', [ResetPassword::class, 'show'])->middleware('guest
 Route::post('/reset-password', [ResetPassword::class, 'send'])->middleware('guest')->name('reset.perform');
 Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('guest')->name('change-password');
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
-Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
-Route::get('/personnel', [PersonnelController::class, 'show'])->name('personnel')->middleware('auth');
-Route::get('/personnel/delete', [App\Http\Controllers\PersonnelController::class, 'destroy'])->name('delete')->middleware('auth');
-Route::post('/personnel/add', [App\Http\Controllers\PersonnelController::class, 'store'])->middleware('auth')->name('create.user');
+
+Route::get('/dashboard', [HomeController::class, 'index'])->name('home');
+
+// Route::get('/personnel/delete', [App\Http\Controllers\PersonnelController::class, 'destroy'])->name('delete');
+// Route::post('/personnel/add', [App\Http\Controllers\PersonnelController::class, 'store'])->name('create.user');
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('department', [DepartmentController::class, 'index'])->name('department');
@@ -65,14 +68,26 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('deleteUser', [DepartmentController::class, 'deleteUser'])->name('department.deleteUser');
 	Route::post('updateUser', [DepartmentController::class, 'updateUser'])->name('department.updateUser');
 
+	Route::get('position', [PositionController::class, 'index'])->name("position");
+	Route::get('get_position', [PositionController::class, 'get_positions']);
+	Route::post('delete_position', [PositionController::class, 'delete_position'])->name('department.delete_position');
+	Route::post('delete_nominee', [PositionController::class, 'delete_nominee'])->name('department.delete_nominee');
+	Route::post('update_position', [PositionController::class, 'update_position'])->name('department.update_position');
+	Route::post('update_nominee', [PositionController::class, 'update_nominee'])->name('department.update_nominee');
+	Route::post('add_position', [PositionController::class, 'add_position'])->name('department.add_position');
+	Route::post('add_nominee', [PositionController::class, 'add_nominee'])->name('department.add_nominee');
+
 	//personnel
 
+	Route::get('/personnel', [PersonnelController::class, 'show'])->name('personnel');
 	Route::get('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'index'])->name('personnel.index');
+	Route::post('/personnel/new-user', [App\Http\Controllers\Admin\PersonnelController::class, 'add_new_user'])->name('add_new_user');
 	Route::get('/personnel/edit', [App\Http\Controllers\Admin\PersonnelController::class, 'edit'])->name('personnel.edit');
 	Route::delete('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'destroy'])->name('delete');
 	Route::post('/personnel/add', [App\Http\Controllers\Admin\PersonnelController::class, 'store'])->name('create.user');
 	Route::post('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'update'])->name('update.user');
 	Route::get('/personnel/search', [App\Http\Controllers\Admin\PersonnelController::class, 'search'])->name('Search');
+	Route::post('/personnel/search-interviewer', [App\Http\Controllers\Admin\PersonnelController::class, 'search_interviewer'])->name('search_interviewer');
 	Route::get('/personnel/search-cv', [App\Http\Controllers\Admin\PersonnelController::class, 'search_cv'])->name('search_cv');
 	Route::post('/personnel/profile', [App\Http\Controllers\UserProfileController::class, 'update_profile'])->name('update.profile');
 	Route::post('/personnel/level', [App\Http\Controllers\Admin\PersonnelController::class, 'update_level'])->name('update.level');
@@ -82,12 +97,19 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/personnel/nominees-first', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees_first'])->name('nominees_first');
 	Route::get('/personnel/nominees-cv', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees_cv'])->name('nominees_cv');
 	Route::get('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'getAllCVT'])->name('getcv');
+	Route::get('/personnel/cv-count', [App\Http\Controllers\Admin\PersonnelController::class, 'getcount'])->name('getcount');
+	Route::get('/personnel/interview', [App\Http\Controllers\Admin\PersonnelController::class, 'getAllInter'])->name('getcv');
 	Route::get('/personnel/cv-id', [App\Http\Controllers\Admin\PersonnelController::class, 'getCVbyID'])->name('getCVbyID');
 	Route::post('/personnel/cv-id', [App\Http\Controllers\Admin\PersonnelController::class, 'update_status_cv'])->name('update_status_cv');
 	Route::post('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'saveCV'])->name('savecv');
 	Route::post('/personnel/cv-u', [App\Http\Controllers\Admin\PersonnelController::class, 'update_cv'])->name('update_cv');
 	Route::get('/personnel/cv-u', [App\Http\Controllers\Admin\PersonnelController::class, 'get_cv_update'])->name('get_cv_update');
 	Route::post('/personnel/cv-update', [App\Http\Controllers\Admin\PersonnelController::class, 'update_cv_all'])->name('update_cv_all');
+	Route::post('/personnel/interview', [App\Http\Controllers\Admin\PersonnelController::class, 'Add_interview'])->name('Add_interview');
+	Route::post('/personnel/interview/update', [App\Http\Controllers\Admin\PersonnelController::class, 'update_xd_interview'])->name('update_xd_interview');
+	Route::get('/personnel/interview/find', [App\Http\Controllers\Admin\PersonnelController::class, 'find_interviewer'])->name('find_interviewer');
+	Route::get('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'offer_cv'])->name('offer_cv');
+	Route::post('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'send_offer'])->name('send_offer');
 
 	Route::group(
 		['middleware' => 'auth'],

@@ -2,9 +2,7 @@
     @foreach ($users as $user)
         <tr>
             <td class="w-10">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="fcustomCheck1">
-                </div>
+                <input class="form-control w-50" type="text" name="level" value="{{ $user -> level }}">
             </td>
             <td>
                 <span class="text-secondary text-xs font-weight-bold">{{ $user->fullname }}</span>
@@ -43,11 +41,6 @@
             </td>
         </tr>
     @endforeach
-    <tr>
-        <td class="pt-4 border-0">
-            {{ $users->links('pagination::bootstrap-4') }}
-        </td>
-    </tr>
 @else
     <tr class="mt-2">
         <td class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2 text-center pt-5"

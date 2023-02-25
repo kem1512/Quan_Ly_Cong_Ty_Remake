@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\DB;
+use App\Models\Department;
+use App\Models\nominee;
 
 class User extends Authenticatable
 {
@@ -29,7 +31,7 @@ class User extends Authenticatable
         'fullname',
         'phone',
         'date_of_birth',
-        'address',
+        'about',
         'gender',
         'about',
         'status',
@@ -38,10 +40,17 @@ class User extends Authenticatable
         'level',
     ];
 
-    public function position(){
-        $test = $this -> belongsTo(Position::class);
+    public function position()
+    {
+        $test = $this->belongsTo(Position::class);
         return $test;
     }
+
+    public function nominees()
+    {
+        return $this->belongsTo(nominee::class);
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -110,8 +119,14 @@ class User extends Authenticatable
                         Phòng Ban</th>
                     <th
                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        Trạng Thái</th>
-                    <th
+                        Trạng Thái</th>';
+        if (Auth::user()->level == 2) {
+            $html .= '  <th
+                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        Chỉnh Sửa</th> ';
+        }
+
+        $html .= '     <th
                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                         Action</th>
                 </tr>
@@ -182,22 +197,34 @@ class User extends Authenticatable
                 $html .= '<span class="badge badge-sm bg-gradient-warning">Không xác định</span> ';
             }
 
+            if (Auth::user()->level == 2) {
+                $html .= '</td>
+             <td><div class="form-check form-switch justify-content-center">';
 
-            $html .= '</td>
-                        <td class="align-middle text-end">
+                if ($ns->level != 0) {
+                    $html .= '  <input class="form-check-input read-checkbox-level" user-data-src="' . $ns->id . '" type="checkbox" id="flexSwitchCheckDefault" checked >';
+                } else {
+                    $html .= '  <input class="form-check-input read-checkbox-level" user-data-src="' . $ns->id . '" type="checkbox" id="flexSwitchCheckDefault" >';
+                }
+                $html .= '</div></td>';
+            }
+
+
+
+            $html .= '   <td class="align-middle text-end">
                             <div class="d-flex px-3 py-1 justify-content-center align-items-center"> ';
             if (!Auth::user()->level == 0) {
                 $html .= '<a class="text-sm font-weight-bold mb-0 " id="btn-del"
                                     onclick="onDelete(' . $ns->id . ')">
-                                    Delete
-                                </a>';
+                                    Xóa
+                                </a> |';
                 if ($ns->position_id == '') {
                     $html .= '     <a id="btn-edit" data-bs-toggle="offcanvas"
                                     onclick="getdetail(' . $ns->id . ')"
                                     data-pos="xxx"
                                     data-bs-target="#offcanvasNavbarupdate"
                                     class="text-sm font-weight-bold mb-0 ps-2">
-                                    Edit
+                                    Sửa
                                 </a> ';
                 } else {
                     $html .= '     <a id="btn-edit" data-bs-toggle="offcanvas"
@@ -205,7 +232,7 @@ class User extends Authenticatable
                                     data-pos="' . $ns->position_id . '"
                                     data-bs-target="#offcanvasNavbarupdate"
                                     class="text-sm font-weight-bold mb-0 ps-2">
-                                    Edit
+                                    Sửa
                                 </a> ';
                 }
             } else {
@@ -213,7 +240,7 @@ class User extends Authenticatable
                                     onclick="getdetailview(' . $ns->id . ')"
                                     data-bs-target="#offcanvasNavbarupdate"
                                     class="text-sm font-weight-bold mb-0 ps-2">
-                                    view
+                                    Xem
                                 </a> ';
             }
 

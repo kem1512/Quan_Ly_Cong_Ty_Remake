@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AddInterviewRequest;
 use App\Http\Requests\saveCV;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\updateCVRequest;
+use App\Http\Requests\updateInterviewRequest;
 use App\Http\Requests\updateUserRequest;
 use App\Mail\PersonnelAcceptMailer;
-use App\Mail\PersonnelMailer;
+use App\Mail\PersonnelFaildCVMailer;
 use App\Models\CurriculumVitae;
 use App\Models\Department;
+use App\Models\interview;
 use App\Models\nominee;
 use App\Models\Position;
 use App\Models\User;
@@ -18,6 +21,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use phpDocumentor\Reflection\PseudoTypes\IntegerRange;
 
 class PersonnelController extends Controller
 {
@@ -29,6 +33,7 @@ class PersonnelController extends Controller
      */
     public function index(Request $rq)
     {
+        $this->authorize("personnel", Auth::user());
         //active new user
         if (Auth::user()->status == 0) {
             $user = User::find(Auth::user()->id);
@@ -44,26 +49,19 @@ class PersonnelController extends Controller
 
         //lấy số lượng nhân sự có trong db
         $ucount = User::all()->count();
-        $cvcount = CurriculumVitae::all()->count();
+        $xdcount = CurriculumVitae::where('status', '=', 3)->count();
+        $cvcount = CurriculumVitae::where('status', '=', 0)->orWhere('status', '=', 1)->orWhere('status', '=', 2)->count();
         // lấy tất cả phòng ban
         $phongbans = Department::all();
         //lấy tất cả chức vụ
         $postions = Position::all();
         //build table CV
-        $cvs = CurriculumVitae::getAllCV();
+        $cvs = CurriculumVitae::get_All_CV_UT();
         $cvut = CurriculumVitae::UTBuild($cvs);
         //join chỉ lấy phần chung | leftjoin lấy cả chung và riêng
         $nhansu = User::getAll();
-        return view('pages.personnel.personnel', compact('phongbans', 'postions', 'nhansu', 'cvcount', 'cvs', 'ucount',));
+        return view('pages.personnel.personnel', compact('phongbans', 'postions', 'nhansu', 'xdcount', 'cvcount', 'cvs', 'ucount',));
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-
 
     //====================PERSONNEL====================================
     public function edit(Request $rq)
@@ -73,13 +71,6 @@ class PersonnelController extends Controller
         $personneldetail = User::find($id);
         return response()->json(['status' => 'success', 'data' => $personneldetail]);
     }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(updateUserRequest $request)
     {
         // check quyền user đăng nhập
@@ -141,21 +132,18 @@ class PersonnelController extends Controller
     }
     public function update_level(Request $request)
     {
+        $user = User::find($request->id);
+        if ($request->id == Auth::user()->id) {
+            return response()->json(['status' => 'error', 'message' => 'Bạn không thể đổi quyền của chính bạn !']);
+        }
         if (!Auth::user()->level == 2) {
             return response()->json(['status' => 'error', 'message' => 'Bạn không đủ thẩm quyền !']);
-        } else {
-            $user = User::find($request->id);
-            $user->level = $request->level;
-            $user->save();
-            return response()->json(['status' => 'success', 'message' => 'Thay đổi đã được áp dụng !']);
         }
+
+        $user->level = $request->level;
+        $user->save();
+        return response()->json(['status' => 'success', 'message' => 'Thay đổi đã được áp dụng !']);
     }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Request $rq)
     {
         //check quyền
@@ -203,11 +191,127 @@ class PersonnelController extends Controller
             return response()->json(['body' => $body]);
         }
     }
+    public function Add_interview(AddInterviewRequest $request)
+    {
+        //check quyền
+        $level1 = Auth::user()->level;
+        if ($request->interviewer1 == $request->interviewer2) {
+            return response()->json(['status' => 'error', 'message' => '2 người phỏng vấn phải khác nhau !']);
+        }
+        if ($level1 == 0) {
+            return response()->json(['status' => 'error', 'message' => 'Không thể xóa do không đủ quyền !']);
+        }
+        $daterq = $request->interview_date;
+        $now = Carbon::now();
+        if ($daterq <= $now) {
+            return response()->json(['status' => 'error', 'message' => 'Vui lòng chọn lịch phỏng vấn phù hợp !']);
+        }
+        $cv = CurriculumVitae::find($request->id_cv);
+        if (!empty($cv->interview_id)) {
+            return response()->json(['status' => 'error', 'message' => 'Ứng viên này đã được xếp lịch !']);
+        }
+        if ($cv->status !== 2) {
+            return response()->json(['status' => 'error', 'message' => 'Ứng viên này không thể xếp lịch !']);
+        }
+        $interview = new interview();
+        $interview->interviewer1 = $request->interviewer1;
+        $interview->interviewer2 = $request->interviewer2;
+        $interview->interview_date = $request->interview_date;
+        $interview->interview_time = $request->interview_time;
+        $interview->cate_inter = $request->cate_inter;
+        $interview->location = $request->location;
+        $interview->status = 1;
+        $interview->save();
+        $id_inter = interview::select('id')->orderBy('id', 'DESC')->first()->id;
+        $cv->interview_id = $id_inter;
+        $cv->status = 3;
+        $cv->save();
+        Mail::to('lutl@s-connect.net')->send(new PersonnelAcceptMailer($cv->id, $id_inter));
+        return response()->json(['status' => 'success', 'message' => 'Xếp Lịch Thành Công !']);
+    }
+    //auto seach
+    public function search_interviewer(Request $request)
+    {
+        $search = $request->search;
+
+        if (!empty($search)) {
+            $result = User::where('personnel_code', 'like', "%$search%")
+                ->orWhere('fullname', 'like', "%$search%")
+                ->orWhere('email', 'like', "%$search%")
+                ->Where('position_id', '<', 8)
+                ->limit(5)->get();
+        }
+
+        $response = array();
+        foreach ($result as $result) {
+            $response[] = array("value" => $result->id, "label" => $result->fullname);
+        }
+
+        return response()->json($response);
+    }
+    public function add_new_user(Request $request)
+    {
+        $user = CurriculumVitae::find($request->id);
+        $max = User::orderBy('id', 'DESC')->first();
+        $new_user = new User();
+        $new_user->personnel_code = 'SCN' . $max->id + 1;
+        $new_user->email = $user->email;
+        $new_user->password = $new_user->personnel_code;
+        $new_user->fullname = $user->name;
+        $new_user->phone = $user->phone;
+        $new_user->date_of_birth = $user->date_of_birth;
+        $new_user->status = 0;
+        $new_user->recruitment_date = Carbon::now();
+        $new_user->position_id = $user->position_id;
+        $new_user->nominee_id = $user->nominee;
+        $new_user->save();
+        $user->delete();
+        return response()->json(['status' => 'success', 'message' => 'Đã Thêm Nhân Sự Mới !']);
+    }
+    public function find_interviewer(Request $request)
+    {
+        $inter = CurriculumVitae::find_interview($request->id);
+        $user1 = User::find($inter[0]->interviewer1);
+        $user2 = User::find($inter[0]->interviewer2);
+        return response()->json(['status' => 'success', 'body' => $inter, 'user1' => $user1, 'user2' => $user2]);
+    }
+    public function send_offer(Request $request)
+    {
+        $offer = CurriculumVitae::find($request->id);
+        $offer->offer = $request->offer;
+        if ($offer->status == 4) {
+            $st = $offer->status;
+            $offer->status = 1 + $st;
+        }
+        $id = $offer->id;
+        Mail::to('lutl@s-connect.net')->send(new PersonnelFaildCVMailer($id));
+        $offer->save();
+        return response()->json(['status' => 'success', 'message' => 'Offer Thành Công !']);
+    }
+    public function update_xd_interview(updateInterviewRequest $request)
+    {
+        $inter = CurriculumVitae::find($request->id);
+        if ($inter->status != 3) {
+            return response()->json(['status' => 'error', 'message' => 'Không thể đánh giá ứng viên này !']);
+        }
+        if (!empty($inter->point)) {
+            return response()->json(['status' => 'error', 'message' => 'Ứng viên đã được đánh giá !']);
+        }
+        $inter->status = 4;
+        $inter->note = $request->note;
+        $inter->point = $request->point;
+        $inter->save();
+        return response()->json(['status' => 'success', 'message' => 'Đánh giá đã được lưu lại !']);
+    }
 
     public function fillter(Request $request)
     {
-        // còn 1 bug là khi chọn mặc định không hiển thị lại
-        if ($request->department_filter == "") {
+        if (empty($request->status_filter) && empty($request->department_filter)) {
+            $nhansu2 = User::paginate(7);
+            // dd($nhansu2);
+            $body = User::UserBuild($nhansu2);
+            return response()->json(['body' => $body]);
+        } else  if (empty($request->department_filter)) {
 
             $searchst = $request->status_filter;
 
@@ -218,7 +322,7 @@ class PersonnelController extends Controller
 
             $body = User::UserBuild($resultst);
             return response()->json(['body' => $body]);
-        } else if ($request->status_filter == "") {
+        } else if (empty($request->status_filter)) {
 
             $searchdp = $request->department_filter;
             $resultdp = User::leftjoin('departments', 'users.department_id', 'departments.id')
@@ -226,11 +330,6 @@ class PersonnelController extends Controller
                 ->select('users.*', 'nominees.nominees', 'departments.name')
                 ->where('users.department_id', '=', "$searchdp")->paginate(7);
             $body = User::UserBuild($resultdp);
-            return response()->json(['body' => $body]);
-        } else if ($request->status_filter == "" | $request->department_filter == "") {
-
-            $nhansu2 = User::paginate(7);
-            $body = User::UserBuild($nhansu2);
             return response()->json(['body' => $body]);
         } else {
             $searchst1 = $request->status_filter;
@@ -254,12 +353,6 @@ class PersonnelController extends Controller
         return response()->json(['status' => 'succes', 'message' => 'Thay đổi đã được áp dụng !']);
     }
 
-    /**
-     * Store a newly created resourcestatus in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(StorePostRequest $request)
     {
         $user = new User();
@@ -282,14 +375,14 @@ class PersonnelController extends Controller
     public function fillter_cv(Request $request)
     {
         if ($request->status == 9) {
-            $resultst = CurriculumVitae::paginate(7);
+            $resultst = CurriculumVitae::paginate(12);
             $body = CurriculumVitae::UTBuild($resultst);
             return response()->json(['status' => 'succes', 'cvbody' => $body]);
         } else {
             $search = $request->status;
             $resultall = CurriculumVitae::leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
                 ->select('curriculum_vitaes.*', 'nominees.nominees')
-                ->where('status', '=', "$search")->paginate(7);
+                ->where('status', '=', "$search")->paginate(12);
             $body = CurriculumVitae::UTBuild($resultall);
             return response()->json(['status' => 'succes', 'cvbody' => $body]);
         }
@@ -302,18 +395,16 @@ class PersonnelController extends Controller
             //search by fullname and email
             $result = CurriculumVitae::leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
                 ->select('curriculum_vitaes.*', 'nominees.nominees')
-                ->paginate(7);
+                ->paginate(12);
             $body = CurriculumVitae::UTBuild($result);
             return response()->json(['status' => 'succes', 'cvbody' => $body]);
         } else {
-
-
             //search by fullname and email
             $result = CurriculumVitae::where('name', 'like', "%$search%")
                 ->orWhere('email', 'like', "%$search%")
                 ->leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
                 ->select('curriculum_vitaes.*', 'nominees.nominees')
-                ->paginate(7);
+                ->paginate(12);
             $body = CurriculumVitae::UTBuild($result);
             return response()->json(['status' => 'succes', 'cvbody' => $body]);
         }
@@ -333,7 +424,15 @@ class PersonnelController extends Controller
     }
     public function update_cv(Request $request)
     {
-        dd($request);
+        // dd($request);
+    }
+    public function getcount()
+    {
+        //lấy số lượng nhân sự có trong db
+        $ucount = User::all()->count();
+        $xdcount = CurriculumVitae::where('status', '>', 2)->count();
+        $cvcount = CurriculumVitae::where('status', '=', 0)->orWhere('status', '=', 1)->orWhere('status', '=', 2)->count();
+        return response()->json(['status' => 'success', 'user_count' => $ucount, 'cv_xd_count' => $xdcount, 'cv_uv_count' => $cvcount]);
     }
     public function update_status_cv(Request $request)
     {
@@ -344,12 +443,22 @@ class PersonnelController extends Controller
         }
 
         $cv = CurriculumVitae::find($request->id);
+        if ($cv->status > 2) {
+            $cv->status = 6;
+            $cv->save();
+            //mail
+            return response()->json(['status' => 'succes', 'message' => 'Ứng viên đã được từ chối !']);
+        }
         // dd($request);
         if ($cv->status == 1) {
             return response()->json(['status' => 'error', 'message' => 'CV đã bị từ chối trước đó !']);
         } else if ($cv->status == 2) {
             return response()->json(['status' => 'error', 'message' => 'CV đã được duyệt trước đó !']);
         }
+
+
+
+        // dd($request->status);
         if ($request->status == 1) {
             $cv->note = $request->note;
             $request->validate(
@@ -362,30 +471,7 @@ class PersonnelController extends Controller
                     'note.max' => 'Lý do quá dài !',
                 ]
             );
-        } else if ($request->status == 2) {
-            $cv->interview_date = $request->interview_date;
-            $cv->interview_time = $request->interview_time;
-            $request->validate(
-                [
-                    'interview_date' => 'required|date'
-                ],
-                [
-                    'interview_date.required' => 'Để chấp thuận cv này, bạn vui lòng chọn ngày phỏng vấn !',
-                    'interview_date.date' => 'Để chấp thuận cv này, bạn vui lòng chọn ngày phỏng vấn !',
-                ]
-            );
-        } else {
-            return
-                response()->json(['status' => 'error', 'message' => "Lỗi trong tham số !"]);
         }
-        if ($request->interview_date !== '') {
-            $date = $request->interview_date;
-            $now = Carbon::now();
-            if ($date < $now) {
-                return response()->json(['status' => 'error', 'message' => "Lịch phỏng vấn không hợp lệ !"]);
-            }
-        }
-
 
         $cv->status = $request->status;
         if ($cv->status == 1) {
@@ -394,13 +480,9 @@ class PersonnelController extends Controller
             $message = 'CV đã duyệt thành công !';
         }
         $cv->save();
-        $cvs = CurriculumVitae::getAllCV();
-        $cvut = CurriculumVitae::UTBuild($cvs);
         $id = $cv->id;
         if ($cv->status == 1) {
-            Mail::to('lutl@s-connect.net')->send(new PersonnelMailer($id));
-        } else if ($cv->status == 2) {
-            Mail::to('lutl@s-connect.net')->send(new PersonnelAcceptMailer($id));
+            Mail::to('lutl@s-connect.net')->send(new PersonnelFaildCVMailer($id));
         }
 
         return
@@ -408,11 +490,17 @@ class PersonnelController extends Controller
     }
     public function getAllCVT()
     {
-        $cvs = CurriculumVitae::getAllCV();
+        $cvs = CurriculumVitae::get_All_CV_UT();
         $cvut = CurriculumVitae::UTBuild($cvs);
-        return response()->json(['status' => 'succes', 'cvbody' => $cvut]);
+        return response()->json(['location' => 'curriculumvitae', 'status' => 'succes', 'cvbody' => $cvut]);
     }
-
+    public function getAllInter()
+    {
+        $cvs = CurriculumVitae::get_All_Cv_PV();
+        $cvut = CurriculumVitae::XDBuild($cvs);
+        // dd($cvs);
+        return response()->json(['location' => 'interview', 'status' => 'succes', 'cvbody' => $cvut]);
+    }
     public function saveCV(saveCV $request)
     {
         $cv = new CurriculumVitae();
@@ -427,9 +515,9 @@ class PersonnelController extends Controller
         $cv->gender = $request->gender;
         $cv->position_id = $request->position_ut;
         $cv->nominee = $request->nominees_ut;
-        $cv->address = $request->address;
+        $cv->about = $request->about_cv;
         $cv->save();
-        $cvs = CurriculumVitae::getAllCV();
+        $cvs = CurriculumVitae::get_All_CV_UT();
         $cvut = CurriculumVitae::UTBuild($cvs);
         return response()->json(['status' => 'succes', 'cvbody' => $cvut]);
     }
@@ -483,9 +571,9 @@ class PersonnelController extends Controller
         $cv->gender = $request->gender_ut_update;
         $cv->position_id = $request->position_ut_update;
         $cv->nominee = $request->nominees_ut_update;
-        $cv->address = $request->address_ut_update;
+        $cv->about = $request->about_ut_update;
         $cv->save();
-        $cvs = CurriculumVitae::getAllCV();
+        $cvs = CurriculumVitae::get_All_CV_UT();
         $cvut = CurriculumVitae::UTBuild($cvs);
         return response()->json(['status' => 'succes', 'cvbody' => $cvut]);
     }
