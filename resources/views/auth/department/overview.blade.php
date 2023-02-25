@@ -103,16 +103,26 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-3">
                                     <div class="card">
-                                        <div class="card-header p-0 px-3 py-2 position-relative z-index-1">
-                                            <a href="javascript:;" class="d-block">
+                                        <div
+                                            class="card-header p-0 px-3 py-2 position-relative z-index-1 d-flex justify-content-between">
+                                            <a href="{{ route('department.user', ['id' => $department->id]) }}"
+                                                class="d-block">
                                                 <span class="text-bolder text-xs">{{ $department->name }}</span>
                                             </a>
+
+                                            @if ($department->status)
+                                                <span class="bg-success"
+                                                    style="width: 20px; height: 20px; border-radius: 50%"></span>
+                                            @else
+                                                <span class="bg-danger"
+                                                    style="width: 20px; height: 20px; border-radius: 50%"></span>
+                                            @endif
                                         </div>
 
                                         <div class="card-body py-2 px-3 border-top">
                                             <div class="author align-items-center">
-                                                <img src="{{ $department->users[0]->img_url ?? '' }}" alt="..."
-                                                    class="avatar shadow rounded-circle">
+                                                <img src="{{ $department->users[0]->img_url ?? 'https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o=' }}"
+                                                    alt="..." class="avatar shadow rounded-circle">
                                                 <div class="name ps-3">
                                                     <span class="text-xs">{{ $department->users[0]->fullname ?? '' }}</span>
                                                     <div class="stats text-xs">
@@ -139,12 +149,13 @@
 
                                             <div class="text-center mt-2">
                                                 <div class="dropdown">
-                                                    <a class="dropdown-toggle text-xs text-info" data-bs-auto-close="outside" type="button"
-                                                        id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                                        aria-expanded="false">
+                                                    <a class="dropdown-toggle text-xs text-info"
+                                                        data-bs-auto-close="outside" type="button" id="dropdownMenuButton"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
                                                         Nhân Viên
                                                     </a>
-                                                    <ul class="dropdown-menu" style="max-height: 280px; overflow-y: auto" aria-labelledby="navbarDropdownMenuLink2">
+                                                    <ul class="dropdown-menu" style="max-height: 280px; overflow-y: auto"
+                                                        aria-labelledby="navbarDropdownMenuLink2">
                                                         @foreach ($department->users as $user)
                                                             <li style="width: 250px">
                                                                 <div class="d-flex p-2 align-items-center">
@@ -154,7 +165,8 @@
                                                                     <div>
                                                                         <span
                                                                             class="text-xs text-bolder">{{ $user->fullname ?? '' }}</span><br>
-                                                                        <span class="text-xs">{{ $user->nominee ?? '' }}</span>
+                                                                        <span
+                                                                            class="text-xs">{{ $user->nominee ?? '' }}</span>
                                                                     </div>
                                                                 </div>
                                                             </li>
@@ -174,10 +186,19 @@
                                         <div class="pe-4 py-3">
                                             <div id="child1">
                                                 <div class="card">
-                                                    <div class="card-header p-0 px-3 py-2 position-relative z-index-1">
-                                                        <a href="javascript:;" class="d-block">
+                                                    <div
+                                                        class="card-header p-0 px-3 py-2 position-relative z-index-1 d-flex justify-content-between">
+                                                        <a href="{{ route('department.user', ['id' => $child1->id]) }}"
+                                                            class="d-block">
                                                             <span class="text-bolder text-xs">{{ $child1->name }}</span>
                                                         </a>
+                                                        @if ($child1->status)
+                                                            <span class="bg-success"
+                                                                style="width: 20px; height: 20px; border-radius: 50%"></span>
+                                                        @else
+                                                            <span class="bg-danger"
+                                                                style="width: 20px; height: 20px; border-radius: 50%"></span>
+                                                        @endif
                                                     </div>
 
                                                     <div class="card-body py-2 px-3 border-top">
@@ -209,25 +230,30 @@
                                                                 @endif
                                                             @endforeach
                                                         </div>
-                                                        
-                                                        <div class="text-center mt-2 {{ $child1->users->count() > 1 ? 'd-block' : 'd-none' }}">
+
+                                                        <div
+                                                            class="text-center mt-2 {{ $child1->users->count() > 1 ? 'd-block' : 'd-none' }}">
                                                             <div class="dropdown">
-                                                                <a class="dropdown-toggle text-xs text-info" data-bs-auto-close="outside" type="button"
+                                                                <a class="dropdown-toggle text-xs text-info"
+                                                                    data-bs-auto-close="outside" type="button"
                                                                     id="dropdownMenuButton" data-bs-toggle="dropdown"
                                                                     aria-expanded="false">
                                                                     Nhân Viên
                                                                 </a>
-                                                                <ul class="dropdown-menu" style="max-height: 280px; overflow-y: auto" aria-labelledby="navbarDropdownMenuLink2">
+                                                                <ul class="dropdown-menu"
+                                                                    style="max-height: 280px; overflow-y: auto"
+                                                                    aria-labelledby="navbarDropdownMenuLink2">
                                                                     @foreach ($child1->users as $user)
                                                                         <li style="width: 250px">
                                                                             <div class="d-flex p-2 align-items-center">
                                                                                 <img src="{{ $user->img_url }}"
-                                                                                    class="rounded-circle me-3" style="width: 25%"
-                                                                                    class="me-2">
+                                                                                    class="rounded-circle me-3"
+                                                                                    style="width: 15%" class="me-2">
                                                                                 <div>
                                                                                     <span
                                                                                         class="text-xs text-bolder">{{ $user->fullname }}</span><br>
-                                                                                    <span class="text-xs">{{ $user->nominee }}</span>
+                                                                                    <span
+                                                                                        class="text-xs">{{ $user->nominee }}</span>
                                                                                 </div>
                                                                             </div>
                                                                         </li>
@@ -242,11 +268,19 @@
                                                 <div class="ps-3 py-3" id="{{ $loop->last ? 'child2_last' : '' }}"
                                                     style="{{ $loop->last ? '' : 'border-left: 3px solid' }}">
                                                     <div class="card" id="child2">
-                                                        <div class="card-header p-0 px-3 py-2 position-relative z-index-1">
-                                                            <a href="javascript:;" class="d-block">
+                                                        <div class="card-header p-0 px-3 py-2 position-relative z-index-1 d-flex justify-content-between">
+                                                            <a href="{{ route('department.user', ['id' => $child2->id]) }}"
+                                                                class="d-block">
                                                                 <span
                                                                     class="text-bolder text-xs">{{ $child2->name }}</span>
                                                             </a>
+                                                            @if ($child2->status)
+                                                                <span class="bg-success"
+                                                                    style="width: 20px; height: 20px; border-radius: 50%"></span>
+                                                            @else
+                                                                <span class="bg-danger"
+                                                                    style="width: 20px; height: 20px; border-radius: 50%"></span>
+                                                            @endif
                                                         </div>
 
                                                         <div class="card-body py-2 px-3 border-top">
@@ -278,30 +312,50 @@
                                                                     @endif
                                                                 @endforeach
                                                             </div>
-                                                            <div class="text-center mt-2 {{ $child2->users->count() > 1 ? 'd-block' : 'd-none' }}">
+                                                            <div
+                                                                class="text-center mt-2 {{ $child2->users->count() > 1 ? 'd-block' : 'd-none' }}">
                                                                 <div class="dropdown">
-                                                                    <a class="dropdown-toggle text-xs text-info" data-bs-auto-close="outside" type="button"
+                                                                    <a class="dropdown-toggle text-xs text-info"
+                                                                        data-bs-auto-close="outside" type="button"
                                                                         id="dropdownMenuButton" data-bs-toggle="dropdown"
                                                                         aria-expanded="false">
                                                                         Nhân Viên
                                                                     </a>
-                                                                    <ul class="dropdown-menu" style="max-height: 280px; overflow-y: auto" aria-labelledby="navbarDropdownMenuLink2">
+                                                                    <ul class="dropdown-menu"
+                                                                        style="max-height: 280px; overflow-y: auto"
+                                                                        aria-labelledby="navbarDropdownMenuLink2">
                                                                         @foreach ($child2->users as $user)
                                                                             <li style="width: 250px">
                                                                                 <div class="d-flex p-2 align-items-center">
                                                                                     <img src="{{ $user->img_url }}"
-                                                                                        class="rounded-circle me-3" style="width: 25%"
-                                                                                        class="me-2">
+                                                                                        class="rounded-circle me-3"
+                                                                                        style="width: 25%" class="me-2">
                                                                                     <div>
                                                                                         <span
                                                                                             class="text-xs text-bolder">{{ $user->fullname }}</span><br>
-                                                                                        <span class="text-xs">{{ $user->nominee }}</span>
+                                                                                        <span
+                                                                                            class="text-xs">{{ $user->nominee }}</span>
                                                                                     </div>
                                                                                 </div>
                                                                             </li>
                                                                         @endforeach
                                                                     </ul>
                                                                 </div>
+                                                            </div>
+                                                            <div
+                                                                class="btn-group dropup {{ $child2->children->count() > 0 ? 'd-block' : 'd-none' }}">
+                                                                <span type="button" class="text-xxs dropdown-toggle"
+                                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    {{ $child2->children->count() }} phòng ban nữa
+                                                                </span>
+                                                                <ul class="dropdown-menu px-2 py-3"
+                                                                    aria-labelledby="dropdownMenuButton">
+                                                                    @foreach ($child2->children as $child3)
+                                                                        <li><a class="dropdown-item border-radius-md"
+                                                                                href="{{ route('department.user', ['id' => $child3->id]) }}">{{ $child3->name }}</a>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -318,3 +372,31 @@
         </div>
     </div>
 @endsection
+
+@push('overview')
+    <script>
+        $(document).ready(function() {
+            var clicked = false,
+                clickX;
+            $("#drag").on({
+                'mousemove': function(e) {
+                    clicked && updateScrollPos(e);
+                },
+                'mousedown': function(e) {
+                    $(this).css('cursor', 'grab');
+                    clicked = true;
+                    clickX = e.pageX;
+                },
+                'mouseup': function() {
+                    clicked = false;
+                    $(this).css('cursor', 'grab');
+                }
+            }, );
+
+            var updateScrollPos = function(e) {
+                $('#drag').css('cursor', 'grabbing');
+                $('#drag').scrollLeft($('#drag').scrollLeft() + (clickX - e.pageX) / 9);
+            }
+        })
+    </script>
+@endpush

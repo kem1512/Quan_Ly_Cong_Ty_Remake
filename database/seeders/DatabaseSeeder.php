@@ -132,20 +132,14 @@ class DatabaseSeeder extends Seeder
 
         DB::table('nominees')->insert($nominees);
         $data = [
-            ['id' => 1, "code" => 'SNC1', 'name' => 'Sconnect'],
-            ['id' => 2, "code" => 'SNC2', 'name' => 'Phòng Công Nghệ'],
-            ['id' => 8, "code" => 'SNC3', 'name' => 'Nhóm Phát Triển Phần Mềm'],
-            ['id' => 9, "code" => 'SNC4', 'name' => 'Nhóm Quản Trị Hệ Thống'],
-            ['id' => 3, "code" => 'SNC5', 'name' => 'Phòng Hành Chính Nhân Sự'],
-            ['id' => 10, "code" => 'SNC6', 'name' => 'Phòng Hành Chính Nhân Sự Con'],
-            ['id' => 4, "code" => 'SNC7', 'name' => 'Phòng Pháp Chế'],
-            ['id' => 11, "code" => 'SNC8', 'name' => 'Phòng Pháp Chế 1'],
-            ['id' => 12, "code" => 'SNC9', 'name' => 'Phòng Pháp Chế 2'],
-            ['id' => 13, "code" => 'SNC10', 'name' => 'Phòng Pháp Chế 3'],
-            ['id' => 14, "code" => 'SNC11', 'name' => 'Phòng Pháp Chế 4'],
-            ['id' => 5, "code" => 'SNC12', 'name' => 'Ban Giám Đốc'],
-            ['id' => 6, "code" => 'SNC13', 'name' => 'Ban Dự Án'],
-            ['id' => 7, "code" => 'SNC14', 'name' => 'Ban Tài Chính']
+            ['id' => 1, "code" => 'SNC1', 'name' => 'Sconnect', '_lft' => 1, '_rgt' => 20, 'parent_id' => NULL],
+            ['id' => 2, "code" => 'SNC2', 'name' => 'Phòng Công Nghệ', '_lft' => 2, '_rgt' => 9, 'parent_id' => 1],
+            ['id' => 3, "code" => 'SNC3', 'name' => 'Nhóm Phát Triển Phần Mềm', '_lft' => 3, '_rgt' => 6, 'parent_id' => 2],
+            ['id' => 4, "code" => 'SNC4', 'name' => 'Nhóm Quản Trị Hệ Thống', '_lft' => 7, '_rgt' => 8, 'parent_id' => 2],
+            ['id' => 5, "code" => 'SNC5', 'name' => 'Phòng Hành Chính Nhân Sự', '_lft' => 18, '_rgt' => 19, 'parent_id' => 1],
+            ['id' => 6, "code" => 'SNC7', 'name' => 'Phòng Pháp Chế', '_lft' => 10, '_rgt' => 13, 'parent_id' => 1],
+            ['id' => 7, "code" => 'SNC8', 'name' => 'Phòng Pháp Chế 1', '_lft' => 11, '_rgt' => 12, 'parent_id' => 6],
+            ['id' => 8, "code" => 'SNC7', 'name' => 'Phòng Pháp Chế', '_lft' => 18, '_rgt' => 19, 'parent_id' => 1],
         ];
 
         DB::table('departments')->insert($data);
