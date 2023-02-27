@@ -49,6 +49,65 @@ class User extends Authenticatable
     {
         return $this->belongsTo(nominee::class);
     }
+    public static function getallUser()
+    {
+        $user = User::leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name');
+        return $user->paginate(7);
+    }
+    public static function fillter_status($searchst)
+    {
+        $user = User::leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name')
+            ->where('users.status', '=', "$searchst");
+        return $user->paginate(7);
+    }
+
+    public static function fillter_dp($searchdp)
+    {
+        $user = User::leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name')
+            ->where('users.department_id', '=', "$searchdp");
+        return $user->paginate(7);
+    }
+    public static function getUserDetail($id)
+    {
+        $user = User::leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name')
+            ->where('users.id', '=', "$id");
+        return $user->get();
+    }
+    public static function interviewer($search)
+    {
+        $user = User::where('personnel_code', 'like', "%$search%")
+            ->orWhere('fullname', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%")
+            ->Where('position_id', '<', 8)
+            ->limit(5)->get();
+        return $user;
+    }
+    public static function getAllUser_p_d()
+    {
+        $result = User::leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name');
+        return $result->paginate(7);
+    }
+    public static function search_user($search)
+    {
+        $result = User::where('personnel_code', 'like', "%$search%")
+            ->orWhere('fullname', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%")
+            ->leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name');
+        return $result->paginate(7);
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -92,7 +151,6 @@ class User extends Authenticatable
             ->select('users.*', 'nominees.nominees', 'departments.name');
         return $users->paginate(7);
     }
-
     public static function UserBuild($nhansu)
     {
         $html = '

@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('gender')->default(0);
             $table->string('point')->nullable();
             $table->string('about')->nullable();
+            $table->string('offer')->nullable();
             $table->integer('status')->default(0);
             $table->string('note')->nullable();
             $table->string('url_cv');

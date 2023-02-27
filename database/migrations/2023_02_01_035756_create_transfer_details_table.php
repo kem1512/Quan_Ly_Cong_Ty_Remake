@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->foreign('transfer_id')->references('id')->on('transfers');
             $table->bigInteger('equipment_id')->unsigned()->nullable();
             $table->foreign('equipment_id')->references('id')->on('equipments');
+            $table->integer('amount');
             $table->timestamps();
         });
     }

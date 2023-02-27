@@ -1,15 +1,9 @@
 @if ($users->count() > 0)
     @foreach ($users as $user)
         <tr>
-            @if ($user_max == true)
-                <td class="w-10">
-                    <input class="form-control w-50" type="text" name="level" value="{{ $user->level_department }}">
-                </td>
-            @else
-                <td class="w-10">
-                    <span class="text-secondary text-xs font-weight-bold ps-2">{{ $loop -> index }}</span>
-                </td>
-            @endif
+            <td class="w-10">
+                <input class="form-control w-50" type="text" name="level" value="{{ $user -> level_department }}">
+            </td>
             <td>
                 <span class="text-secondary text-xs font-weight-bold">{{ $user->fullname }}</span>
             </td>

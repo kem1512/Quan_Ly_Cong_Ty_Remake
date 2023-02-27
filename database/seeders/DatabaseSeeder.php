@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\equiment;
+
 
 
 class DatabaseSeeder extends Seeder
@@ -24,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'level' => 2,
             'img_url' => 'marie.jpg',
         ]);
+
         $position = [
             ['id' => 1, 'position' => 'Tổng Giám Đốc', 'level' => 1],
             ['id' => 2, 'position' => 'Giám Đốc', 'level' => 2],
@@ -43,7 +46,9 @@ class DatabaseSeeder extends Seeder
         DB::table('positions')->insert($position);
         $nominees = [
             [
-                'id' => 1, 'position_id' => '1', 'nominees' => 'Tổng Giám Đốc Công Ty TNHH ABC'
+                'id' => 1,
+                'position_id' => '1',
+                'nominees' => 'Tổng Giám Đốc Công Ty TNHH ABC'
             ],
             ['id' => 2, 'position_id' => '1', 'nominees' => 'Tổng Giám Đốc Công Ty Cổ Phần XYZ'],
             ['id' => 3, 'position_id' => '2', 'nominees' => 'Giám Đốc Kỹ Thuật'],
@@ -143,5 +148,59 @@ class DatabaseSeeder extends Seeder
             ['id' => 8, "code" => 'SNC7', 'name' => 'Phòng Pháp Chế', '_lft' => 18, '_rgt' => 19, 'parent_id' => 1]
         ];
         DB::table('departments')->insert($data);
+
+        $equipmenttypes = [
+            ['id' => 1, 'name' => 'Màn hình', 'status' => true],
+            ['id' => 2, 'name' => 'Case', 'status' => true],
+            ['id' => 3, 'name' => 'Bàn phím không dây', 'status' => true],
+            ['id' => 4, 'name' => 'Bàn phím có dây', 'status' => true],
+            ['id' => 5, 'name' => 'Chuột không dây', 'status' => true],
+            ['id' => 6, 'name' => 'Chuột có dây', 'status' => true],
+            ['id' => 7, 'name' => 'Laptop', 'status' => true],
+            ['id' => 8, 'name' => 'Model mạng', 'status' => true],
+            ['id' => 9, 'name' => 'Tai nghe', 'status' => true],
+        ];
+        DB::table('equipment_types')->insert($equipmenttypes);
+
+        $suppliers = [
+            ['id' => 1, 'name' => 'Gaming Gear', 'status' => true],
+            ['id' => 2, 'name' => 'MSI', 'status' => true],
+            ['id' => 3, 'name' => 'Acer', 'status' => true],
+            ['id' => 4, 'name' => 'Hp', 'status' => true],
+            ['id' => 5, 'name' => 'Logitech', 'status' => true],
+            ['id' => 6, 'name' => 'Viettel', 'status' => true],
+            ['id' => 7, 'name' => 'Vinaphone', 'status' => true],
+            ['id' => 8, 'name' => 'FPT', 'status' => true],
+        ];
+        DB::table('suppliers')->insert($suppliers);
+
+        $equipments = [
+            ['id' => 1, 'name' => 'Gaming Gear', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 'active', 'price' => 10000000, 'out_of_date' => '2023/2/25', 'warranty_date' => '2023/2/25', 'equipment_type_id' => 1, 'supplier_id' => 1],
+            ['id' => 2, 'name' => 'Gaming Gear 1', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 'active', 'price' => 10000000, 'out_of_date' => '2023/2/25', 'warranty_date' => '2023/2/25', 'equipment_type_id' => 2, 'supplier_id' => 2],
+            ['id' => 3, 'name' => 'Gaming Gear 2', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 'active', 'price' => 10000000, 'out_of_date' => '2023/2/25', 'warranty_date' => '2023/2/25', 'equipment_type_id' => 3, 'supplier_id' => 3],
+            ['id' => 4, 'name' => 'Gaming Gear 3', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 'active', 'price' => 10000000, 'out_of_date' => '2023/2/25', 'warranty_date' => '2023/2/25', 'equipment_type_id' => 4, 'supplier_id' => 4],
+            ['id' => 5, 'name' => 'Gaming Gear 4', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 'active', 'price' => 10000000, 'out_of_date' => '2023/2/25', 'warranty_date' => '2023/2/25', 'equipment_type_id' => 5, 'supplier_id' => 4],
+        ];
+        DB::table('equipments')->insert($equipments);
+
+        $storehouses = [
+            ['id' => 1, 'name' => 'Kho 1', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+            ['id' => 2, 'name' => 'Kho 2', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+            ['id' => 3, 'name' => 'Kho 3', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+            ['id' => 4, 'name' => 'Kho 4', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+            ['id' => 5, 'name' => 'Kho 5', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+            ['id' => 6, 'name' => 'Kho 6', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+            ['id' => 7, 'name' => 'Kho 7', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+            ['id' => 8, 'name' => 'Kho 8', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+            ['id' => 9, 'name' => 'Kho 9', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+        ];
+        DB::table('storehouses')->insert($storehouses);
+
+
+        // $use_details = [
+        //     ['id' => 1, 'user_id' => 1, 'equipment_id' => 1, 2],
+        //     ['id' => 2, 'user_id' => 2, 'equipment_id' => 2, 2],
+        // ];
+        // DB::table('use_details')->insert($use_details);
     }
 }

@@ -23,6 +23,7 @@ class updateUserRequest extends FormRequest
      */
     public function rules()
     {
+
         return [
             'img_url' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=3000,max_height=3000',
             'fullname' => 'required|min:3|max:255',
