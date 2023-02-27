@@ -33,20 +33,12 @@ class TransferController extends Controller
 
     public function GetStoreHouse($keyword = null)
     {
-        if ($keyword == null) {
-            $equipment_storehouse = DB::table('storehouse_details as td')
-                ->join('equipments as e', 'e.id', '=', 'td.equipment_id')
-                ->join('storehouses as sh', 'sh.id', '=', 'td.storehouse_id')
-                ->select(['td.id as id_storehouse_detail', 'e.id', 'e.name', 'e.image', 'td.amount'])
-                ->get();
-        } else {
-            $equipment_storehouse = DB::table('storehouse_details as td')
-                ->join('equipments as e', 'e.id', '=', 'td.equipment_id')
-                ->join('storehouses as sh', 'sh.id', '=', 'td.storehouse_id')
-                ->select(['td.id as id_storehouse_detail', 'e.id', 'e.name', 'e.image', 'td.amount'])
-                ->where('td.id', $keyword)
-                ->get();
-        }
+        $equipment_storehouse = DB::table('storehouse_details as td')
+            ->join('equipments as e', 'e.id', '=', 'td.equipment_id')
+            ->join('storehouses as sh', 'sh.id', '=', 'td.storehouse_id')
+            ->select(['td.id as id_storehouse_detail', 'e.id', 'e.name', 'e.image', 'td.amount'])
+            ->where('sh.id', $keyword)
+            ->get();
 
         return response()->json([
             'equipment' => $equipment_storehouse,
@@ -58,7 +50,7 @@ class TransferController extends Controller
         $usedetail = DB::table('use_details as ud')
             ->join('equipments as e', 'e.id', '=', 'ud.equipment_id')
             ->join('users as u', 'u.id', '=', 'ud.user_id')
-            ->select(['ud.id', 'u.fullname', 'u.img_url', 'e.name', 'e.image', 'ud.amount'])
+            ->select(['ud.id', 'u.id as id_user', 'u.fullname', 'u.img_url', 'e.name', 'e.image', 'ud.amount'])
             ->where('u.id', $id)
             ->get();
 
@@ -136,7 +128,7 @@ class TransferController extends Controller
     public function UpdateAmountStoreHouseDetail(Request $request)
     {
         $storehouse_detail = storehouse_detail::find($request->id);
-        $storehouse_detail->amount -= $request;
+        $storehouse_detail->amount = $storehouse_detail->amount - $request->amount;
         $storehouse_detail->save();
 
         return response()->json([
@@ -162,8 +154,41 @@ class TransferController extends Controller
             ]);
         }
 
-        $newamount = $use_details[0]->amount - $amount;
+        $newamount = $use_details[0]->amount + $amount;
         $result = DB::table('use_details')->where([['equipment_id', '=', $id_equipment], ['user_id', '=', $id_user]])->update(['amount' => $newamount]);
+        return response()->json([
+            'result' => $result == 0 ? "Thất bại" : "Thành công",
+        ]);
+    }
+
+    public function UpdateUseDetail(Request $request)
+    {
+        $usedetail_id = $request->usedetail_id;
+        $amount = $request->amount;
+        $use_details = use_detail::find($usedetail_id);
+        $newamount = $use_details->amount - $amount;
+        if ($newamount == 0) {
+            $use_details->delete();
+        } else {
+            $use_details->amount = $newamount;
+            $use_details->save();
+        }
+
+        return response()->json([
+            'use_details' => $newamount,
+        ]);
+    }
+
+    public function UpdateKhoDetail(Request $request)
+    {
+        $storehouse_details = DB::table('storehouse_details')->where([['storehouse_id', $request->storehouse_id], ['equipment_id', $request->equipment_id]])->get()->toArray();
+        if (count($storehouse_details) == 0) {
+            $result = DB::table('storehouse_details')->insert(['storehouse_id' => $request->storehouse_id, 'equipment_id' => $request->equipment_id, 'amount' => $request->amount]);
+        } else {
+            $newamount = $storehouse_details[0]->amount + $request->amount;
+            $result = DB::table('storehouse_details')->where([['storehouse_id', $request->storehouse_id], ['equipment_id', $request->equipment_id]])->update(['amount' => $newamount]);
+        }
+
         return response()->json([
             'result' => $result,
         ]);

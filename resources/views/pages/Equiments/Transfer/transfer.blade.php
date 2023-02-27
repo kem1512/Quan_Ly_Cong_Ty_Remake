@@ -10,10 +10,6 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm">
-                        <div class="d-flex justify-content-center">
-                            <img id="imgBenChuyen" class="rounded-circle img-fluid"
-                                style="width: 150px;height: 150px;display: none;">
-                        </div>
                         <div>
                             <div>
                                 <label>Bên bàn giao (<strong class="text-danger">*</strong>)</label>
@@ -29,10 +25,6 @@
                         </div>
                     </div>
                     <div class="col-sm" id="divchuyen">
-                        <div class="d-flex justify-content-center">
-                            <img id="imgbennhan" class="rounded-circle img-fluid"
-                                style="width: 150px;height: 150px;display: none;">
-                        </div>
                         <div>
                             <div>
                                 <label>Bên nhận bàn giao (<strong class="text-danger">*</strong>)</label>
@@ -44,6 +36,25 @@
                                     type="button" id="button-addon2">Hủy</button>
                                 <button id="btnBenNhan" class="btn btn-primary mb-0" type="button"
                                     id="button-addon2">Chọn</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm" id="chonKho" style="display: none;">
+                        <div class="d-flex justify-content-center">
+                            <img id="imgbennhan" class="rounded-circle img-fluid"
+                                style="width: 150px;height: 150px;display: none;">
+                        </div>
+                        <div>
+                            <div>
+                                <label>Kho (<strong class="text-danger">*</strong>)</label>
+                            </div>
+                            <div class="input-group mb-3">
+                                <select id="chonKho1" class="form-control">
+                                    @foreach ($storehouse as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }} - {{ $item->address }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -117,7 +128,6 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex">
                                 <select class="form-control form-control-sm me-2" id="storehouse_select">
-                                    <option value="">Tất cả</option>
                                     @foreach ($storehouse as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach

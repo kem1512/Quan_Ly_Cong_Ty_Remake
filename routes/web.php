@@ -171,6 +171,8 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::post('createtransferdetail', [TransferController::class, 'CreateTransferDetail']);
 					Route::post('/updateamountstorehousedetail', [TransferController::class, 'UpdateAmountStoreHouseDetail']);
 					Route::post('/addorupdateusedetail', [TransferController::class, 'AddOrUpdateUseDetail']);
+					Route::post('/updateusedetail', [TransferController::class, 'UpdateUseDetail']);
+					Route::post('/updatekhodetail', [TransferController::class, 'UpdateKhoDetail']);
 				}
 			);
 			//End route thiết bị

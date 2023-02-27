@@ -1,6 +1,7 @@
 var id_users = 0;
 var keyword = "";
 var arrEquipment = [];
+var usedetailEquipment = [];
 
 
 $(document).ready(function () {
@@ -26,7 +27,7 @@ $(document).ready(function () {
 
 function changtype() {
     $('#changtype').on('change', function () {
-        $('#changtype').val() == "hand_over" ? $('#divchuyen').css('display', 'block') : $('#divchuyen').css('display', 'none');
+        $('#changtype').val() == "hand_over" ? $('#divchuyen').css('display', 'block') : $('#divchuyen').css('display', 'none') && $('#chonKho').css('display', 'block');
         $('#btnSave').text($('#changtype').val() == "hand-over" ? "Thực hiện bàn giao" : "Thực hiện thu hồi");
     });
 }
@@ -87,6 +88,7 @@ function ChonBenNhan() {
 }
 
 function GetStoreHouse() {
+    keyword = $('#storehouse_select').val();
     $.ajax({
         type: "get",
         url: "/transfer/getstorehouse/" + keyword,
@@ -117,7 +119,6 @@ function ChangeStoreHouse() {
 function GetNhanSuBanGiao() {
     $(document).on('click', '#btnChonChuyen', function () {
         let id = $(this).attr('name');
-
         $.ajax({
             type: "get",
             url: "/transfer/getusedetail/" + id,
@@ -139,15 +140,8 @@ function GetNhanSuBanGiao() {
 
                         $('#txtNameChuyen').val(value.fullname);
                         $('#txtNameChuyen').prop('disabled', true);
-                        $('#txtNameChuyen').attr('name', value.id);
-                        id_users = value.id;
-                        $('#imgBenChuyen').css('display', 'block');
-                        if (value.img_url == null) {
-                            $('#imgBenChuyen').attr('src', "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg");
-                        } else {
-                            $('#imgBenChuyen').attr('src', value.img_url);
-                        }
-
+                        $('#txtNameChuyen').attr('name', value.id_user);
+                        id_users = value.id_user;
                     });
                     $('#list_storehouse').html(html);
                     $('#btnHuy').css('display', 'block');
@@ -185,7 +179,7 @@ function ChooseEquipmentUser() {
         let amount = $(this).attr('amount');
         $.ajax({
             type: "get",
-            url: "transfer/getequipmentbyid/" + id,
+            url: "transfer/getequipmentusedetail/" + id,
             dataType: "json",
             success: function (response) {
                 let equip = new equipmentUse(response.equipment[0].id_usedetail, response.equipment[0].id, response.equipment[0].image, response.equipment[0].name, 1);
@@ -224,8 +218,6 @@ function ChooseEquipmentUser() {
     })
 }
 
-
-
 function GetNhanSuNhan() {
     $(document).on('click', '#btnChonNhan', function () {
         let id = $(this).attr('name');
@@ -243,12 +235,6 @@ function GetNhanSuNhan() {
                 $('#exampleModal').modal('hide');
                 $('#btnBenNhan').css('display', 'none');
                 $('#btnHuyBenNhan').css('display', 'block');
-                $('#imgbennhan').css('display', 'block');
-                if (response.data.img_url == null) {
-                    $('#imgbennhan').attr('src', "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg");
-                } else {
-                    $('#imgbennhan').attr('src', response.data.img_url);
-                }
                 id_users = response.data.id;
             }
         });
@@ -301,7 +287,7 @@ function chooseEquipment() {
             url: "transfer/getequipmentbyid/" + id,
             dataType: "json",
             success: function (response) {
-                let equip = new equipment(response.equipment[0].id_storehouse_detail, response.equipment[0].id, response.equipment[0].image, response.equipment[0].name, 1);
+                let equip = new equipment(response.equipment[0].id_storehousedetail, response.equipment[0].id, response.equipment[0].image, response.equipment[0].name, 1);
                 if (arrEquipment.length == 0) {
                     arrEquipment.push(equip);
                     DisplayEquipmentTranfer();
@@ -442,10 +428,10 @@ function SaveTransfer() {
                     if (response.transfer.user_transfer_id == null) {
                         ThucHienchuyenGiaoTukho(response.transfer.id, user_receive_id);
                     } else {
-                        ThucHienchuyenGiaoTuNhanSu();
+                        ThucHienchuyenGiaoTuNhanSu(response.transfer.id, user_receive_id);
                     }
                 } else {
-                    ThucHienThuHoi();
+                    ThucHienThuHoi(response.transfer.id);
                 }
             }
         });
@@ -466,9 +452,26 @@ function ThucHienchuyenGiaoTukho(id_transfer, id_user) {
             },
             dataType: "json",
             success: function (response) {
-                console.log(response);
                 UpdateAmountStoreHouseDetail(value.id_storehouse_detail, amount);
                 AddOrUpdateUseDetail(equipment_id, id_user, amount);
+                Swal.fire(
+                    'Thông báo!',
+                    'Bàn giao thiết bị thành công',
+                    'success'
+                );
+                $('#txtBenNhan').val("");
+                $('#txtBenNhan').prop('disabled', false);
+                $('#btnBenNhan').css('display', 'block');
+                $('#btnHuyBenNhan').css('display', 'none');
+                $('#txtBenNhan').attr('name', '');
+                $('#imgbennhan').css('display', 'none');
+                $('#imgbennhan').attr('src', "");
+                $('#txtchitiet').val("");
+                id_users = 0;
+                sessionStorage.clear();
+                GetStoreHouse();
+                arrEquipment = [];
+                DisplayEquipmentTranfer();
             }
         });
     });
@@ -483,8 +486,8 @@ function UpdateAmountStoreHouseDetail(id, amount) {
             amount: amount,
         },
         dataType: "json",
-        success: function (response) {
-            console.log(response);
+        success: function () {
+
         }
     });
 }
@@ -499,24 +502,70 @@ function AddOrUpdateUseDetail(id_equipment, id_user, amount) {
             amount: amount,
         },
         dataType: "json",
-        success: function (response) {
-            console.log(response);
+        success: function () {
+
         }
     });
 }
 
-function ThucHienchuyenGiaoTuNhanSu(id_transfer) {
+function ThucHienchuyenGiaoTuNhanSu(id_transfer, id_user) {
     $.each(arrEquipment, function (index, value) {
         let equipment_id = value.id;
         let amount = value.amount;
         $.ajax({
-            type: "get",
-            url: "transfer/addorupdatestorehousedetail/" + id_transfer,
+            type: "post",
+            url: "/transfer/createtransferdetail",
+            data: {
+                equipment_id: equipment_id,
+                amount: amount,
+                transfer_id: id_transfer,
+            },
             dataType: "json",
             success: function (response) {
-                console.log(response);
+                UpdateUseDetail(value.usedetail_id, amount);
+                AddOrUpdateUseDetail(equipment_id, id_user, amount);
+                Swal.fire(
+                    'Thông báo!',
+                    'Bàn giao thiết bị thành công',
+                    'success'
+                );
+                $('#txtBenNhan').val("");
+                $('#txtBenNhan').prop('disabled', false);
+                $('#btnBenNhan').css('display', 'block');
+                $('#btnHuyBenNhan').css('display', 'none');
+                $('#txtBenNhan').attr('name', '');
+                $('#imgbennhan').css('display', 'none');
+                $('#imgbennhan').attr('src', "");
+                $('#btnHuy').css('display', 'none');
+                $('#txtNameChuyen').val("");
+                $('#txtNameChuyen').prop('disabled', false);
+                $('#btnBenChuyen').css('display', 'block');
+                $('#txtNameChuyen').attr('name', '');
+                $('#imgBenChuyen').attr('src', "");
+                $('#imgBenChuyen').css('display', 'none')
+                $('#txtchitiet').val("");
+                id_users = 0;
+                sessionStorage.clear();
+                GetStoreHouse();
+                arrEquipment = [];
+                DisplayEquipmentTranfer();
             }
         });
+    });
+}
+
+function UpdateUseDetail(usedetail_id, amount) {
+    $.ajax({
+        type: "post",
+        url: "/transfer/updateusedetail",
+        data: {
+            usedetail_id: usedetail_id,
+            amount: amount,
+        },
+        dataType: "json",
+        success: function (response) {
+
+        }
     });
 }
 
@@ -524,15 +573,71 @@ function ThucHienThuHoi(id_transfer) {
     $.each(arrEquipment, function (index, value) {
         let equipment_id = value.id;
         let amount = value.amount;
+        let id_storehouse = $('#chonKho1').val();
         $.ajax({
-            type: "method",
-            url: "url",
-            data: "data",
-            dataType: "dataType",
+            type: "post",
+            url: "/transfer/createtransferdetail",
+            data: {
+                equipment_id: equipment_id,
+                amount: amount,
+                transfer_id: id_transfer,
+            },
+            dataType: "json",
             success: function (response) {
-
+                $.each(arrEquipment, function (index, value) {
+                    let equipment_id = value.id;
+                    let amount = value.amount;
+                    $.ajax({
+                        type: "post",
+                        url: "/transfer/createtransferdetail",
+                        data: {
+                            equipment_id: equipment_id,
+                            amount: amount,
+                            transfer_id: id_transfer,
+                        },
+                        dataType: "json",
+                        success: function () {
+                            UpdateUseDetail(value.usedetail_id, amount);
+                            UpdateKhoDetail(id_storehouse, equipment_id, amount);
+                            Swal.fire(
+                                'Thông báo!',
+                                'Thu hồi thiết bị thành công',
+                                'success'
+                            );
+                            $('#txtNameChuyen').val("");
+                            $('#txtNameChuyen').prop('disabled', false);
+                            $('#btnBenChuyen').css('display', 'block');
+                            $('#txtNameChuyen').attr('name', '');
+                            $('#imgBenChuyen').attr('src', "");
+                            $('#imgBenChuyen').css('display', 'none');
+                            $('#btnHuy').css('display', 'none');
+                            $('#txtchitiet').val("");
+                            id_users = 0;
+                            sessionStorage.clear();
+                            GetStoreHouse();
+                            arrEquipment = [];
+                            DisplayEquipmentTranfer();
+                        }
+                    });
+                })
             }
         });
+    });
+}
+
+function UpdateKhoDetail(storehouse_id, equipment_id, amount) {
+    $.ajax({
+        type: "post",
+        url: "/transfer/updatekhodetail",
+        data: {
+            storehouse_id: storehouse_id,
+            equipment_id: equipment_id,
+            amount: amount,
+        },
+        dataType: "json",
+        success: function () {
+
+        }
     });
 }
 
