@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserProfileRequest;
 use App\Models\Department;
 use App\Models\Position;
 use App\Models\User;
@@ -16,14 +17,16 @@ class UserProfileController extends Controller
     public function show()
     {
         $birthDate = Auth::user()->date_of_birth;
-        $users = User::find(Auth::user()->id);
+        $userx = User::getUserDetail(Auth::user()->id);
+        $users =  $userx[0];
+        // dd($users);
         $phongbans = Department::all();
         $postions = Position::all();
         $age = floor((time() - strtotime($birthDate)) / 31556926);
         return view('pages.user-profile', compact('users', 'postions', 'phongbans'))->with('age', $age);
     }
 
-    public function update_profile(Request $request)
+    public function update_profile(UserProfileRequest $request)
     {
         // dd($request);
         $user = User::findOrFail(Auth::user()->id);
@@ -32,16 +35,11 @@ class UserProfileController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Tuổi của nhân sự phải lớn hơn 15 !']);
             ;
         }
-        if ($user->email == $request->email) {
+        if ($user->email != $request->email) {
             $request->validate([
-                'fullname' => 'required|min:3|max:255',
-                'email' => 'required|email',
-                'date_of_birth' => 'date|required',
-                'gender' => 'required|max:2',
-                'phone' => 'min:5|max:15',
-                'position_id' => 'min:1|max:4',
-                'department_id' => 'required|max:5'
+                'email' => 'unique:users,email',
             ], [
+<<<<<<< HEAD
                     'fullname.min' => 'Tên phải có hơn 3 ký tự !',
                     'fullname.required' => 'Tên không được để trống !',
                     'email.email' => 'Email không đúng định dạng !',
@@ -83,6 +81,10 @@ class UserProfileController extends Controller
                     'department_id.max' => 'Phòng ban quá dài !',
                     'email.unique' => 'Email đã tồn tại !'
                 ]);
+=======
+                'email.unique' => 'Email đã tồn tại !'
+            ]);
+>>>>>>> 700654ba4a9586812ac7e11740af9d77e5000577
         }
 
         if (!$request->img_url == '') {

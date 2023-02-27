@@ -126,8 +126,8 @@ Route::group(['middleware' => 'auth'], function () {
 						'/',
 						function () {
 
-									return view('pages.Equiments.Equiment_Type.Index');
-								}
+							return view('pages.Equiments.Equiment_Type.Index');
+						}
 					)->name('equimenttype');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [EquimentTypeController::class, 'Get']);
 					Route::post('post', [EquimentTypeController::class, 'Post']);
@@ -144,8 +144,8 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get(
 						'/',
 						function () {
-									return view('pages.Equiments.warehouse.wavehouse');
-								}
+							return view('pages.Equiments.warehouse.wavehouse');
+						}
 					)->name('warehouse');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [WareHousesController::class, 'Get']);
 					Route::get('delete/{id?}', [WareHousesController::class, 'Delete']);

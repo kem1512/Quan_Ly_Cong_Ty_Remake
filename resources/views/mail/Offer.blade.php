@@ -7,7 +7,8 @@ phỏng vấn, chúng tôi rất ấn tượng với tính cách cũng như kinh
 <br>
 phù hợp để trở thành {{ $cver[0]->nominees }} của SCONNECT.
 <br>
-Với offer {{ $cver[0]->offer }} ,
+Với offer : <br>
+{{ $cver[0]->offer }}
 <br>
 đã kèm theo BHYT, BHXH đầy đủ. Bạn sẽ được hưởng phúc lợi đầy đủ từ phía SCONNECT với chế độ khen thưởng,lễ Tết,ngày
 <br>
@@ -30,4 +31,4 @@ Rất mong sẽ nhận được phản hồi sớm từ bạn!
 Trân trọng,
 <br>
 
-{{ $user }} - NHÂN SỰ HÀNH CHÍNH - SCONNECT
+{{ Auth::user()->fullname }} - NHÂN SỰ HÀNH CHÍNH - SCONNECT
