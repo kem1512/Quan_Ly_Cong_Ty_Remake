@@ -149,7 +149,8 @@
                                 id_department_parent_error.empty();
                             }
 
-                            showAlert('error', typeof response.msg == 'object' ? 'Thao Tác Thất Bại' : response.msg)
+                            showAlert('error', typeof response.msg == 'object' ?
+                                'Thao Tác Thất Bại' : response.msg)
                         } else {
                             showAlert('success', response.msg);
                             clear();
@@ -181,6 +182,10 @@
                         })
                 })
             })
+
+            // $(document).on('click', '.department_relationship', function(e){
+            //     e.preventDefault();
+            // })
 
             // Xóa phòng ban
             $(document).on('click', '.delete', function(e) {
@@ -228,7 +233,8 @@
                 }
             })
 
-            $.get("{{ route('department.get_users') }}" + '/' + $("input[name='department_id' ]").val(), function(
+            $.get("{{ route('department.get_users') }}" + '/' + $("input[name='department_id' ]").val() + '/' + $(
+                "input[name='department_id' ]").attr('data-user'), function(
                 data) {
                 $('#table_users').empty().html(data);
             })
@@ -267,9 +273,10 @@
                                 },
                                 success: function(response) {
                                     $.get("{{ route('department.get_users') }}" +
-                                        '/' + $(
+                                        '/' + $("input[name='department_id' ]")
+                                        .val() + '/' + $(
                                             "input[name='department_id' ]")
-                                        .val(),
+                                        .attr('data-user'),
                                         function(
                                             data) {
                                             $('#table_users').empty().html(
@@ -282,11 +289,6 @@
                     return false;
                 }
             });
-
-            $.get("{{ route('department.get_users') }}" + '/' + $("input[name='department_id' ]").val(), function(
-                data) {
-                $('#table_users').empty().html(data);
-            })
 
             $(document).on('click', '.delete_user', function(e) {
                 e.preventDefault();
@@ -307,8 +309,11 @@
                             },
                             success: function(data) {
                                 $.get("{{ route('department.get_users') }}" + '/' + $(
-                                        "input[name='department_id' ]").val(),
-                                    function(data) {
+                                        "input[name='department_id' ]").val() +
+                                    '/' + $("input[name='department_id' ]").attr(
+                                        'data-user'),
+                                    function(
+                                        data) {
                                         $('#table_users').empty().html(data);
                                     })
                             }
@@ -336,32 +341,49 @@
 
             $(document).on('click', '.update_user', function(e) {
                 e.preventDefault();
-                var parent = $(this).closest('tr');
-                $.ajax({
-                    url: "{{ route('department.updateUser') }}",
-                    type: 'post',
-                    dataType: "json",
-                    data: {
-                        'id': $(this).attr('data-id'),
-                        'nominee_id': parent.find('select[name="nominee_id"]').find(":selected")
-                            .val(),
-                        'position_id': parent.find('select[name="position_id"]').find(":selected")
-                            .val(),
-                        'level': parent.find('input[name="level"]').val()
-                    },
-                    success: function(data) {
-                        if (data.status == 0) {
-                            showAlert("error", data.msg)
-                        } else {
-                            $.get("{{ route('department.get_users') }}" + '/' + $(
-                                "input[name='department_id' ]").val(), function(data) {
-                                $('#table_users').empty().html(data);
-                            })
-                            showAlert("success", data.msg)
-                        }
+                Swal.fire({
+                    title: "Bạn Có Chắc Muốn Sửa",
+                    showDenyButton: true,
+                    icon: "info",
+                    confirmButtonText: 'Đồng ý',
+                    denyButtonText: "Hủy",
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var parent = $(this).closest('tr');
+                        $.ajax({
+                            url: "{{ route('department.updateUser') }}",
+                            type: 'post',
+                            dataType: "json",
+                            data: {
+                                'id': $(this).attr('data-id'),
+                                'nominee_id': parent.find('select[name="nominee_id"]').find(
+                                        ":selected")
+                                    .val(),
+                                'position_id': parent.find('select[name="position_id"]')
+                                    .find(":selected")
+                                    .val(),
+                                'level': parent.find('input[name="level"]').val()
+                            },
+                            success: function(data) {
+                                if (data.status == 0) {
+                                    showAlert("error", data.msg)
+                                } else {
+                                    $.get("{{ route('department.get_users') }}" + '/' +
+                                        $(
+                                            "input[name='department_id' ]").val() +
+                                        '/' + $("input[name='department_id' ]")
+                                        .attr(
+                                            'data-user'),
+                                        function(data) {
+                                            $('#table_users').empty().html(data);
+                                        })
+                                    showAlert("success", data.msg)
+                                }
+                            }
+                        });
                     }
-                });
-            })  
+                })
+            })
         })
 
         function clear() {

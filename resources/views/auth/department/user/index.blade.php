@@ -23,7 +23,8 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <input class="form-control" id="user_search" type="text">
-                                        <input type="text" name="department_id" value="{{ $department[0]->id ?? '' }}" hidden>
+                                        <input type="text" name="department_id" data-user="{{ $user_max }}" value="{{ $department[0]->id ?? '' }}"
+                                            hidden>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -62,6 +63,25 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                </div>
+                                <div class="col-12">
+                                    @if ($department[0]->children->count() > 0)
+                                        <div class="mb-3">
+                                            <p class="text-bold m-0">Phòng Ban Con</p>
+                                            @foreach ($department[0]->children as $child)
+                                                <a href="{{ route('department.user', ['id' => $child->id]) }}"
+                                                    class="text-info department_relationship">{{ $child->name }}</a><br>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                        
+                                    @if ($department[0]->parent)
+                                        <div>
+                                            <p class="text-bold m-0">Phòng Ban Cha</p>
+                                            <a href="{{ route('department.user', ['id' => $department[0]->parent->id]) }}"
+                                                class="text-info department_relationship">{{ $department[0]->parent->name }}</a><br>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

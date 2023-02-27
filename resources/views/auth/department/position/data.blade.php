@@ -4,7 +4,7 @@
             <td class="text-center w-10">
                 <span class="text-secondary text-xs font-weight-bold">{{ $loop -> index }}</span>
             </td>
-            <td class="text-center">
+            <td class="text-center w-25">
                 <input class="form-control text-secondary text-xs font-weight-bold text-center no-border" data-id="{{ $position -> id }}" id="position_name_edit" disabled value="{{ $position -> position }}"></input>
             </td>
             <td class="align-middle text-center text-sm p-0">
@@ -28,9 +28,6 @@
                         </tr>
                     </tbody>
                 </table>
-            </td>
-            <td class="align-middle text-center">
-                <a href="" id="delete_position" class="text-sm text-danger" data-id="{{ $position -> id }}">Xóa</a>
             </td>
         </tr>
     @endforeach

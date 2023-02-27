@@ -113,15 +113,25 @@ class DepartmentController extends Controller
 
     public function user(Request $request)
     {
-        $department = Department::with('users')->where('id', $request->id)->limit(1)->get();
-        // if(Auth::user() -> level > 3 || $department[0] -> id == Auth::user() -> department_id){
-        //     $positions = Position::with('nominees')->get();
-        //     return view('auth.department.user.index', compact('department', 'positions'));
-        // }else{
-        //     abort(403, "Bạn Không Được Phép Sửa Phòng Ban Này");
+        $department = Department::with('users')->where('id', $request->id)->get();
+        $department_parent = Department::with('users')->find($department[0] -> parent_id);
+        $user_max = false;
+        if(Auth::user() -> department_id == $department[0] -> id && $department[0] -> users[0] -> position_id == Auth::user() -> position_id){
+            $user_max = true;
+        }
+        // if(Auth::user() -> id == $department[0] -> users[0] -> id){
+        //     $user_max = true;
         // }
+        // if($department[0] -> parent_id != null){
+        //     if($department_parent -> users -> count() > 0){
+        //         if($department_parent -> users[0] -> position_id == Auth::user() -> position_id){
+        //             $user_max = true;
+        //         }
+        //     }
+        // }
+        
         $positions = Position::with('nominees')->get();
-        return view('auth.department.user.index', compact('department', 'positions'));
+        return view('auth.department.user.index', compact('department', 'positions', 'user_max'));
     }
 
     public function addUser(Request $request)
@@ -180,9 +190,10 @@ class DepartmentController extends Controller
     public function get_users(Request $request)
     {
         if ($request->id) {
+            $user_max = $request -> user_max;
             $positions = Position::with('nominees')->get();
             $users = User::with('position')->where('department_id', $request->id)->get();
-            return view('auth.department.user.data', compact('users', 'positions'));
+            return view('auth.department.user.data', compact('users', 'positions', 'user_max'));
         }
     }
 
