@@ -629,8 +629,10 @@ function addToPersonnel() {
             id: id,
         },
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             if (response.status == "success") {
+                getallInter();
+                getcount();
                 onAlertSuccess(response.message);
             } else {
                 onAlertError(response.message);
@@ -778,7 +780,6 @@ $(document).ready(() => {
             },
             success: (response) => {
                 if (response.status == "success") {
-                    getallInter();
                     onAlertSuccess(response.message);
                 } else {
                     onAlertError(response.message);
@@ -1134,7 +1135,6 @@ $(document).ready(function () {
             processData: false,
             success: (response) => {
                 if (response.status == "error") {
-                    console.log(response);
                     onAlertError(response.message);
                 } else {
                     // closeLoading();
@@ -1310,4 +1310,43 @@ function closeLoading() {
     $("#loading").removeClass("avtice_loading");
     $("#id_body").removeClass("active_body");
     $("#loading").addClass("hide_loading");
+}
+GetNhanSuBanGiao(1);
+function GetNhanSuBanGiao(id) {
+    $.ajax({
+        type: "get",
+        url: "/transfer/getusedetail/" + id,
+        dataType: "json",
+        success: function (response) {
+            arrEquipment = [];
+            if (response.usedetails != 0) {
+                let html = "";
+                $.each(response.usedetails, function (index, value) {
+                    if (value.img_url == null) {
+                        value.img_url =
+                            "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg";
+                    }
+                    html += `<tr>
+                                <td
+                                    <div class="d-flex px-2 py-1">
+                                        <div>
+                                            <img src="/uploads/${value.image}" class="avatar avatar-sm me-3">
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0">${value.name}</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>`;
+                });
+                $("#equiment_user").html(html);
+            } else {
+                $("#equiment_user").html(
+                    `<p style="text-align:center;">
+                        Nhân Sự Chưa Được Cấp Thiết Bị
+                    </p>`
+                );
+            }
+        },
+    });
 }

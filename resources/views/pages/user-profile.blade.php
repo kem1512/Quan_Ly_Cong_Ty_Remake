@@ -152,18 +152,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
-                        <div class="d-flex justify-content-between">
-                            <a href="javascript:;" class="btn btn-sm btn-info mb-0 d-none d-lg-block">Connect</a>
-                            <a href="javascript:;" class="btn btn-sm btn-info mb-0 d-block d-lg-none"><i
-                                    class="ni ni-collection"></i></a>
-                            <a href="javascript:;"
-                                class="btn btn-sm btn-dark float-right mb-0 d-none d-lg-block">Message</a>
-                            <a href="javascript:;" class="btn btn-sm btn-dark float-right mb-0 d-block d-lg-none"><i
-                                    class="ni ni-email-83"></i></a>
-                        </div>
-                    </div>
-                    <div class="card-body pt-0">
+                    <div class="card-body pt-0 mt-2">
                         <div class="row">
                             <div class="col">
                                 <div class="d-flex justify-content-center">
@@ -194,9 +183,10 @@
                                         class="ni location_pin mr-2"></i>{{ old('address', auth()->user()->address ?? '') }}
                                 </div>
                             @endif
-                            @if (!auth()->user()->title == '')
-                                <div class="h6 mt-4">
-                                    <i class="ni business_briefcase-24 mr-2"></i>{{ old('title', auth()->user()->title) }}
+                            @if (!$users->nominees == '')
+                                <div class="h6">
+                                    <i class="ni business_briefcase-24 mr-2"></i>{{ $users->nominees }} | <i
+                                        class="ni business_briefcase-24 mr-2"></i>{{ $users->name }}
                                 </div>
                             @endif
 
@@ -217,21 +207,8 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <img src="https://demos.creative-tim.com/soft-ui-design-system-pro/assets/img/team-2.jpg"
-                                                    class="avatar avatar-sm me-3">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-xs">John Michael</h6>
-                                                <p class="text-xs text-secondary mb-0">john@creative-tim.com</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tbody id="equiment_user">
+
                             </tbody>
                         </table>
                     </div>
