@@ -42,8 +42,7 @@ class User extends Authenticatable
 
     public function position()
     {
-        $test = $this->belongsTo(Position::class);
-        return $test;
+        return $this->belongsTo(Position::class);
     }
 
     public function nominees()

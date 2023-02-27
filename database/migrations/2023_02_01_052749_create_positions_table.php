@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('positions', function (Blueprint $table) {
             $table->id();
             $table->string('position'); // chức vụ
+            $table->integer('level')->default(0);
         });
 
         Schema::table('users', function (Blueprint $table) {
