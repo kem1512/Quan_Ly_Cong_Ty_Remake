@@ -22,7 +22,7 @@ $(document).ready(function () {
     Search();
     cancelValidate();
     ShowModalNhapKHo();
-    submit();
+    createequipment();
 });
 
 function Get() {
@@ -50,7 +50,7 @@ function Get() {
                 html += '<div class="card-footer">'
                 html += '<div class="justify-content-center">'
                 html += '<button class="btn bg-gradient-primary btn-sm mx-2" id="btnSua" name="' + value.id + '"><i class="fa-solid fa-pen"></i></button>'
-                html += `<a class="btn btn-primary btn-sm" href="/equipment/${value.id}"><i class="fa-sharp fa-solid fa-eye"></i></a>`
+                html += `<a class="btn btn-primary btn-sm" href="/warehouse/viewstorehousedetail/${value.id}/${value.name}"><i class="fa-sharp fa-solid fa-eye"></i></a>`
                 html += '<button class="btn bg-gradient-danger btn-sm mx-2" id="btnXoa" name="' + value.id + '"><i class="fa-solid fa-trash-can"></i></button>'
                 html += '</div>'
                 html += '</div>'
@@ -252,7 +252,7 @@ function ShowModalNhapKHo() {
     })
 }
 
-function submit() {
+function createequipment() {
     $(document).on('submit', '#form-equiment', function (e) {
         e.preventDefault();
         let data = new FormData(this);

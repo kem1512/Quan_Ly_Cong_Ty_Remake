@@ -153,6 +153,8 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get('getequipment/{perpage?}/{currentpage?}/{id?}/{keyword?}', [WareHousesController::class, 'GetEquiments']);
 					Route::post('/createequipment', [WareHousesController::class, 'CreateEquipment']);
 					Route::post('/createstorehousedetail', [WareHousesController::class, 'CreateStoreHouseDetail']);
+					Route::get('/viewstorehousedetail/{id?}/{name?}', [WareHousesController::class, 'ViewDetail']);
+					Route::get('/storehousedetail/{perpage?}/{id?}', [WareHousesController::class, 'ViewStoreHouseDetail']);
 				}
 			);
 

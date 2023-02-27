@@ -12,15 +12,6 @@ class Pagination {
         $('#' + idElement).html(html);
     }
 
-    ViewPageLink2 = (lastPage, active, idElement) => {
-        let html = "";
-        for (let index = 1; index <= lastPage; index++) {
-            html += " <li class='page-item " + (index == active ? "active" : "") + "'><a style='cursor: pointer' class='page-link' id='btnRedirect2'>" + (index) +
-                "</a></li>";
-        }
-        $('#' + idElement).html(html);
-    }
-
     Next = (OnGet) => {
         if (this.currentPage < this.lastPage) {
             this.currentPage++

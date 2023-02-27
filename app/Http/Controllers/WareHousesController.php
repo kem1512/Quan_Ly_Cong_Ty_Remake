@@ -262,4 +262,22 @@ class WareHousesController extends Controller
             'result' => $result,
         ]);
     }
+
+    function ViewDetail($id, $name)
+    {
+        $id_kho = $id;
+        $name_kho = $name;
+        return view('pages.Equiments.Equipment.equipment_storehouse', compact('id_kho', 'name_kho'));
+    }
+
+    function ViewStoreHouseDetail($perpage, $id)
+    {
+        $result = DB::table('storehouse_details as sd')
+            ->join('equipments as e', 'e.id', '=', 'sd.equipment_id')
+            ->select(['e.image', 'e.name', 'e.out_of_date', 'e.warranty_date', 'sd.amount', 'sd.created_at'])
+            ->where('sd.storehouse_id', $id)
+            ->paginate($perpage);
+
+        return $result;
+    }
 }

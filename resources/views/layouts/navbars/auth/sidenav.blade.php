@@ -55,7 +55,7 @@
             {{-- Thiet bi link --}}
             <li class="nav-item">
                 <a class="nav-link mx-3 {{ Route::currentRouteName() == 'warehouse' ? 'active' : '' }}"
-                    href="warehouse">
+                    href="/warehouse">
                     <i class="fa-solid fa-warehouse text-primary"></i>
                     <span class="nav-link-text ms-1">Kho</span>
                 </a>
@@ -89,7 +89,8 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'overview' ? 'active' : '' }}" href="{{ route('overview') }}">
+                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'overview' ? 'active' : '' }}"
+                    href="{{ route('overview') }}">
                     <i class="fa-solid fa-building"></i>
                     <span class="nav-link-text ms-1">Sơ Đồ Công Ty</span>
                 </a>
