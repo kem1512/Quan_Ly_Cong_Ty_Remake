@@ -221,36 +221,36 @@
                                 <div class="form-group">
                                     <label for="example-text-input" class="col-sm-4 col-form-label w-100">Tên Ứng
                                         Viên</label>
-                                    <input class="form-control" id="name_eva" type="text" name="name_ut"
-                                        disabled>
+                                    <input class="form-control border-0" id="name_eva" type="text"
+                                        name="name_ut" disabled>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">Email</label>
-                                    <input class="form-control" id="email_eva" name="email_ut" type="text"
-                                        value="" disabled>
+                                    <input class="form-control border-0" id="email_eva" name="email_ut"
+                                        type="text" value="" disabled>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="col-sm-4 col-form-label  w-100">Số Điện
                                         Thoại</label>
-                                    <input class="form-control " type="text" id="phone_eva" name="phone_ut"
-                                        value="" disabled>
+                                    <input class="form-control border-0" type="text" id="phone_eva"
+                                        name="phone_ut" value="" disabled>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">Ngày Sinh</label>
-                                    <input class="form-control " type="date" name="date_of_birth_ut"
+                                    <input class="form-control border-0" type="date" name="date_of_birth_ut"
                                         id="date_of_birth_eva" value=""disabled>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">Giới Tính</label>
-                                    <select class="form-control " name="gender" id="gender_eva" disabled>
+                                    <select class="form-control border-0" name="gender" id="gender_eva" disabled>
                                         <option value="0">Nam</option>
                                         <option value="1">Nữ</option>
                                     </select>
@@ -260,14 +260,14 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">Chức Vụ</label>
-                                    <input class="form-control " type="text" name="position_eva"
+                                    <input class="form-control border-0 " type="text" name="position_eva"
                                         id="position_eva" value=""disabled>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="example-text-input" class="col-sm-4 col-form-label">Vị Trí</label>
-                                    <input class="form-control " type="text" name="nominees_eva"
+                                    <input class="form-control border-0" type="text" name="nominees_eva"
                                         id="nominees_eva" value=""disabled>
                                 </div>
                             </div>
@@ -277,7 +277,7 @@
                                 <label for="exampleFormControlTextarea1" id="about-text"
                                     class="col-sm-4 col-form-label">
                                     Ghi Chú</label>
-                                <textarea class="form-control" name="about_eva" id="about_eva" rows="3" disabled></textarea>
+                                <textarea class="form-control border-0" name="about_eva" id="about_eva" rows="3" disabled></textarea>
                             </div>
                             <div id="note_cv" class="col-12 d-none setanimationshow">
                                 <label for="exampleFormControlTextarea1" id="about-text"
