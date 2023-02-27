@@ -66,7 +66,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('searchUser', [DepartmentController::class, 'searchUsers'])->name('department.searchUsers');
 	Route::get('department/{id?}', [DepartmentController::class, 'display'])->name('department.display');
 	Route::get('department/user/{id?}', [DepartmentController::class, 'user'])->name('department.user');
-	Route::get('department/get_users/{id?}', [DepartmentController::class, 'get_users'])->name('department.get_users');
+	Route::get('department/get_users/{id?}/{user_max?}', [DepartmentController::class, 'get_users'])->name('department.get_users');
 	Route::post('addUser', [DepartmentController::class, 'addUser'])->name('department.addUser');
 	Route::post('deleteUser', [DepartmentController::class, 'deleteUser'])->name('department.deleteUser');
 	Route::post('updateUser', [DepartmentController::class, 'updateUser'])->name('department.updateUser');

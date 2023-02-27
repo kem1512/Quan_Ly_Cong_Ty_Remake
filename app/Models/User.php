@@ -42,8 +42,7 @@ class User extends Authenticatable
 
     public function position()
     {
-        $test = $this->belongsTo(Position::class);
-        return $test;
+        return $this->belongsTo(Position::class);
     }
 
     public function nominees()
@@ -90,6 +89,23 @@ class User extends Authenticatable
             ->Where('position_id', '<', 8)
             ->limit(5)->get();
         return $user;
+    }
+    public static function getAllUser_p_d()
+    {
+        $result = User::leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name');
+        return $result->paginate(7);
+    }
+    public static function search_user($search)
+    {
+        $result = User::where('personnel_code', 'like', "%$search%")
+            ->orWhere('fullname', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%")
+            ->leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name');
+        return $result->paginate(7);
     }
 
 

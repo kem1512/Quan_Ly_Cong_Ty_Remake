@@ -85,38 +85,6 @@
                 }
             })
 
-            $(document).on('click', '#delete_position', function(e) {
-                e.preventDefault();
-                Swal.fire({
-                    title: "Bạn Có Chắc Muốn Xóa",
-                    showDenyButton: true,
-                    icon: "info",
-                    confirmButtonText: 'Đồng ý',
-                    denyButtonText: "Hủy",
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: "{{ route('department.delete_position') }}",
-                            type: 'post',
-                            dataType: "json",
-                            data: {
-                                'id': $(this).attr('data-id')
-                            },
-                            success: function(data) {
-                                $.get("{{ URL::to('get_position') }}", function(data) {
-                                    $('#positions').empty().html(data);
-                                })
-                                Swal.fire(
-                                    'Thông Báo',
-                                    'Xóa Thành Công',
-                                    'success'
-                                )
-                            }
-                        });
-                    }
-                })
-            })
-
             $(document).on('click', '#delete_nominee', function(e) {
                 e.preventDefault();
                 Swal.fire({
@@ -146,47 +114,6 @@
                             }
                         });
                     }
-                })
-            })
-
-            $(document).on('dblclick', '#position_name_edit', function() {
-                $(this).removeAttr('disabled');
-                $(this).removeClass('no-border');
-                $(this).focus();
-                $(this).focusout(function(e) {
-                    e.preventDefault();
-                    Swal.fire({
-                        title: "Bạn Có Chắc Muốn Sửa",
-                        showDenyButton: true,
-                        icon: "info",
-                        confirmButtonText: 'Đồng ý',
-                        denyButtonText: "Hủy",
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: "{{ route('department.update_position') }}",
-                                type: 'post',
-                                dataType: "json",
-                                data: {
-                                    'id': $(this).attr('data-id'),
-                                    'name': $(this).val()
-                                },
-                                success: function(data) {
-                                    $.get("{{ URL::to('get_position') }}",
-                                        function(data) {
-                                            $('#positions').empty().html(
-                                                data);
-                                        })
-                                    Swal.fire({
-                                        title: data.msg,
-                                        icon: "success",
-                                    })
-                                }
-                            });
-                        }
-                    })
-                    $(this).attr('disabled', '');
-                    $(this).addClass('no-border');
                 })
             })
 

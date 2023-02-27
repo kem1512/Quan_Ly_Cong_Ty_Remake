@@ -28,19 +28,19 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $position = [
-            ['id' => 1, 'position' => 'Tổng Giám Đốc'],
-            ['id' => 2, 'position' => 'Giám Đốc'],
-            ['id' => 3, 'position' => 'Phó Giám Đốc'],
-            ['id' => 4, 'position' => 'Trưởng Phòng'],
-            ['id' => 5, 'position' => 'Phó Phòng'],
-            ['id' => 6, 'position' => 'Quản Lý Cấp Cao'],
-            ['id' => 7, 'position' => 'Quản Lý'],
-            ['id' => 8, 'position' => 'Trưởng Nhóm'],
-            ['id' => 9, 'position' => 'Chuyên Viên'],
-            ['id' => 10, 'position' => 'Nhân Viên'],
-            ['id' => 11, 'position' => 'Thử Việc'],
-            ['id' => 12, 'position' => 'Học Việc'],
-            ['id' => 13, 'position' => 'Thực Tập'],
+            ['id' => 1, 'position' => 'Tổng Giám Đốc', 'level' => 1],
+            ['id' => 2, 'position' => 'Giám Đốc', 'level' => 2],
+            ['id' => 3, 'position' => 'Phó Giám Đốc', 'level' => 3],
+            ['id' => 4, 'position' => 'Trưởng Phòng', 'level' => 4],
+            ['id' => 5, 'position' => 'Phó Phòng', 'level' => 5],
+            ['id' => 6, 'position' => 'Quản Lý Cấp Cao', 'level' => 6],
+            ['id' => 7, 'position' => 'Quản Lý', 'level' => 7],
+            ['id' => 8, 'position' => 'Trưởng Nhóm', 'level' => 8],
+            ['id' => 9, 'position' => 'Chuyên Viên', 'level' => 9],
+            ['id' => 10, 'position' => 'Nhân Viên', 'level' => 10],
+            ['id' => 11, 'position' => 'Thử Việc', 'level' => 11],
+            ['id' => 12, 'position' => 'Học Việc', 'level' => 12],
+            ['id' => 13, 'position' => 'Thực Tập', 'level' => 13],
         ];
 
         DB::table('positions')->insert($position);
@@ -136,21 +136,16 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('nominees')->insert($nominees);
+        
         $data = [
-            ['id' => 1, "code" => 'SNC1', 'name' => 'Sconnect'],
-            ['id' => 2, "code" => 'SNC2', 'name' => 'Phòng Công Nghệ'],
-            ['id' => 8, "code" => 'SNC3', 'name' => 'Nhóm Phát Triển Phần Mềm'],
-            ['id' => 9, "code" => 'SNC4', 'name' => 'Nhóm Quản Trị Hệ Thống'],
-            ['id' => 3, "code" => 'SNC5', 'name' => 'Phòng Hành Chính Nhân Sự'],
-            ['id' => 10, "code" => 'SNC6', 'name' => 'Phòng Hành Chính Nhân Sự Con'],
-            ['id' => 4, "code" => 'SNC7', 'name' => 'Phòng Pháp Chế'],
-            ['id' => 11, "code" => 'SNC8', 'name' => 'Phòng Pháp Chế 1'],
-            ['id' => 12, "code" => 'SNC9', 'name' => 'Phòng Pháp Chế 2'],
-            ['id' => 13, "code" => 'SNC10', 'name' => 'Phòng Pháp Chế 3'],
-            ['id' => 14, "code" => 'SNC11', 'name' => 'Phòng Pháp Chế 4'],
-            ['id' => 5, "code" => 'SNC12', 'name' => 'Ban Giám Đốc'],
-            ['id' => 6, "code" => 'SNC13', 'name' => 'Ban Dự Án'],
-            ['id' => 7, "code" => 'SNC14', 'name' => 'Ban Tài Chính']
+            ['id' => 1, "code" => 'SNC1', 'name' => 'Sconnect', '_lft' => 1, '_rgt' => 20, 'parent_id' => NULL],
+            ['id' => 2, "code" => 'SNC2', 'name' => 'Phòng Công Nghệ', '_lft' => 2, '_rgt' => 9, 'parent_id' => 1],
+            ['id' => 3, "code" => 'SNC3', 'name' => 'Nhóm Phát Triển Phần Mềm', '_lft' => 3, '_rgt' => 6, 'parent_id' => 2],
+            ['id' => 4, "code" => 'SNC4', 'name' => 'Nhóm Quản Trị Hệ Thống', '_lft' => 7, '_rgt' => 8, 'parent_id' => 2],
+            ['id' => 5, "code" => 'SNC5', 'name' => 'Phòng Hành Chính Nhân Sự', '_lft' => 18, '_rgt' => 19, 'parent_id' => 1],
+            ['id' => 6, "code" => 'SNC7', 'name' => 'Phòng Pháp Chế', '_lft' => 10, '_rgt' => 13, 'parent_id' => 1],
+            ['id' => 7, "code" => 'SNC8', 'name' => 'Phòng Pháp Chế 1', '_lft' => 11, '_rgt' => 12, 'parent_id' => 6],
+            ['id' => 8, "code" => 'SNC7', 'name' => 'Phòng Pháp Chế', '_lft' => 18, '_rgt' => 19, 'parent_id' => 1]
         ];
         DB::table('departments')->insert($data);
 
