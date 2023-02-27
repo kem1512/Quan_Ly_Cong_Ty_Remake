@@ -202,10 +202,10 @@ class DatabaseSeeder extends Seeder
         DB::table('storehouses')->insert($storehouses);
 
 
-        $use_details = [
-            ['id' => 1, 'user_id' => 1, 'equipment_id' => 1, 2],
-            ['id' => 2, 'user_id' => 2, 'equipment_id' => 2, 2],
-        ];
-        DB::table('use_details')->insert($use_details);
+        // $use_details = [
+        //     ['id' => 1, 'user_id' => 1, 'equipment_id' => 1, 2],
+        //     ['id' => 2, 'user_id' => 2, 'equipment_id' => 2, 2],
+        // ];
+        // DB::table('use_details')->insert($use_details);
     }
 }

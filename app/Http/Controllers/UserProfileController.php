@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserProfileRequest;
 use App\Models\Department;
 use App\Models\Position;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\TransferController;
 
 class UserProfileController extends Controller
 {
@@ -16,13 +18,16 @@ class UserProfileController extends Controller
     {
         $birthDate = Auth::user()->date_of_birth;
         $users = User::find(Auth::user()->id);
+        $transfer = new TransferController();
+        $userRQ = $transfer->GetUseDetail(Auth::user()->id);
+        dd($userRQ->data);
         $phongbans = Department::all();
         $postions = Position::all();
         $age = floor((time() - strtotime($birthDate)) / 31556926);
         return view('pages.user-profile', compact('users', 'postions', 'phongbans'))->with('age', $age);
     }
 
-    public function update_profile(Request $request)
+    public function update_profile(UserProfileRequest $request)
     {
         // dd($request);
         $user = User::findOrFail(Auth::user()->id);
@@ -30,55 +35,10 @@ class UserProfileController extends Controller
         if ($age < 15) {
             return response()->json(['status' => 'error', 'message' => 'Tuổi của nhân sự phải lớn hơn 15 !']);;
         }
-        if ($user->email == $request->email) {
+        if ($user->email != $request->email) {
             $request->validate([
-                'fullname' => 'required|min:3|max:255',
-                'email' => 'required|email',
-                'date_of_birth' => 'date|required',
-                'gender' => 'required|max:2',
-                'phone' => 'min:5|max:15',
-                'position_id' => 'min:1|max:4',
-                'department_id' => 'required|max:5'
+                'email' => 'unique:users,email',
             ], [
-                'fullname.min' => 'Tên phải có hơn 3 ký tự !',
-                'fullname.required' => 'Tên không được để trống !',
-                'email.email' => 'Email không đúng định dạng !',
-                'email.required' => 'Email không được để trống !',
-                'date_of_birth.required' => 'Ngày sinh không được để trống !',
-                'date_of_birth.date' => 'Ngày sinh không đúng định dạng !',
-                'gender.required' => 'giới tính không để trống !',
-                'gender.max' => 'sai định dạng giới tính !',
-                'phone.min' => 'Số điện thoại quá ngắn !',
-                'phone.max' => 'Số điện thoại quá dài !',
-                'position_id.max' => 'Chức vụ lỗi !',
-                'position_id.min' => 'Chức vụ lỗi !',
-                'department_id.required' => 'Phòng ban không được trống !',
-                'department_id.max' => 'Phòng ban quá dài !'
-            ]);
-        } else {
-            $request->validate([
-                'fullname' => 'required|min:3|max:255',
-                'email' => 'required|email|unique:users,email',
-                'date_of_birth' => 'date|required',
-                'gender' => 'required|max:2',
-                'phone' => 'min:5|max:15',
-                'position_id' => 'min:1|max:4',
-                'department_id' => 'required|max:5'
-            ], [
-                'fullname.min' => 'Tên phải có hơn 3 ký tự !',
-                'fullname.required' => 'Tên không được để trống !',
-                'email.email' => 'Email không đúng định dạng !',
-                'email.required' => 'Email không được để trống !',
-                'date_of_birth.required' => 'Ngày sinh không được để trống !',
-                'date_of_birth.date' => 'Ngày sinh không đúng định dạng !',
-                'gender.required' => 'giới tính không để trống !',
-                'gender.max' => 'sai định dạng giới tính !',
-                'phone.min' => 'Số điện thoại quá ngắn !',
-                'phone.max' => 'Số điện thoại quá dài !',
-                'position_id.max' => 'Chức vụ lỗi !',
-                'position_id.min' => 'Chức vụ lỗi !',
-                'department_id.required' => 'Phòng ban không được trống !',
-                'department_id.max' => 'Phòng ban quá dài !',
                 'email.unique' => 'Email đã tồn tại !'
             ]);
         }

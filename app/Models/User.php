@@ -74,6 +74,14 @@ class User extends Authenticatable
             ->where('users.department_id', '=', "$searchdp");
         return $user->paginate(7);
     }
+    public static function getUserDetail($id)
+    {
+        $user = User::leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name')
+            ->where('users.id', '=', "$id");
+        return $user->get();
+    }
     public static function interviewer($search)
     {
         $user = User::where('personnel_code', 'like', "%$search%")
