@@ -82,54 +82,62 @@
                     </div>
                     <div class="col-md-6">
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="example-text-input" class="col-sm-4 col-form-label w-100">Tên Ứng
-                                        Viên</label>
-                                    <input id="id_interview" class="d-none">
-                                    <input class="form-control" id="xd_name_interview" type="text"
-                                        name="xd_name_interview" disabled>
+                            <div class="row border" style="border-radius:10px ;">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="col-sm-4 col-form-label w-100 ">Tên
+                                            Ứng
+                                            Viên</label>
+                                        <input id="id_interview" class="d-none">
+                                        <input class="form-control  border-0" id="xd_name_interview" type="text"
+                                            name="xd_name_interview" disabled>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="example-text-input" class="col-sm-4 col-form-label">Email</label>
-                                    <input class="form-control" id="xd_email_interview" name="xd_email_interview"
-                                        type="text" value="" disabled>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="col-sm-4 col-form-label">Email</label>
+                                        <input class="form-control border-0" id="xd_email_interview"
+                                            name="xd_email_interview" type="text" value="" disabled>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="example-text-input" class="col-sm-4 col-form-label  w-100">Số Điện
-                                        Thoại</label>
-                                    <input class="form-control " type="text" id="xd_phone_interview"
-                                        name="xd_phone_interview" value="" disabled>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="col-sm-4 col-form-label  w-100">Số Điện
+                                            Thoại</label>
+                                        <input class="form-control  border-0" type="text" id="xd_phone_interview"
+                                            name="xd_phone_interview" value="" disabled>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="example-text-input" class="col-sm-4 col-form-label">Ngày Sinh</label>
-                                    <input class="form-control " type="date" name="xd_date_of_birth_interview"
-                                        id="xd_date_of_birth_interview" value=""disabled>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="col-sm-4 col-form-label">Ngày
+                                            Sinh</label>
+                                        <input class="form-control  border-0" type="date"
+                                            name="xd_date_of_birth_interview" id="xd_date_of_birth_interview"
+                                            value=""disabled>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="example-text-input" class="col-sm-4 col-form-label">Giới Tính</label>
-                                    <select class="form-control " name="xd_gender_interview" id="xd_gender_interview"
-                                        disabled>
-                                        <option value="0">Nam</option>
-                                        <option value="1">Nữ</option>
-                                    </select>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="col-sm-4 col-form-label">Giới
+                                            Tính</label>
+                                        <select class="form-control  border-0" name="xd_gender_interview"
+                                            id="xd_gender_interview" disabled>
+                                            <option value="0">Nam</option>
+                                            <option value="1">Nữ</option>
+                                        </select>
 
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="example-text-input" class="col-sm-4 col-form-label w-100">Vị Trí Ứng
-                                        Tuyển</label>
-                                    <input class="form-control " type="text" name="xd_nominees_interview"
-                                        id="xd_nominees_interview" value=""disabled>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="col-sm-4 col-form-label w-100">Vị Trí
+                                            Ứng
+                                            Tuyển</label>
+                                        <input class="form-control  border-0" type="text"
+                                            name="xd_nominees_interview" id="xd_nominees_interview"
+                                            value=""disabled>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-12">
