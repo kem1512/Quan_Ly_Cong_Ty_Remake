@@ -21,6 +21,7 @@ $(document).ready(function () {
         DisplayEquipmentTranfer();
     }
     SaveTransfer();
+    ChooseEquipmentUser();
 });
 
 function changtype() {
@@ -133,7 +134,7 @@ function GetNhanSuBanGiao() {
                                     <td><img class="rounded-circle img-fluid" style="width: 100px;height: 100px" src="${(value.image == null ? "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" : value.image)}"</td>
                                     <td>${value.name}</td>
                                     <td id="amountnhansu">${value.amount}</td>
-                                    <td><button id="ChonTrongKho" name="${value.id}" class="btn btn-primary">Chọn</button></td>
+                                    <td><button id="ChonCuaNhanSu" name="${value.id}" amount="${value.amount}" usedetail="" class="btn btn-primary">Chọn</button></td>
                                 </tr>`;
 
                         $('#txtNameChuyen').val(value.fullname);
@@ -160,6 +161,70 @@ function GetNhanSuBanGiao() {
         });
     });
 }
+
+class equipmentUse {
+
+    constructor(usedetail_id, id, image, name, amount) {
+        this.amount = amount;
+        this.id = id;
+        this.usedetail_id = usedetail_id;
+        this.image = image;
+        this.name = name;
+    }
+
+    usedetail_id;
+    id;
+    image;
+    name;
+    amount;
+}
+
+function ChooseEquipmentUser() {
+    $(document).on('click', '#ChonCuaNhanSu', function () {
+        let id = $(this).attr('name');
+        let amount = $(this).attr('amount');
+        $.ajax({
+            type: "get",
+            url: "transfer/getequipmentbyid/" + id,
+            dataType: "json",
+            success: function (response) {
+                let equip = new equipmentUse(response.equipment[0].id_usedetail, response.equipment[0].id, response.equipment[0].image, response.equipment[0].name, 1);
+                if (arrEquipment.length == 0) {
+                    arrEquipment.push(equip);
+                    DisplayEquipmentTranfer();
+                } else {
+
+                    let check = arrEquipment.some(e => e.id == equip.id && e.id_storehouse == equip.id_storehouse);
+                    if (!check) {
+                        let newArr = [];
+                        newArr.push(equip);
+                        for (const equip of newArr) {
+                            arrEquipment.push(equip);
+                        }
+                        DisplayEquipmentTranfer();
+                    } else {
+                        for (const eqip of arrEquipment) {
+                            if (eqip.id == equip.id && eqip.id_storehouse == equip.id_storehouse) {
+                                if (eqip.amount < amount) {
+                                    eqip.amount++;
+                                    DisplayEquipmentTranfer();
+                                } else {
+                                    Swal.fire(
+                                        'Cảnh báo!',
+                                        'Đã vượt quá số lượng thiết bị!',
+                                        'warning'
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    })
+}
+
+
 
 function GetNhanSuNhan() {
     $(document).on('click', '#btnChonNhan', function () {
@@ -333,7 +398,142 @@ function SaveTransfer() {
         let performer_id = $('#txtInfo').attr('name');
         let transfer_type = $('#changtype').val();
         let transfer_detail = $('#txtchitiet').val();
+
+        if (arrEquipment.length == 0) {
+            Swal.fire(
+                'Cảnh báo!',
+                'Mời chọn thiết bị cần chuyển giao!',
+                'warning'
+            );
+            return;
+        }
+
+        if ($('#changtype').val() == 'hand_over' && $('#txtBenNhan').attr('name').trim().length == 0) {
+            Swal.fire(
+                'Cảnh báo!',
+                'Mời chọn bên nhận bàn giao!',
+                'warning'
+            );
+            return;
+        }
+
+        if ($('#changtype').val() == 'recall' && $('#txtNameChuyen').attr('name').trim().length == 0) {
+            Swal.fire(
+                'Cảnh báo!',
+                'Mời chọn bên bàn giao!',
+                'warning'
+            );
+            return;
+        }
+
+        $.ajax({
+            type: "post",
+            url: "/transfer/createtransfer",
+            data: {
+                user_transfer_id: user_transfer_id,
+                user_receive_id: user_receive_id,
+                performer_id: performer_id,
+                transfer_type: transfer_type,
+                transfer_detail: transfer_detail,
+            },
+            dataType: "json",
+            success: function (response) {
+                if (response.transfer.transfer_type == 'hand_over') {
+                    if (response.transfer.user_transfer_id == null) {
+                        ThucHienchuyenGiaoTukho(response.transfer.id, user_receive_id);
+                    } else {
+                        ThucHienchuyenGiaoTuNhanSu();
+                    }
+                } else {
+                    ThucHienThuHoi();
+                }
+            }
+        });
     })
+}
+
+function ThucHienchuyenGiaoTukho(id_transfer, id_user) {
+    $.each(arrEquipment, function (index, value) {
+        let equipment_id = value.id;
+        let amount = value.amount;
+        $.ajax({
+            type: "post",
+            url: "/transfer/createtransferdetail",
+            data: {
+                equipment_id: equipment_id,
+                amount: amount,
+                transfer_id: id_transfer,
+            },
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                UpdateAmountStoreHouseDetail(value.id_storehouse_detail, amount);
+                AddOrUpdateUseDetail(equipment_id, id_user, amount);
+            }
+        });
+    });
+}
+
+function UpdateAmountStoreHouseDetail(id, amount) {
+    $.ajax({
+        type: "post",
+        url: "/transfer/updateamountstorehousedetail",
+        data: {
+            id: id,
+            amount: amount,
+        },
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+function AddOrUpdateUseDetail(id_equipment, id_user, amount) {
+    $.ajax({
+        type: "post",
+        url: "/transfer/addorupdateusedetail",
+        data: {
+            id_equipment: id_equipment,
+            id_user: id_user,
+            amount: amount,
+        },
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+        }
+    });
+}
+
+function ThucHienchuyenGiaoTuNhanSu(id_transfer) {
+    $.each(arrEquipment, function (index, value) {
+        let equipment_id = value.id;
+        let amount = value.amount;
+        $.ajax({
+            type: "get",
+            url: "transfer/addorupdatestorehousedetail/" + id_transfer,
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+            }
+        });
+    });
+}
+
+function ThucHienThuHoi(id_transfer) {
+    $.each(arrEquipment, function (index, value) {
+        let equipment_id = value.id;
+        let amount = value.amount;
+        $.ajax({
+            type: "method",
+            url: "url",
+            data: "data",
+            dataType: "dataType",
+            success: function (response) {
+
+            }
+        });
+    });
 }
 
 

@@ -166,8 +166,11 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::get('/getusedetail/{id?}', [TransferController::class, 'GetUseDetail']);
 					Route::post('/updateamount', [TransferController::class, 'GetUseDetail']);
 					Route::get('/getequipmentbyid/{id?}', [TransferController::class, 'GetEquimentById']);
+					Route::get('/getequipmentusedetail/{id?}', [TransferController::class, 'GetEquimentUseDetailById']);
 					Route::post('createtransfer', [TransferController::class, 'CreateTransfer']);
 					Route::post('createtransferdetail', [TransferController::class, 'CreateTransferDetail']);
+					Route::post('/updateamountstorehousedetail', [TransferController::class, 'UpdateAmountStoreHouseDetail']);
+					Route::post('/addorupdateusedetail', [TransferController::class, 'AddOrUpdateUseDetail']);
 				}
 			);
 			//End route thiết bị

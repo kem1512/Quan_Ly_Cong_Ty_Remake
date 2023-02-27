@@ -58,7 +58,7 @@ class TransferController extends Controller
         $usedetail = DB::table('use_details as ud')
             ->join('equipments as e', 'e.id', '=', 'ud.equipment_id')
             ->join('users as u', 'u.id', '=', 'ud.user_id')
-            ->select(['u.id', 'u.fullname', 'u.img_url', 'e.name', 'e.image', 'ud.amount'])
+            ->select(['ud.id', 'u.fullname', 'u.img_url', 'e.name', 'e.image', 'ud.amount'])
             ->where('u.id', $id)
             ->get();
 
@@ -78,6 +78,20 @@ class TransferController extends Controller
 
         return response()->json([
             'equipment' => $equipment,
+        ]);
+    }
+
+    public function GetEquimentUseDetailById($id = null)
+    {
+        $usedetail = DB::table('use_details as ud')
+            ->join('equipments as e', 'e.id', '=', 'ud.equipment_id')
+            ->join('users as u', 'u.id', '=', 'ud.user_id')
+            ->select(['ud.id as id_usedetail', 'u.fullname', 'u.img_url', 'e.id', 'e.name', 'e.image', 'ud.amount'])
+            ->where('ud.id', $id)
+            ->get();
+
+        return response()->json([
+            'equipment' => $usedetail,
         ]);
     }
 
@@ -116,6 +130,42 @@ class TransferController extends Controller
 
         return response()->json([
             'transfer_detail' => $transfer_detail,
+        ]);
+    }
+
+    public function UpdateAmountStoreHouseDetail(Request $request)
+    {
+        $storehouse_detail = storehouse_detail::find($request->id);
+        $storehouse_detail->amount -= $request;
+        $storehouse_detail->save();
+
+        return response()->json([
+            'transfer_detail' => $storehouse_detail,
+        ]);
+    }
+
+    public function AddOrUpdateUseDetail(Request $request)
+    {
+        $id_equipment = $request->id_equipment;
+        $id_user = $request->id_user;
+        $amount = $request->amount;
+        $use_details = DB::table('use_details')->where([['equipment_id', '=', $id_equipment], ['user_id', '=', $id_user]])->get()->toArray();
+
+        if (count($use_details) == 0) {
+            $use_detail = new use_detail();
+            $use_detail->equipment_id = $id_equipment;
+            $use_detail->user_id = $id_user;
+            $use_detail->amount = $amount;
+            $use_detail->save();
+            return response()->json([
+                'use_detail' => $use_detail,
+            ]);
+        }
+
+        $newamount = $use_details[0]->amount - $amount;
+        $result = DB::table('use_details')->where([['equipment_id', '=', $id_equipment], ['user_id', '=', $id_user]])->update(['amount' => $newamount]);
+        return response()->json([
+            'result' => $result,
         ]);
     }
 }

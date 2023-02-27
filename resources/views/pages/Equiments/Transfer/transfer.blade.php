@@ -19,7 +19,7 @@
                                 <label>Bên bàn giao (<strong class="text-danger">*</strong>)</label>
                             </div>
                             <div class="input-group mb-3">
-                                <input type="text" id="txtNameChuyen" class="form-control"
+                                <input type="text" id="txtNameChuyen" name="" class="form-control"
                                     aria-label="Recipient's username" aria-describedby="button-addon2">
                                 <button id="btnHuy" style="display: none;" class="btn btn-secondary mb-0" type="button"
                                     id="button-addon2">Hủy</button>
@@ -38,8 +38,8 @@
                                 <label>Bên nhận bàn giao (<strong class="text-danger">*</strong>)</label>
                             </div>
                             <div class="input-group mb-3">
-                                <input type="text" id="txtBenNhan" class="form-control" aria-label="Recipient's username"
-                                    aria-describedby="button-addon2">
+                                <input type="text" id="txtBenNhan" name="" class="form-control"
+                                    aria-label="Recipient's username" aria-describedby="button-addon2">
                                 <button id="btnHuyBenNhan" style="display: none;" class="btn btn-secondary mb-0"
                                     type="button" id="button-addon2">Hủy</button>
                                 <button id="btnBenNhan" class="btn btn-primary mb-0" type="button"
