@@ -135,7 +135,6 @@ class User extends Authenticatable
             ->select('users.*', 'nominees.nominees', 'departments.name');
         return $users->paginate(7);
     }
-
     public static function UserBuild($nhansu)
     {
         $html = '

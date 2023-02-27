@@ -17,10 +17,9 @@ class UserProfileController extends Controller
     public function show()
     {
         $birthDate = Auth::user()->date_of_birth;
-        $users = User::find(Auth::user()->id);
-        $transfer = new TransferController();
-        $userRQ = $transfer->GetUseDetail(Auth::user()->id);
-        dd($userRQ->data);
+        $userx = User::getUserDetail(Auth::user()->id);
+        $users =  $userx[0];
+        // dd($users);
         $phongbans = Department::all();
         $postions = Position::all();
         $age = floor((time() - strtotime($birthDate)) / 31556926);

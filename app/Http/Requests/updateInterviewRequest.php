@@ -25,7 +25,7 @@ class updateInterviewRequest extends FormRequest
     {
         return [
             'note' => 'required|min:6|max:255',
-            'point' => 'required|max:2'
+            'point' => 'required|max:3'
 
         ];
     }

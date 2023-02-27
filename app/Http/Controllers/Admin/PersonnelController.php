@@ -12,7 +12,7 @@ use App\Http\Requests\updateUserRequest;
 use App\Mail\PassCV_FaildInter;
 use App\Mail\PersonnelAcceptMailer;
 use App\Mail\PersonnelFaildCVMailer;
-use App\Mail\PersonnelOffer;
+use App\Mail\Send_Offer;
 use App\Models\CurriculumVitae;
 use App\Models\Department;
 use App\Models\interview;
@@ -281,7 +281,7 @@ class PersonnelController extends Controller
             $offer->status = 1 + $st;
         }
         $id = $offer->id;
-        Mail::to('lutl@s-connect.net')->send(new PersonnelOffer($id));
+        Mail::to('lutl@s-connect.net')->send(new Send_Offer($id));
         $offer->save();
         return response()->json(['status' => 'success', 'message' => 'Offer Thành Công !']);
     }
