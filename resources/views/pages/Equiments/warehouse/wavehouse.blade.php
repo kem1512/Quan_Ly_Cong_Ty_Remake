@@ -9,8 +9,7 @@
                     <div class="row mx-4">
                         <div class="col-sm d-flex mx-5">
                             <div>
-                                <button id="btnThem" class="btn bg-gradient-primary btn-sm btn-block mx-1"><i
-                                        class="fa-solid fa-plus"></i></button>
+                                <button id="btnThem" class="btn bg-gradient-primary btn-sm btn-block mx-1">Thêm kho</button>
                             </div>
                             <div>
                                 <input type="text" id="txtSearch" class="form-control form-control-sm w-100"
@@ -51,7 +50,6 @@
         </div>
         @include('layouts.footers.auth.footer')
     </div>
-    @include('components.detail_warehouse_modal')
     <!-- Modal -->
     <div class="modal fade" id="exampleModalSignUp" tabindex="-1" role="dialog" aria-labelledby="exampleModalSignTitle"
         aria-hidden="true">
@@ -115,8 +113,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    </div>
     </div>
 @endsection
 

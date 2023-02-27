@@ -5,7 +5,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel"></h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
+                        class="fa-solid fa-x"></i></button>
             </div>
             <div class="modal-body">
                 <div class="table-responsive p-0">
@@ -26,6 +27,10 @@
                                 </th>
                                 <th
                                     class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    Số lượng
+                                </th>
+                                <th
+                                    class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                     Thao tác
                                 </th>
                             </tr>
@@ -37,7 +42,28 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <div id="paginate">
+                    <div class="d-flex justify-content-center">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" aria-label="Previous" id="btnPrevious2"
+                                        style="cursor: pointer;">
+                                        <i class="fa fa-angle-left"></i>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                <div id="pageLink2" class="d-flex"></div>
+                                <li class="page-item">
+                                    <a class="page-link" aria-label="Next" id="btnNext2" style="cursor: pointer;">
+                                        <i class="fa fa-angle-right"></i>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

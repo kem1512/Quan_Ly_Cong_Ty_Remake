@@ -21,8 +21,6 @@ $(document).ready(function () {
     CancelUpdate();
     Search();
     cancelValidate();
-    ShowModalChiTietKHo();
-    GetDetailKho();
 });
 
 function Get() {
@@ -42,34 +40,19 @@ function Get() {
         success: function (response) {
             let html = "";
             $.each(response.warehouses.data, function (index, value) {
-                html += '<div class="col-sm-3 card px-0 m-5 border">';
-                html +=
-                    '<div class="card-header"><h5 id="tenkho" class="text-primary">Kho : ' +
-                    value.name +
-                    "</h5></div>";
-                html += '<div class="card-body">';
-                html +=
-                    '<img class="img-fluid border border-primary" style="width: 200px;height: 200px;" src="' +
-                    value.image +
-                    '"/>';
-                html += "</div>";
-                html += '<div class="card-footer">';
-                html += '<div class="justify-content-center">';
-                html +=
-                    '<button class="btn bg-gradient-primary btn-sm mx-2" id="btnSua" name="' +
-                    value.id +
-                    '"><i class="fa-solid fa-pen"></i></button>';
-                html +=
-                    '<button class="btn bg-gradient-primary btn-sm mx-2" id="btnXem" name="' +
-                    value.id +
-                    '"><i class="fa-solid fa-eye"></i></button>';
-                html +=
-                    '<button class="btn bg-gradient-danger btn-sm mx-2" id="btnXoa" name="' +
-                    value.id +
-                    '"><i class="fa-solid fa-trash-can"></i></button>';
-                html += "</div>";
-                html += "</div>";
-                html += "</div>";
+                html += '<div class="col-sm-3 card px-0 m-5 border">'
+                html += '<div class="card-header"><h5 id="tenkho" class="text-primary">Kho : ' + value.name + "</h5></div>"
+                html += '<div class="card-body">'
+                html += '<img class="img-fluid border border-primary" style="width: 200px;height: 200px;" src="' + value.image + '"/>'
+                html += '</div>'
+                html += '<div class="card-footer">'
+                html += '<div class="justify-content-center">'
+                html += '<button class="btn bg-gradient-primary btn-sm mx-2" id="btnSua" name="' + value.id + '"><i class="fa-solid fa-pen"></i></button>'
+                html += `<a class="btn btn-primary btn-sm" href="/equipment/${value.id}"><i class="fa-sharp fa-solid fa-eye"></i></a>`
+                html += '<button class="btn bg-gradient-danger btn-sm mx-2" id="btnXoa" name="' + value.id + '"><i class="fa-solid fa-trash-can"></i></button>'
+                html += '</div>'
+                html += '</div>'
+                html += '</div>'
             });
             $("#table-warehouse").html(html);
             paginate.lastPage = response.warehouses.last_page;
@@ -261,38 +244,3 @@ function cancelValidate() {
     })
 }
 
-function ShowModalChiTietKHo() {
-    $(document).on('click', '#btnXem', function () {
-        $('#modal-kho').modal('show');
-    })
-}
-
-function GetDetailKho() {
-    $(document).on('click', '#btnXem', function () {
-        let id = $(this).attr('name');
-        $('#staticBackdropLabel').text($('#tenkho').text().replace('Kho : ', ''));
-        $.ajax({
-            type: "get",
-            url: "warehouse/getequipment/" + paginate.perPage + "/" + paginate.currentPage + "/" + id + "/" + keyword,
-            dataType: "json",
-            success: function (response) {
-                console.log(response);
-                let html = '';
-                for (const key in response) {
-                    html += '<tr>\
-                                <td rowspan="'+ (response[key].data.length + 1) + '">' + key + '</td>\
-                            </tr>';
-                    $.each(response[key].data, function (index, value) {
-                        html += '<tr>\
-                                    <td style="border-left-width: 1px;border-right-width: 1px;">'+ value.image + '</td >\
-                                    <td style="border-left-width: 1px;border-right-width: 1px;">'+ value.name + '</td>\
-                                    <td style="border-left-width: 1px;border-right-width: 1px;"><button class="btn btn-primary">Thanh lý</button></td>\
-                                </tr>';
-                    });
-                }
-
-                $('#list-equiment').html(html);
-            }
-        });
-    })
-}

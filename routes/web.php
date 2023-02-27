@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\EquipmentsController;
 use App\Http\Controllers\TransferController;
 use App\Http\Controllers\WareHousesController;
+use App\Models\Equiment_Type;
 use App\Models\storehouse;
+use App\Models\Supplier;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Models\Department;
@@ -126,8 +129,8 @@ Route::group(['middleware' => 'auth'], function () {
 						'/',
 						function () {
 
-							return view('pages.Equiments.Equiment_Type.Index');
-						}
+									return view('pages.Equiments.Equiment_Type.Index');
+								}
 					)->name('equimenttype');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [EquimentTypeController::class, 'Get']);
 					Route::post('post', [EquimentTypeController::class, 'Post']);
@@ -141,12 +144,7 @@ Route::group(['middleware' => 'auth'], function () {
 			Route::group(
 				['prefix' => 'warehouse'],
 				function () {
-					Route::get(
-						'/',
-						function () {
-							return view('pages.Equiments.warehouse.wavehouse');
-						}
-					)->name('warehouse');
+					Route::get('/', [WareHousesController::class, 'Index'])->name('warehouse');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [WareHousesController::class, 'Get']);
 					Route::get('delete/{id?}', [WareHousesController::class, 'Delete']);
 					Route::get('getbyid/{id?}', [WareHousesController::class, 'GetById']);
@@ -175,6 +173,16 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::post('/updatekhodetail', [TransferController::class, 'UpdateKhoDetail']);
 				}
 			);
+
+			//Thiết bị
+			Route::group(
+				['prefix' => 'equipment'],
+				function () {
+					Route::get('/{id?}', [EquipmentsController::class, 'Index'])->name('equipment');
+					Route::get('/getequipment/{id?}', [EquipmentsController::class, 'GetEquipment']);
+				}
+			);
+
 			//End route thiết bị
 			Route::post(
 				'get_departments',

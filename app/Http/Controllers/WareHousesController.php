@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\storehouse;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use DB;
 use Illuminate\Pagination\Paginator;
@@ -9,6 +11,13 @@ use Illuminate\Support\Facades\Storage;
 
 class WareHousesController extends Controller
 {
+    function Index()
+    {
+        $list_nha_cung_cap = Supplier::all();
+        $list_loai = DB::table('equipment_types')->get();
+        $list_kho = storehouse::all();
+        return view('pages.Equiments.warehouse.wavehouse', compact('list_nha_cung_cap', 'list_loai', 'list_kho'));
+    }
     public function Get($perpage, $orderby, $keyword = null)
     {
         if ($keyword == null) {
@@ -163,10 +172,11 @@ class WareHousesController extends Controller
         foreach ($equiment_types as $value) {
             $result = DB::table('storehouse_details as sd')
                 ->join('equipments as e', 'e.id', '=', 'sd.equipment_id')
-                ->select(['e.name', 'e.image'])
+                ->join('storehouses as sh', 'sh.id', '=', 'sd.storehouse_id')
+                ->select(['e.id as equipment_id', 'sh.id as storehouse_id', 'sd.id as storehouse_details_id', 'sh.name as name_storehouse', 'e.name', 'e.image', 'sd.amount'])
                 ->where([
-                    ['e.equipment_type_id', '=', $value->id],
                     ['sd.storehouse_id', $id],
+                    ['e.equipment_type_id', $value->id]
                 ])
                 ->get()
                 ->toArray();
