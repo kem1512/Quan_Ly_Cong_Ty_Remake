@@ -1323,7 +1323,7 @@ function GetNhanSuBanGiao(id) {
                 let html = "";
                 $.each(response.usedetails, function (index, value) {
                     if (value.img_url == null) {
-                        value.img_url =
+                        value.img_url =93333333333333333333333333333
                             "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg";
                     }
                     html += `<tr>
