@@ -91,6 +91,23 @@ class User extends Authenticatable
             ->limit(5)->get();
         return $user;
     }
+    public static function getAllUser_p_d()
+    {
+        $result = User::leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name');
+        return $result->paginate(7);
+    }
+    public static function search_user($search)
+    {
+        $result = User::where('personnel_code', 'like', "%$search%")
+            ->orWhere('fullname', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%")
+            ->leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name');
+        return $result->paginate(7);
+    }
 
 
     /**

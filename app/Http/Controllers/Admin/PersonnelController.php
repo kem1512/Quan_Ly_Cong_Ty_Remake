@@ -35,6 +35,7 @@ class PersonnelController extends Controller
      */
     public function index(Request $rq)
     {
+        //check quyền truy cập trang của user đang đăng nhập
         $this->authorize("personnel", Auth::user());
         //active new user
         if (Auth::user()->status == 0) {
@@ -42,14 +43,14 @@ class PersonnelController extends Controller
             $user->status = 1;
             $user->save();
         }
-
+        //truy cập từ ajax
         if ($rq->ajax()) {
             $data = User::getAll();
             $body = User::UserBuild($data);
             return response()->json(['body' => $body]);
         };
 
-        //lấy số lượng nhân sự có trong db
+        //lấy số lượng có trong db
         $ucount = User::all()->count();
         $xdcount = CurriculumVitae::where('status', '=', 3)->count();
         $cvcount = CurriculumVitae::where('status', '=', 0)->orWhere('status', '=', 1)->orWhere('status', '=', 2)->count();
@@ -73,6 +74,7 @@ class PersonnelController extends Controller
         $personneldetail = User::find($id);
         return response()->json(['status' => 'success', 'data' => $personneldetail]);
     }
+    //update user
     public function update(updateUserRequest $request)
     {
         // check quyền user đăng nhập
@@ -134,6 +136,7 @@ class PersonnelController extends Controller
     }
     public function update_level(Request $request)
     {
+
         $user = User::find($request->id);
         if ($request->id == Auth::user()->id) {
             return response()->json(['status' => 'error', 'message' => 'Bạn không thể đổi quyền của chính bạn !']);
@@ -148,7 +151,7 @@ class PersonnelController extends Controller
     }
     public function destroy(Request $rq)
     {
-        //check quyền
+        //check level
         $level = Auth::user()->level;
         if ($level == 0) {
             return response()->json(['status' => 'error', 'message' => 'Không thể xóa do không đủ quyền !']);;
@@ -175,27 +178,18 @@ class PersonnelController extends Controller
         //search by personnel_code , fullname and email
         $search = $request->search;
         if ($search == '') {
-            $result = User::leftjoin('departments', 'users.department_id', 'departments.id')
-                ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
-                ->select('users.*', 'nominees.nominees', 'departments.name')
-                ->paginate(7);
+            $result = User::getAllUser_p_d();
             $body = User::UserBuild($result);
             return response()->json(['body' => $body]);
         } else {
-            $result = User::where('personnel_code', 'like', "%$search%")
-                ->orWhere('fullname', 'like', "%$search%")
-                ->orWhere('email', 'like', "%$search%")
-                ->leftjoin('departments', 'users.department_id', 'departments.id')
-                ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
-                ->select('users.*', 'nominees.nominees', 'departments.name')
-                ->paginate(7);
+            $result = User::search_user($search);
             $body = User::UserBuild($result);
             return response()->json(['body' => $body]);
         }
     }
     public function Add_interview(AddInterviewRequest $request)
     {
-        //check quyền
+        //check level
         $level1 = Auth::user()->level;
         if ($request->interviewer1 == $request->interviewer2) {
             return response()->json(['status' => 'error', 'message' => '2 người phỏng vấn phải khác nhau !']);
@@ -203,11 +197,13 @@ class PersonnelController extends Controller
         if ($level1 == 0) {
             return response()->json(['status' => 'error', 'message' => 'Không thể xóa do không đủ quyền !']);
         }
+        //check date
         $daterq = $request->interview_date;
         $now = Carbon::now();
         if ($daterq <= $now) {
             return response()->json(['status' => 'error', 'message' => 'Vui lòng chọn lịch phỏng vấn phù hợp !']);
         }
+        //check cv
         $cv = CurriculumVitae::find($request->id_cv);
         if (!empty($cv->interview_id)) {
             return response()->json(['status' => 'error', 'message' => 'Ứng viên này đã được xếp lịch !']);
@@ -231,11 +227,10 @@ class PersonnelController extends Controller
         Mail::to('lutl@s-connect.net')->send(new PersonnelAcceptMailer($cv->id, $id_inter));
         return response()->json(['status' => 'success', 'message' => 'Xếp Lịch Thành Công !']);
     }
-    //auto seach
+    //auto search
     public function search_interviewer(Request $request)
     {
         $search = $request->search;
-
         if (!empty($search)) {
             $result = User::interviewer($search);
         }
@@ -246,6 +241,8 @@ class PersonnelController extends Controller
 
         return response()->json($response);
     }
+
+    //thêm nhân sự mới (Ứng viên chấp nhận offer)
     public function add_new_user(Request $request)
     {
         $user = CurriculumVitae::find($request->id);
@@ -274,6 +271,7 @@ class PersonnelController extends Controller
     }
     public function send_offer(Request $request)
     {
+        //send_offer
         $offer = CurriculumVitae::find($request->id);
         $offer->offer = $request->offer;
         if ($offer->status == 4) {
@@ -285,8 +283,10 @@ class PersonnelController extends Controller
         $offer->save();
         return response()->json(['status' => 'success', 'message' => 'Offer Thành Công !']);
     }
+    //Xét Duyệt Ứng Viên
     public function update_xd_interview(updateInterviewRequest $request)
     {
+        // check cv 
         $inter = CurriculumVitae::find($request->id);
         if ($inter->status != 3) {
             return response()->json(['status' => 'error', 'message' => 'Không thể đánh giá ứng viên này !']);
@@ -301,18 +301,18 @@ class PersonnelController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Đánh giá đã được lưu lại !']);
     }
 
+    //fillter in user
     public function fillter(Request $request)
     {
         if (empty($request->status_filter) && empty($request->department_filter)) {
+
             $nhansu2 = User::getallUser();
             $body = User::UserBuild($nhansu2);
             return response()->json(['body' => $body]);
         } else  if (empty($request->department_filter)) {
 
             $searchst = $request->status_filter;
-
             $resultst = User::fillter_status($searchst);
-
             $body = User::UserBuild($resultst);
             return response()->json(['body' => $body]);
         } else if (empty($request->status_filter)) {
@@ -322,6 +322,7 @@ class PersonnelController extends Controller
             $body = User::UserBuild($resultdp);
             return response()->json(['body' => $body]);
         } else {
+
             $searchst1 = $request->status_filter;
             $searchdp1 = $request->department_filter;
             $resultall = User::leftjoin('departments', 'users.department_id', 'departments.id')
@@ -330,19 +331,10 @@ class PersonnelController extends Controller
                 ->where('users.department_id', '=', "$searchdp1")
                 ->where('users.status', '=', "$searchst1")->paginate(7);
             $body = User::UserBuild($resultall);
+
             return response()->json(['body' => $body]);
         }
     }
-
-
-    public function editLevel(Request $request)
-    {
-        $user = User::find($request->id);
-        $user->level = $request->level;
-        $user->save();
-        return response()->json(['status' => 'succes', 'message' => 'Thay đổi đã được áp dụng !']);
-    }
-
     public function store(StorePostRequest $request)
     {
         $user = new User();
