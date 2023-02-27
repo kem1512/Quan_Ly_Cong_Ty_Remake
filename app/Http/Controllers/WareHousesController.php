@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use DB;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Storage;
+use App\Models\equiment;
 
 class WareHousesController extends Controller
 {
@@ -18,6 +19,7 @@ class WareHousesController extends Controller
         $list_kho = storehouse::all();
         return view('pages.Equiments.warehouse.wavehouse', compact('list_nha_cung_cap', 'list_loai', 'list_kho'));
     }
+
     public function Get($perpage, $orderby, $keyword = null)
     {
         if ($keyword == null) {
@@ -198,5 +200,66 @@ class WareHousesController extends Controller
         $offset = ($curentpage * $perpage) - $perpage;
         $itemtoshow = array_slice($item, $offset, $perpage);
         return new \Illuminate\Pagination\LengthAwarePaginator($itemtoshow, $total, $perpage);
+    }
+
+    function CreateEquipment(Request $request)
+    {
+        $request->validate(
+            [
+                'name' => ['required', 'min:6'],
+                'image' => ['required'],
+                'specifications' => ['required', 'min:6'],
+                'price' => ['required', 'regex:/^[0-9]+$/'],
+                'warranty_date' => ['date'],
+                'out_of_date' => ['date'],
+            ],
+            [
+                'name.required' => "Tên thiết bị không được để trống!",
+                'name.min' => "Tên thiết bị phải lớn hơn 6 kí tự!",
+                'image.required' => "Ảnh thiết bị không được để trống!",
+                'specifications.required' => "Thông số thiết bị không được để trống!",
+                'specifications.min' => "Thông số thiết bị phải lớn hơn 6 kí tự!",
+                'price.required' => "Giá nhập không được để trống!",
+                'price.regex' => "Giá nhập phải là số!",
+                'warranty_date.date' => "Ngày không hợp lệ!",
+                'out_of_date.date' => "Ngày không hợp lệ!",
+            ]
+        );
+
+        if ($request->has('image')) {
+            $file = $request->image;
+            $file_name = $file->getClientOriginalName();
+            $file->move(public_path('uploads'), $file_name);
+        }
+
+        $name = $request->name;
+        $image = $file_name;
+        $specifications = $request->specifications;
+        $price = $request->price;
+        $warranty_date = $request->warranty_date;
+        $out_of_date = $request->out_of_date;
+        $supplier_id = $request->supplier_id;
+
+        $equipment = new equiment();
+        $equipment->name = $name;
+        $equipment->image = $image;
+        $equipment->specifications = $specifications;
+        $equipment->price = $price;
+        $equipment->warranty_date = $warranty_date;
+        $equipment->out_of_date = $out_of_date;
+        $equipment->supplier_id = $supplier_id;
+        $equipment->save();
+
+        return response()->json([
+            'equipment' => $equipment
+        ], 200);
+    }
+
+    function CreateStoreHouseDetail(Request $request)
+    {
+        $result = DB::table('storehouse_details')->insert(['storehouse_id' => $request->storehouse_id, 'equipment_id' => $request->equipment_id, 'amount' => $request->amount]);
+        return response()->json([
+            'result' => $result,
+        ]);
     }
 }

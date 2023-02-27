@@ -21,6 +21,8 @@ $(document).ready(function () {
     CancelUpdate();
     Search();
     cancelValidate();
+    ShowModalNhapKHo();
+    submit();
 });
 
 function Get() {
@@ -242,5 +244,55 @@ function cancelValidate() {
             })
         }
     })
+}
+
+function ShowModalNhapKHo() {
+    $('#btnNhapKho').on('click', function () {
+        $('#exampleModalNhaKho').modal('show');
+    })
+}
+
+function submit() {
+    $(document).on('submit', '#form-equiment', function (e) {
+        e.preventDefault();
+        let data = new FormData(this);
+        $.ajax({
+            type: "post",
+            url: "/warehouse/createequipment",
+            data: data,
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                let id_storehouse = data.get('storehouse_id');
+                let equipment_id = response.equipment.id;
+                let amount = data.get('amount');
+                createstorehousedetail(id_storehouse, equipment_id, amount);
+            },
+            error: function (err) {
+                for (const key in err.responseJSON.errors) {
+                    $(`#${key}-error`).text(err.responseJSON.errors[key]);
+                }
+            }
+        });
+    })
+}
+
+function createstorehousedetail(storehouse_id, equipment_id, amount) {
+    $.ajax({
+        type: "post",
+        url: "/warehouse/createstorehousedetail",
+        data: {
+            storehouse_id: storehouse_id,
+            equipment_id: equipment_id,
+            amount: amount,
+        },
+        dataType: "json",
+        success: function (response) {
+            $("#form-equiment")[0].reset();
+            $("#exampleModalNhaKho").modal("hide");
+            Swal.fire("Good job", "Thêm mới thành công", "success");
+        }
+    });
 }
 

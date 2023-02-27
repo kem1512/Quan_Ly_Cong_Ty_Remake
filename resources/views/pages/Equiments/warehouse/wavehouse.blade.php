@@ -12,6 +12,10 @@
                                 <button id="btnThem" class="btn bg-gradient-primary btn-sm btn-block mx-1">Thêm kho</button>
                             </div>
                             <div>
+                                <button id="btnNhapKho" class="btn bg-gradient-primary btn-sm btn-block mx-1">Nhập
+                                    kho</button>
+                            </div>
+                            <div>
                                 <input type="text" id="txtSearch" class="form-control form-control-sm w-100"
                                     placeholder="Tìm kiếm...">
                             </div>
@@ -114,6 +118,7 @@
             </div>
         </div>
     </div>
+    @include('components.modal_them_thiet_bi')
 @endsection
 
 @section('javascript')

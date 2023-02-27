@@ -151,6 +151,8 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::post('post', [WareHousesController::class, 'Create']);
 					Route::post('update/{id?}', [WareHousesController::class, 'Update']);
 					Route::get('getequipment/{perpage?}/{currentpage?}/{id?}/{keyword?}', [WareHousesController::class, 'GetEquiments']);
+					Route::post('/createequipment', [WareHousesController::class, 'CreateEquipment']);
+					Route::post('/createstorehousedetail', [WareHousesController::class, 'CreateStoreHouseDetail']);
 				}
 			);
 
