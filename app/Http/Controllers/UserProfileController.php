@@ -18,7 +18,7 @@ class UserProfileController extends Controller
     {
         $birthDate = Auth::user()->date_of_birth;
         $userx = User::getUserDetail(Auth::user()->id);
-        $users =  $userx[0];
+        $users = $userx[0];
         // dd($users);
         $phongbans = Department::all();
         $postions = Position::all();
@@ -39,7 +39,6 @@ class UserProfileController extends Controller
             $request->validate([
                 'email' => 'unique:users,email',
             ], [
-<<<<<<< HEAD
                     'fullname.min' => 'Tên phải có hơn 3 ký tự !',
                     'fullname.required' => 'Tên không được để trống !',
                     'email.email' => 'Email không đúng định dạng !',
@@ -81,10 +80,6 @@ class UserProfileController extends Controller
                     'department_id.max' => 'Phòng ban quá dài !',
                     'email.unique' => 'Email đã tồn tại !'
                 ]);
-=======
-                'email.unique' => 'Email đã tồn tại !'
-            ]);
->>>>>>> 700654ba4a9586812ac7e11740af9d77e5000577
         }
 
         if (!$request->img_url == '') {
