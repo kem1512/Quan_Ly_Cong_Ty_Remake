@@ -5,19 +5,19 @@
     <div class="container-fluid py-4">
         <div class="card">
             <div class="card-header">
-                <div>
+                <div class="d-flex justify-content-between">
                     <div>
-                        <a href="/warehouse">Quay lại</a>
+                        <a href="/warehouse">Quay lại danh sách kho</a>
                     </div>
                     <div>
                         <h5 id="idkho" name="{{ $id_kho }}">{{ $name_kho }}</h5>
                     </div>
                     <div>
-                        <select id="selectperpage">
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
+                        <select id="selectperpage" class="form-control">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
                         </select>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
                                 <th>Ngày hết bảo hành</th>
                                 <th>Số lượng</th>
                                 <th>Ngày nhập kho</th>
-                                <th>Thao tác</th>
+                                <th colspan="2">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="store-house-detail">
@@ -68,6 +68,7 @@
             </div>
         </div>
         @include('layouts.footers.auth.footer')
+        @include('components.modal_them_thiet_bi')
     </div>
 @endsection
 

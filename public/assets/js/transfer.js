@@ -27,8 +27,8 @@ $(document).ready(function () {
 
 function changtype() {
     $('#changtype').on('change', function () {
-        $('#changtype').val() == "hand_over" ? $('#divchuyen').css('display', 'block') : $('#divchuyen').css('display', 'none') && $('#chonKho').css('display', 'block');
-        $('#btnSave').text($('#changtype').val() == "hand-over" ? "Thực hiện bàn giao" : "Thực hiện thu hồi");
+        $('#changtype').val() == "hand_over" ? $('#divchuyen').css('display', 'block') && $('#chonKho').css('display', 'none') : $('#divchuyen').css('display', 'none') && $('#chonKho').css('display', 'block');
+        $('#btnSave').text($('#changtype').val() == "hand_over" ? "Thực hiện bàn giao" : "Thực hiện thu hồi");
     });
 }
 

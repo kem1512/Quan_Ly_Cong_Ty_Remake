@@ -54,7 +54,7 @@
                                  <div class="d-flex justify-content-between">
                                      <label>Loại sản phẩm (<strong class="text-danger">*</strong>)</label>
                                  </div>
-                                 <select name="equiment_type_id" class="form-control">
+                                 <select name="equiment_type_id" id="equiment_type_id" class="form-control">
                                      @foreach ($list_loai as $item)
                                          <option value="{{ $item->id }}">{{ $item->name }}</option>
                                      @endforeach
@@ -64,13 +64,13 @@
                                  <div class="d-flex justify-content-between">
                                      <label>Nhà cung cấp (<strong class="text-danger">*</strong>)</label>
                                  </div>
-                                 <select name="supplier_id" class="form-control">
+                                 <select name="supplier_id" id="supplier_id" class="form-control">
                                      @foreach ($list_nha_cung_cap as $item)
                                          <option value="{{ $item->id }}">{{ $item->name }}</option>
                                      @endforeach
                                  </select>
                              </div>
-                             <div class="mt-2">
+                             <div id="divkho" class="mt-2">
                                  <div class="d-flex justify-content-between">
                                      <label>Kho (<strong class="text-danger">*</strong>)</label>
                                  </div>
@@ -82,21 +82,12 @@
                                      @endforeach
                                  </select>
                              </div>
-                             <div class="mt-2">
+                             <div id="divsoluong" class="mt-2">
                                  <div class="d-flex justify-content-between">
                                      <label>Số lượng (<strong class="text-danger">*</strong>)</label>
                                  </div>
                                  <div>
                                      <input name="amount" type="number" class="form-control">
-                                 </div>
-                             </div>
-                             <div class="mt-2">
-                                 <div class="d-flex justify-content-between">
-                                     <label>Trạng thái (<strong class="text-danger">*</strong>)</label>
-                                 </div>
-                                 <div class="form-check form-switch mt-1">
-                                     <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked
-                                         name="status">
                                  </div>
                              </div>
                          </div>

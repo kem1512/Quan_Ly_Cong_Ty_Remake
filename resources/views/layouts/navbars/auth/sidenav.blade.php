@@ -62,7 +62,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'transfer' ? 'active' : '' }}" href="transfer">
+                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'transfer' ? 'active' : '' }}" href="/transfer">
                     <i class="fa-solid fa-retweet text-primary"></i>
                     <span class="nav-link-text ms-1">Chuyển giao thiết bị</span>
                 </a>
@@ -70,7 +70,7 @@
 
             <li class="nav-item">
                 <a class="nav-link mx-3 {{ Route::currentRouteName() == 'equimenttype' ? 'active' : '' }}"
-                    href="equimenttype">
+                    href="/equimenttype">
                     <i class="fa-solid fa-memory text-primary"></i>
                     <span class="nav-link-text ms-1">Loại thiết bị</span>
                 </a>

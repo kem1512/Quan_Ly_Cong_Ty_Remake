@@ -155,6 +155,8 @@ Route::group(['middleware' => 'auth'], function () {
 					Route::post('/createstorehousedetail', [WareHousesController::class, 'CreateStoreHouseDetail']);
 					Route::get('/viewstorehousedetail/{id?}/{name?}', [WareHousesController::class, 'ViewDetail']);
 					Route::get('/storehousedetail/{perpage?}/{id?}', [WareHousesController::class, 'ViewStoreHouseDetail']);
+					Route::get('/getequimentbyid/{id?}', [WareHousesController::class, 'GetEquipmentById']);
+					Route::post('/updateequipment/{id?}', [WareHousesController::class, 'UpdateEquipment']);
 				}
 			);
 
