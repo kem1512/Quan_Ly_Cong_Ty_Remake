@@ -113,6 +113,8 @@ function getMoresUser(page) {
                 $("#interview_table").html(result.cvbody);
             } else if (result.location == "curriculumvitae") {
                 $("#cvut_query").html(result.cvbody);
+            } else if (result.location == "autho") {
+                $("#body_auth").html(result.body);
             }
             $("#body_query").html(result.body);
         },
@@ -428,6 +430,7 @@ $(document).on("change", ".read-checkbox-level", function () {
         },
     });
 });
+
 //==========================profile===================================
 //UPDATE profile
 $(document).ready(function () {

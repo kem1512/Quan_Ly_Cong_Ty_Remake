@@ -33,4 +33,4 @@ SDT:0866755653
 <br>
 Trân trọng !
 <br>
-{{ $user }}-SCONNECT.
+Nhân Sự Hành Chính-SCONNECT.

@@ -30,7 +30,6 @@ class PersonnelFaildCVMailer extends Mailable
         $cver =
             CurriculumVitae::leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
             ->select('curriculum_vitaes.*', 'nominees.nominees')->where('curriculum_vitaes.id', '=', "$this->id")->get();
-        $user = Auth::user()->fullname;
-        return $this->view('mail.PersonnelFaildMailer', compact('cver', 'user',))->subject('Tình Trạng Hồ Sơ Ứng Tuyển Tại SCONNECT');
+        return $this->view('mail.PersonnelFaildMailer', compact('cver'))->subject('Tình Trạng Hồ Sơ Ứng Tuyển Tại SCONNECT');
     }
 }

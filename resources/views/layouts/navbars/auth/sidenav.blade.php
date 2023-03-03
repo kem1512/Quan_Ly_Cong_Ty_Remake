@@ -22,16 +22,7 @@
                 </a>
             </li>
 
-            @if (Auth::user()->department_id == 3 ||
-                    Auth::user()->level == 2 ||
-                    Auth::user()->position_id == 1 ||
-                    Auth::user()->position_id == 2 ||
-                    Auth::user()->position_id == 3 ||
-                    Auth::user()->position_id == 4 ||
-                    Auth::user()->position_id == 5 ||
-                    Auth::user()->position_id == 6 ||
-                    Auth::user()->position_id == 7 ||
-                    Auth::user()->position_id == 8)
+            @if (Auth::user()->department_id == 3 || Auth::user()->level != 0)
                 <li class="nav-item mt-3 d-flex align-items-center">
                     <div class="ps-4">
                         <i class="fab fa-laravel" style="color: #f4645f;"></i>
