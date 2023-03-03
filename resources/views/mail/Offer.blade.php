@@ -31,4 +31,4 @@ Rất mong sẽ nhận được phản hồi sớm từ bạn!
 Trân trọng,
 <br>
 
-{{ Auth::user()->fullname }} - NHÂN SỰ HÀNH CHÍNH - SCONNECT
+NHÂN SỰ HÀNH CHÍNH - SCONNECT

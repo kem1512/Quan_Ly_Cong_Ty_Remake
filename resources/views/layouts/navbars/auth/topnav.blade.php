@@ -20,12 +20,12 @@
                                 <button class="btn border-0 dropdown-toggle mb-0 shadow-none"
                                     style="background-color:transparent; color: white" type="button"
                                     id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-user me-sm-1"></i>
-                                    Xin Chào {{ Auth::user()->fullname ?? 'User' }}
+                                    <i class="fa fa-user me-sm-1"></i> {{ Auth::user()->fullname ?? 'User' }}
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton"
                                     style="top: 1rem !important">
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('index.authorization') }}">Phân
+                                            Quyền</a></li>
                                     <li>
                                         <a href="{{ route('profile') }}" class="dropdown-item">
                                             Hồ Sơ Người Dùng

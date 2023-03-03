@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\equiment;
-use App\Models\EquimentImport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

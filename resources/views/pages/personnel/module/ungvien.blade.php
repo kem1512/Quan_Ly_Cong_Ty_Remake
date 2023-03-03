@@ -121,35 +121,39 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Tên Ứng Viên</label>
+                                    <label for="example-text-input" class="col-4 col-form-label w-100">Tên Ứng
+                                        Viên</label>
                                     <input class="form-control dbcl_ctl" id="name_ut_update" type="text"
                                         name="name_ut_update" value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Email</label>
+                                    <label for="example-text-input" class="col-4 col-form-label w-100">Email</label>
                                     <input class="form-control" id="email_ut_update" name="email_ut_update"
                                         type="text" value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Số Điện Thoại</label>
+                                    <label for="example-text-input" class="col-4 col-form-label w-100">Số Điện
+                                        Thoại</label>
                                     <input class="form-control " type="text" id="phone_ut_update"
                                         name="phone_ut_update" value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Ngày Sinh</label>
+                                    <label for="example-text-input" class="col-4 col-form-label w-100">Ngày
+                                        Sinh</label>
                                     <input class="form-control " type="date" name="date_of_birth_ut_update"
                                         id="date_of_birth_ut_update" value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Giới Tính</label>
+                                    <label for="example-text-input" class="col-4 col-form-label w-100">Giới
+                                        Tính</label>
                                     <select class="form-control " name="gender_ut_update" id="gender_ut_update">
                                         <option value="0">Nam</option>
                                         <option value="1">Nữ</option>
@@ -158,14 +162,14 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">CV</label>
+                                    <label for="example-text-input" class="col-4 col-form-label w-100">CV</label>
                                     <input class="form-control" type="file" name="cv_ut_update" id="cv_ut_update"
                                         value="">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Chức Vụ Ứng
+                                    <label for="example-text-input" class="col-4 col-form-label w-100">Chức Vụ Ứng
                                         Tuyển</label>
                                     <select class="form-control" name="position_ut_update" id="position_ut_update">
                                         @foreach ($postions as $po)
@@ -176,7 +180,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="example-text-input" class="form-control-label">Vị Trí Ứng
+                                    <label for="example-text-input" class="col-4 col-form-label w-100">Vị Trí Ứng
                                         Truyển</label>
                                     <select class="form-control get_position" name="nominees_ut_update"
                                         id="nominees_ut_update">
@@ -187,7 +191,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <label for="exampleFormControlTextarea1" id="about-text"
-                                    class="col-sm-4 col-form-label">
+                                    class="col-4 col-form-label w-100">
                                     Ghi Chú</label>
                                 <textarea class="form-control" name="about_ut_update" id="about_ut_update" rows="3"></textarea>
                             </div>

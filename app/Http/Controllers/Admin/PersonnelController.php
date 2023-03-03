@@ -9,6 +9,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\updateCVRequest;
 use App\Http\Requests\updateInterviewRequest;
 use App\Http\Requests\updateUserRequest;
+use App\Jobs\SendMailJob;
 use App\Mail\PassCV_FaildInter;
 use App\Mail\PersonnelAcceptMailer;
 use App\Mail\PersonnelFaildCVMailer;
@@ -37,6 +38,7 @@ class PersonnelController extends Controller
     {
         //check quyền truy cập trang của user đang đăng nhập
         $this->authorize("personnel", Auth::user());
+
         //active new user
         if (Auth::user()->status == 0) {
             $user = User::find(Auth::user()->id);
@@ -61,7 +63,7 @@ class PersonnelController extends Controller
         //build table CV
         $cvs = CurriculumVitae::get_All_CV_UT();
         $cvut = CurriculumVitae::UTBuild($cvs);
-        //join chỉ lấy phần chung | leftjoin lấy cả chung và riêng
+
         $nhansu = User::getAll();
         return view('pages.personnel.personnel', compact('phongbans', 'postions', 'nhansu', 'xdcount', 'cvcount', 'cvs', 'ucount',));
     }
@@ -211,6 +213,16 @@ class PersonnelController extends Controller
         if ($cv->status !== 2) {
             return response()->json(['status' => 'error', 'message' => 'Ứng viên này không thể xếp lịch !']);
         }
+        //check date 
+        $user1 = interview::find($request->interviewer1);
+
+        $date1 = $user1->interview_date;
+        $time1 = $user1->interview_time;
+
+        if ($date1 == $request->interview_date && $time1 == $request->interview_time) {
+            return response()->json(['status' => 'error', 'message' => 'Người phỏng vấn đã có lịch vào thời gian này !']);
+        }
+        dd($user1);
         $interview = new interview();
         $interview->interviewer1 = $request->interviewer1;
         $interview->interviewer2 = $request->interviewer2;
@@ -224,7 +236,8 @@ class PersonnelController extends Controller
         $cv->interview_id = $id_inter;
         $cv->status = 3;
         $cv->save();
-        Mail::to('lutl@s-connect.net')->send(new PersonnelAcceptMailer($cv->id, $id_inter));
+        $sendMail = new SendMailJob($cv->id, 2);
+        dispatch($sendMail);
         return response()->json(['status' => 'success', 'message' => 'Xếp Lịch Thành Công !']);
     }
     //auto search
@@ -279,7 +292,8 @@ class PersonnelController extends Controller
             $offer->status = 1 + $st;
         }
         $id = $offer->id;
-        Mail::to('lutl@s-connect.net')->send(new Send_Offer($id));
+        $sendMail = new SendMailJob($id, 1);
+        dispatch($sendMail);
         $offer->save();
         return response()->json(['status' => 'success', 'message' => 'Offer Thành Công !']);
     }
@@ -445,7 +459,8 @@ class PersonnelController extends Controller
         if ($cv->status > 2) {
             $cv->status = 6;
             $cv->save();
-            Mail::to('lutl@s-connect.net')->send(new PassCV_FaildInter($cv->id));
+            $sendMail = new SendMailJob($cv->id, 4);
+            dispatch($sendMail);
             return response()->json(['status' => 'succes', 'message' => 'Ứng viên đã được từ chối !']);
         }
         // dd($request);
@@ -481,7 +496,9 @@ class PersonnelController extends Controller
         $cv->save();
         $id = $cv->id;
         if ($cv->status == 1) {
-            Mail::to('lutl@s-connect.net')->send(new PersonnelFaildCVMailer($id));
+            $sendMail = new SendMailJob($id, 3);
+            dispatch($sendMail);
+            // Mail::to('lutl@s-connect.net')->send(new PersonnelFaildCVMailer($id));
         }
 
         return

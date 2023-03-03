@@ -115,6 +115,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/personnel/interview/find', [App\Http\Controllers\Admin\PersonnelController::class, 'find_interviewer'])->name('find_interviewer');
 	Route::get('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'offer_cv'])->name('offer_cv');
 	Route::post('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'send_offer'])->name('send_offer');
+	Route::get('/authorization', [App\Http\Controllers\AuthorizationController::class, 'index'])->name('index.authorization');
 
 	Route::group(
 		['middleware' => 'auth'],
@@ -129,8 +130,8 @@ Route::group(['middleware' => 'auth'], function () {
 						'/',
 						function () {
 
-									return view('pages.Equiments.Equiment_Type.Index');
-								}
+							return view('pages.Equiments.Equiment_Type.Index');
+						}
 					)->name('equimenttype');
 					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [EquimentTypeController::class, 'Get']);
 					Route::post('post', [EquimentTypeController::class, 'Post']);

@@ -31,7 +31,7 @@ class PassCV_FaildInter extends Mailable
         $cver =
             CurriculumVitae::leftjoin('nominees', 'curriculum_vitaes.nominee', 'nominees.id')
             ->select('curriculum_vitaes.*', 'nominees.nominees')->where('curriculum_vitaes.id', '=', "$this->id")->get();
-        $user = Auth::user()->fullname;
+        $user = "Nhân Sự Hành Chính";
         return $this->view('mail.PassCV_FaildInter', compact('cver', 'user'))->subject('Thông báo Tình Trạng Ứng Tuyển tại SCONNECT');
     }
 }

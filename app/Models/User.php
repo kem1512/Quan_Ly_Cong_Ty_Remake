@@ -311,4 +311,86 @@ class User extends Authenticatable
     </div> ';
         return $html;
     }
+
+    public static function Autho_Build($nhansu)
+    {
+        $check = '';
+        $html = '<div class="table-responsive p-0">
+                    <table class="table align-items-center mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2"> Mã Nhân Sự</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Họ Tên</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Chức Vụ</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Phòng Ban</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7  ps-1">(Mặc Định)</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7  ps-1">Level 1</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7  ps-1">Level 2</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+        if ($nhansu == null) {
+            $html .= '<p>không có dữ liệu</p>';
+        }
+        foreach ($nhansu as $ns) {
+            $html .= '<tr>
+                        <td>
+                            <p class="text-sm font-weight-bold mb-0">' . $ns->personnel_code . '</p>
+                        </td>
+                        <td>
+                            <div class="d-flex px-3 py-1">
+                                <div>';
+            if ($ns->img_url == '') {
+                $ns->img_url = 'avatar2.png';
+            }
+            $html .= '  <img src="./img/' . $ns->img_url . '" class="avatar me-3" alt="Avatar">
+                                                </div>
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">' . $ns->fullname . '</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm font-weight-bold mb-0">' . $ns->email . '</p>
+                                        </td>
+                                        <td>';
+            if (empty($ns->nominees)) {
+                $ns->nominees = 'Chưa thêm chức vụ';
+            }
+            $html .= '   <p class="text-sm font-weight-bold mb-0">' . $ns->nominees . '</p>
+                                        </td>
+                                        <td>';
+            if (empty($ns->name)) {
+                $ns->name = 'Chưa vào phòng ban';
+            }
+            $html .= ' <p class="text-sm font-weight-bold mb-0 ">' . $ns->name . '</p>
+                                        </td>
+                                        <td>
+                                            <div class="form-check form-switch justify-content-center">
+                                                <input class="form-check-input " type="checkbox" user-data-src="' . $ns->id . '" id="level1" checked>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-check form-switch justify-content-center">';
+            if ($ns->level == 1 || $ns->level == 2) {
+                $check = 'checked';
+            }
+            $html .= '    <input class="form-check-input read-checkbox-level" type="checkbox" user-data-src="' . $ns->id . '" id="level2" ' . $check . '>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-check form-switch justify-content-center">
+                                                <input class="form-check-input" type="checkbox" user-data-src="' . $ns->id . '" id="level3" checked>
+                                            </div>
+                                        </td>
+                                    </tr>';
+        }
+
+        $html .= '               </tbody>
+                            </table>
+                            ' . $nhansu->links() . '
+                        </div>';
+        return $html;
+    }
 }

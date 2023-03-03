@@ -14,5 +14,5 @@
     <br>
     Trân trọng !
     <br>
-    {{ $user }}-SCONNECT.
+    Nhân Sự Hành Chính-SCONNECT.
 </dir>
