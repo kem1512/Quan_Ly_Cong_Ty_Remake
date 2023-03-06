@@ -172,15 +172,7 @@
 
     @auth
         @if (in_array(request()->route()->getName(),
-                [
-                    'sign-in-static',
-                    'sign-up-static',
-                    'login',
-                    'register',
-                    'recover-password',
-                    'rtl',
-                    'virtual-reality'
-                ]))
+                ['sign-in-static', 'sign-up-static', 'login', 'register', 'recover-password', 'rtl', 'virtual-reality']))
             @yield('content')
         @else
             @if (
@@ -207,6 +199,7 @@
         integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{{ asset('jqueryui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('assets/js/core/authority.js') }}"></script>
     <script src="{{ asset('assets/js/core/personnel.js') }}"></script>
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>

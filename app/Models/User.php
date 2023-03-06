@@ -37,6 +37,7 @@ class User extends Authenticatable
         'status',
         'recruitment_date',
         'img_url',
+        'auth',
         'level',
     ];
 

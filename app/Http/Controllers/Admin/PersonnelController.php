@@ -112,7 +112,6 @@ class PersonnelController extends Controller
         $user->fullname = $request->fullname;
         $user->phone = $request->phone;
         $user->email = $request->email;
-        $user->password = $request->password;
         $user->department_id = $request->department_id;
         $user->date_of_birth = $request->date_of_birth;
         $user->position_id = $request->position_id;

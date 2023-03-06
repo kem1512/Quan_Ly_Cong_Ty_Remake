@@ -18,35 +18,34 @@
                                 <h4>Chức Vụ</h4>
                             </div>
                             <div class="border border-success p-4 rounded-3 " style="min-height: 62vh">
-                                <label for="exampleFormControlInput1" class="col-4 col-form-label w-100">Vui lòng chọn chức
-                                    vụ :</label>
-                                <select class="form-select" aria-label="Default select example">
-                                    <option selected>Chức Vụ</option>
-                                    @foreach ($positions as $item)
-                                        <option value="{{ $item->id }}">{{ $item->position }}</option>
-                                    @endforeach
-                                </select>
+                                <div class="d-flex justify-content-end w-100">
+                                    <input id="id_autho" class="d-none" type="text">
+                                    <a class="btn btn-success" id="btn_save_autho">Thêm Mới</a>
+                                </div>
+                                <label for="exampleFormControlInput1" class="col-4 col-form-label w-100">Vui lòng nhập tên
+                                    nhóm quyền :</label>
+                                <input type="text" name="autho_name"class="form-control" id="autho_name" />
+                                <span class="text-danger text-xs pt-1 email_error"></span>
                                 <div class="mt-4">
-                                    <h5 class="text-center">Quyền Truy Cập</h5>
+                                    <h5 class="text-center">Các Nhóm Quyền</h5>
                                 </div>
-
-                                <div class="w-100 row  p-2 mb-1 justify-content-between d-flex  rounded">
-                                    <a class="justify-content-start col-10 ">
-                                        <i class="ni ni-fat-delete"></i>
-                                        Nhân Sự</a>
-                                    <input class="col-1 "s type="checkbox" checked>
-                                </div>
-                                <div class="w-100 row  p-2 mb-1 justify-content-between d-flex  rounded">
-                                    <a class="justify-content-start col-10 ">
-                                        <i class="ni ni-fat-delete"></i>
-                                        Phòng Ban</a>
-                                    <input class="col-1 "s type="checkbox" checked>
-                                </div>
-                                <div class="w-100 row  p-2 mb-1 justify-content-between d-flex  rounded">
-                                    <a class="justify-content-start col-10 ">
-                                        <i class="ni ni-fat-delete"></i>
-                                        Thiết Bị</a>
-                                    <input class="col-1 "s type="checkbox" checked>
+                                <div id="list_autho_build">
+                                    @foreach ($authos as $item)
+                                        <div class="w-100 row  p-2 mb-1 justify-content-between d-flex  rounded">
+                                            <a class="justify-content-start col-8 ">
+                                                <i class="ni ni-fat-delete"></i>{{ $item->name_autho }}</a>
+                                            <div class="col-4 d-flex justify-content-end">
+                                                <a onclick="get_autho_By_Id({{ $item->id }});"
+                                                    class="text-sm font-weight-bold mb-0 " id="btn_autho_update"
+                                                    style="cursor: pointer">Sửa
+                                                </a>
+                                                | <a class="text-sm font-weight-bold mb-0 "
+                                                    onclick="delete_autho_By_Id({{ $item->id }});" id="btn_autho_delete"
+                                                    style="cursor: pointer">
+                                                    Xóa</a>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -70,51 +69,58 @@
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex  rounded">
                                                 <a class="justify-content-start col-10 text-sm ">
                                                     <i class="ni ni-bold-right"></i>
+                                                    Quyền Truy Cập</a>
+                                                <input id="personnel_autho_access" class="col-1 checkbox_autho"
+                                                    type="checkbox">
+                                            </div>
+                                            <div class="w-100 row  p-2 mb-1 justify-content-between d-flex  rounded">
+                                                <a class="justify-content-start col-10 text-sm ">
+                                                    <i class="ni ni-bold-right"></i>
                                                     Thêm Nhân Sự</a>
-                                                <input class="col-1 "s type="checkbox" checked>
+                                                <input id="insert_personnel" class="col-1 " type="checkbox">
                                             </div>
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex rounded">
                                                 <a class="justify-content-start col-10 text-sm">
                                                     <i class="ni ni-bold-right"></i>
                                                     Sửa Nhân Sự</a>
-                                                <input class="col-1"s type="checkbox" checked>
+                                                <input id="update_personnel" class="col-1" type="checkbox">
                                             </div>
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex ">
                                                 <a class="justify-content-start col-10 text-sm">
                                                     <i class="ni ni-bold-right"></i>
                                                     xóa Nhân Sự
                                                 </a>
-                                                <input class="col-1"s type="checkbox" checked>
+                                                <input id="delete_personnel" class="col-1" type="checkbox">
                                             </div>
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex ">
                                                 <a class="justify-content-start col-10 text-sm">
                                                     <i class="ni ni-bold-right"></i>
                                                     Duyệt CV </a>
-                                                <input class="col-1"s type="checkbox" checked>
+                                                <input id="accept_cv_autho" class="col-1" type="checkbox">
                                             </div>
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex ">
                                                 <a class="justify-content-start col-10 text-sm">
                                                     <i class="ni ni-bold-right"></i>
                                                     Sửa CV</a>
-                                                <input class="col-1"s type="checkbox" checked>
+                                                <input id="update_cv_autho" class="col-1" type="checkbox">
                                             </div>
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex ">
                                                 <a class="justify-content-start col-10 text-sm">
                                                     <i class="ni ni-bold-right"></i>
                                                     Xếp Lịch Phỏng Vấn</a>
-                                                <input class="col-1"s type="checkbox" checked>
+                                                <input id="inter_cv_autho" class="col-1"s type="checkbox">
                                             </div>
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex ">
                                                 <a class="justify-content-start col-10 text-sm">
                                                     <i class="ni ni-bold-right"></i>
                                                     Đánh Giá Ứng Viên</a>
-                                                <input class="col-1"s type="checkbox" checked>
+                                                <input id="eva_cv_autho" class="col-1"s type="checkbox">
                                             </div>
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex ">
                                                 <a class="justify-content-start col-10 text-sm">
                                                     <i class="ni ni-bold-right"></i>
                                                     Offer Cho Ứng Viên </a>
-                                                <input class="col-1"s type="checkbox" checked>
+                                                <input id="offer_cv_autho" class="col-1"s type="checkbox">
                                             </div>
                                         </div>
                                     </div>
@@ -135,19 +141,19 @@
                                                 <a class="justify-content-start col-10 text-sm">
                                                     <i class="ni ni-bold-right"></i>
                                                     Sửa</a>
-                                                <input class="col-1 "s type="checkbox" checked>
+                                                <input class="col-1 "s type="checkbox">
                                             </div>
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex rounded">
                                                 <a class="justify-content-start col-10 text-sm">
                                                     <i class="ni ni-bold-right"></i>
                                                     Thêm</a>
-                                                <input class="col-1"s type="checkbox" checked>
+                                                <input class="col-1"s type="checkbox">
                                             </div>
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex ">
                                                 <a class="justify-content-start col-10 text-sm">
                                                     <i class="ni ni-bold-right"></i>
                                                     Xóa</a>
-                                                <input class="col-1"s type="checkbox" checked>
+                                                <input class="col-1"s type="checkbox">
                                             </div>
                                         </div>
                                     </div>
