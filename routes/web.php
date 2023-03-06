@@ -116,6 +116,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'offer_cv'])->name('offer_cv');
 	Route::post('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'send_offer'])->name('send_offer');
 	Route::get('/authorization', [App\Http\Controllers\AuthorizationController::class, 'index'])->name('index.authorization');
+	Route::get('/authorization/id', [App\Http\Controllers\AuthorizationController::class, 'getAutho_Detail_By_Id'])->name('getAutho_Detail_By_Id');
+	Route::post('/authorization', [App\Http\Controllers\AuthorizationController::class, 'save'])->name('insert.authorization');
+	Route::delete('/authorization', [App\Http\Controllers\AuthorizationController::class, 'delete'])->name('delete.authorization');
 
 	Route::group(
 		['middleware' => 'auth'],
