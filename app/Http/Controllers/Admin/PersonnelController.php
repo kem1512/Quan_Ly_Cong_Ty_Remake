@@ -14,6 +14,7 @@ use App\Mail\PassCV_FaildInter;
 use App\Mail\PersonnelAcceptMailer;
 use App\Mail\PersonnelFaildCVMailer;
 use App\Mail\Send_Offer;
+use App\Models\Authority;
 use App\Models\CurriculumVitae;
 use App\Models\Department;
 use App\Models\interview;
@@ -29,16 +30,11 @@ use phpDocumentor\Reflection\PseudoTypes\IntegerRange;
 class PersonnelController extends Controller
 {
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $rq)
     {
         //check quyền truy cập trang của user đang đăng nhập
         $this->authorize("personnel", Auth::user());
-
         //active new user
         if (Auth::user()->status == 0) {
             $user = User::find(Auth::user()->id);
@@ -63,9 +59,10 @@ class PersonnelController extends Controller
         //build table CV
         $cvs = CurriculumVitae::get_All_CV_UT();
         $cvut = CurriculumVitae::UTBuild($cvs);
-
+        $authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        $authority = Authority::all();
         $nhansu = User::getAll();
-        return view('pages.personnel.personnel', compact('phongbans', 'postions', 'nhansu', 'xdcount', 'cvcount', 'cvs', 'ucount',));
+        return view('pages.personnel.personnel', compact('phongbans', 'authority', 'authentication', 'postions', 'nhansu', 'xdcount', 'cvcount', 'cvs', 'ucount',));
     }
 
     //====================PERSONNEL====================================
@@ -80,12 +77,11 @@ class PersonnelController extends Controller
     public function update(updateUserRequest $request)
     {
         // check quyền user đăng nhập
-        $user = User::findOrFail($request->id);
-        $level = Auth::user()->level;
-        if ($level == 0) {
+        $Authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        if ($Authentication->personnel->update_personnel === "false") {
             return response()->json(['status' => 'error', 'message' => 'Không thể sửa do không đủ quyền !']);
         }
-
+        $user = User::findOrFail($request->id);
         //check tuổi
         $age = floor((time() - strtotime($request->date_of_birth)) / 31556926);
         if ($age < 15) {
@@ -105,7 +101,7 @@ class PersonnelController extends Controller
             $request->img_url->move(public_path('img'), $fileName);
             $user->img_url = $fileName;
         }
-
+        $user->autho = $request->autho_roles_ud;
         $user->gender = $request->gender;
         $user->about = $request->about;
         $user->nominee_id = $request->nominee_bild;
@@ -152,10 +148,10 @@ class PersonnelController extends Controller
     }
     public function destroy(Request $rq)
     {
-        //check level
-        $level = Auth::user()->level;
-        if ($level == 0) {
-            return response()->json(['status' => 'error', 'message' => 'Không thể xóa do không đủ quyền !']);;
+        // check quyền user đăng nhập
+        $Authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        if ($Authentication->personnel->delete_personnel === "false") {
+            return response()->json(['status' => 'error', 'message' => 'Không thể xóa do không đủ quyền !']);
         }
         //check user
         $id = $rq->input('count_type');
@@ -195,8 +191,10 @@ class PersonnelController extends Controller
         if ($request->interviewer1 == $request->interviewer2) {
             return response()->json(['status' => 'error', 'message' => '2 người phỏng vấn phải khác nhau !']);
         }
-        if ($level1 == 0) {
-            return response()->json(['status' => 'error', 'message' => 'Không thể xóa do không đủ quyền !']);
+        // check quyền user đăng nhập
+        $Authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        if ($Authentication->personnel->inter_cv_autho === "false") {
+            return response()->json(['status' => 'error', 'message' => 'Không thể xếp lịch do không đủ quyền !']);
         }
         //check date
         $daterq = $request->interview_date;
@@ -215,13 +213,13 @@ class PersonnelController extends Controller
         //check date 
         $user1 = interview::find($request->interviewer1);
 
-        $date1 = $user1->interview_date;
-        $time1 = $user1->interview_time;
-
-        if ($date1 == $request->interview_date && $time1 == $request->interview_time) {
-            return response()->json(['status' => 'error', 'message' => 'Người phỏng vấn đã có lịch vào thời gian này !']);
+        if (!empty($user1)) {
+            $date1 = $user1->interview_date;
+            $time1 = $user1->interview_time;
+            if ($date1 == $request->interview_date && $time1 == $request->interview_time) {
+                return response()->json(['status' => 'error', 'message' => 'Người phỏng vấn đã có lịch vào thời gian này !']);
+            }
         }
-        dd($user1);
         $interview = new interview();
         $interview->interviewer1 = $request->interviewer1;
         $interview->interviewer2 = $request->interviewer2;
@@ -283,6 +281,11 @@ class PersonnelController extends Controller
     }
     public function send_offer(Request $request)
     {
+        // check quyền user đăng nhập
+        $Authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        if ($Authentication->personnel->offer_cv_autho === "false") {
+            return response()->json(['status' => 'error', 'message' => 'Không thể gửi offer do không đủ quyền !']);
+        }
         //send_offer
         $offer = CurriculumVitae::find($request->id);
         $offer->offer = $request->offer;
@@ -299,6 +302,11 @@ class PersonnelController extends Controller
     //Xét Duyệt Ứng Viên
     public function update_xd_interview(updateInterviewRequest $request)
     {
+        // check quyền user đăng nhập
+        $Authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        if ($Authentication->personnel->eva_cv_autho === "false") {
+            return response()->json(['status' => 'error', 'message' => 'Không thể đánh giá ứng viên do không đủ quyền !']);
+        }
         // check cv 
         $inter = CurriculumVitae::find($request->id);
         if ($inter->status != 3) {
@@ -448,10 +456,10 @@ class PersonnelController extends Controller
     }
     public function update_status_cv(Request $request)
     {
-        //check quyền
-        $level = Auth::user()->level;
-        if ($level == 0) {
-            return response()->json(['status' => 'error', 'message' => 'Không thể thực hiện thao tác do không đủ quyền !']);
+        // check quyền user đăng nhập
+        $Authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        if ($Authentication->personnel->faild_cv_autho === "false") {
+            return response()->json(['status' => 'error', 'message' => 'Không thể từ chối do không đủ quyền !']);
         }
 
         $cv = CurriculumVitae::find($request->id);
@@ -497,7 +505,6 @@ class PersonnelController extends Controller
         if ($cv->status == 1) {
             $sendMail = new SendMailJob($id, 3);
             dispatch($sendMail);
-            // Mail::to('lutl@s-connect.net')->send(new PersonnelFaildCVMailer($id));
         }
 
         return
@@ -565,6 +572,11 @@ class PersonnelController extends Controller
 
     public function update_cv_all(updateCVRequest $request)
     {
+        // check quyền user đăng nhập
+        $Authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        if ($Authentication->personnel->update_cv_autho === "false") {
+            return response()->json(['status' => 'error', 'message' => 'Không thể sửa cv này do không đủ quyền !']);
+        }
         $cv = CurriculumVitae::find($request->id_ut_update);
         if ($request->email_ut_update !== $cv->email) {
             $request->validate(

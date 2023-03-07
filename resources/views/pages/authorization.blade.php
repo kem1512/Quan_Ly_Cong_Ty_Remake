@@ -5,6 +5,23 @@
     <div id="alert">
         @include('components.alert')
     </div>
+    <style>
+        .autho_css {
+            min-height: 62vh;
+            max-height: 62vh;
+            overflow-y: scroll;
+
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgb(153, 147, 147);
+            border-radius: 5px;
+        }
+    </style>
     <div class="container-fluid py-4">
         <div class="row" style="min-height: 79vh">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -17,7 +34,7 @@
                             <div class="text-center mb-5">
                                 <h4>Chức Vụ</h4>
                             </div>
-                            <div class="border border-success p-4 rounded-3 " style="min-height: 62vh">
+                            <div class="border border-success p-4 rounded-3 autho_css">
                                 <div class="d-flex justify-content-end w-100">
                                     <input id="id_autho" class="d-none" type="text">
                                     <a class="btn btn-success" id="btn_save_autho">Thêm Mới</a>
@@ -53,8 +70,29 @@
                             <div class="text-center mb-5">
                                 <h4>Danh Sách Chức Năng</h4>
                             </div>
-                            <div class="accordion border border-success p-4 rounded-3" id="accordionPanelsStayOpenExample"
-                                style="min-height: 62vh">
+                            <div class="accordion border border-success p-4 rounded-3 autho_css"
+                                id="accordionPanelsStayOpenExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                        <button class="accordion-button collapsed fw-bold" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne"
+                                            aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+                                            Phân Quyền
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse"
+                                        aria-labelledby="panelsStayOpen-headingOne">
+                                        <div class="accordion-body">
+                                            <div class="w-100 row  p-2 mb-1 justify-content-between d-flex  rounded">
+                                                <a class="justify-content-start col-10 text-sm">
+                                                    <i class="ni ni-bold-right"></i>
+                                                    Phân Quyền</a>
+                                                <input id="authority_role" class="col-1 "s type="checkbox">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
                                 <div class="accordion-item">
                                     <h2 class="accordion-header " id="panelsStayOpen-headingTwo">
                                         <button class="accordion-button collapsed fw-bold " type="button"
@@ -97,6 +135,12 @@
                                                     <i class="ni ni-bold-right"></i>
                                                     Duyệt CV </a>
                                                 <input id="accept_cv_autho" class="col-1" type="checkbox">
+                                            </div>
+                                            <div class="w-100 row  p-2 mb-1 justify-content-between d-flex  rounded">
+                                                <a class="justify-content-start col-10 text-sm ">
+                                                    <i class="ni ni-bold-right"></i>
+                                                    Từ Chối</a>
+                                                <input id="faild_cv_autho" class="col-1 " type="checkbox">
                                             </div>
                                             <div class="w-100 row  p-2 mb-1 justify-content-between d-flex ">
                                                 <a class="justify-content-start col-10 text-sm">
@@ -161,7 +205,54 @@
                                 <hr>
                             </div>
                         </div>
+                        <div class="col-12 mt-4" style="min-height: 62vh">
+                            <div class="accordion border border-success p-4 rounded-3 " style="min-height: 62vh">
+                                <div class="row justify-content-between">
+                                    <h4 class="col-3">Cấp Quyền</h4>
+                                    <div class="col-3 d-flex justify-content-between">
+                                        <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                            class="btn btn-success">Cấp Quyền</a>
+
+                                        <div class="form-check justify-content-center p-0 m-0">
+                                            <label for="" class="col-4 col-form-label w-100 p-0">All</label>
+                                            <input class="form-check-input p-0 m-0" type="checkbox">
+                                        </div>
+                                    </div>
+                                    <div id="table_user_autho">
+                                        {!! \App\Models\User::Autho_Build($users) !!}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="example-text-input" class="col-4 col-form-label w-100">Vui lòng chọn nhóm
+                            quyền:</label>
+                        <select class="form-control " name="gender_ut_update" id="gender_ut_update">
+                            @foreach ($authority as $item)
+                                <option value="{{ $item->id }}">{{ $item->name_autho }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Cấp Quyền</button>
                 </div>
             </div>
         </div>

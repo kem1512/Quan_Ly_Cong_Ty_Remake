@@ -116,7 +116,7 @@
                                             id="Email" required />
                                     </div>
                                     <div class="form-update">
-                                        <label for="phone" class="col-sm-4 col-form-label">Số Điện
+                                        <label for="phone" class="col-sm-4 col-form-label w-100">Số Điện
                                             Thoại:</label>
                                         <input type="text" name="phone" id="phoneu" class="form-control"
                                             id="phone" required />
@@ -167,7 +167,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="form-update">
                                     <label for="dateofbirth" class="col-sm-4 col-form-label">Ngày Sinh:</label>
                                     <input type="date" name="date_of_birth" class="form-control"
@@ -175,12 +175,27 @@
                                 </div>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="form-update">
-                                    <label for="recrui" class="col-sm-4 col-form-label">Ngày Tuyển Dụng:</label>
+                                    <label for="recrui" class="col-sm-4 col-form-label w-100">Ngày Tuyển
+                                        Dụng:</label>
                                     <input type="date" name="recruitment_date" class="form-control"
                                         id="recruitment_dateu" />
                                 </div>
+                            </div>
+
+                            <div class="col-4">
+                                @if ($authentication->authority === 'true')
+                                    <div class="form-update">
+                                        <label for="recrui" class="col-sm-4 col-form-label">Nhóm Quyền:</label>
+                                        <select class="form-control" name="autho_roles_ud" id="autho_roles_ud">
+                                            <option selected>Chưa được quy định</option>
+                                            @foreach ($authority as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name_autho }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <div class="row">
@@ -195,7 +210,7 @@
                             </div>
                         </div>
                         <div class="btn-group-update mt-5 align-items-center justify-content-center">
-                            @if (!Auth::user()->level == 0)
+                            @if ($authentication->personnel->update_personnel === 'true')
                                 <button class="btn btn-primary" id="btn_update_personnel">Cập Nhật</button>
                             @endif
 

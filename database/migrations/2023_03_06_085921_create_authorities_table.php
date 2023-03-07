@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('authorities', function (Blueprint $table) {
             $table->id();
             $table->string('name_autho');
+            $table->string('authority');
             $table->string('personnel', 500);
             $table->string('departments', 500);
             $table->string('equipment', 500);

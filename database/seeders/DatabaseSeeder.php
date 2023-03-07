@@ -19,10 +19,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'fullname' => 'admin',
+            'fullname' => 'Đặng Anh Tuấn',
             'email' => 'admin@argon.com',
             'password' => bcrypt('admin'),
-            'personnel_code' => 'NS0001',
+            'personnel_code' => 'SCN0001',
             'level' => 2,
             'img_url' => 'marie.jpg',
         ]);
@@ -136,7 +136,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('nominees')->insert($nominees);
-        
+
         $data = [
             ['id' => 1, "code" => 'SNC1', 'name' => 'Sconnect', '_lft' => 1, '_rgt' => 20, 'parent_id' => NULL],
             ['id' => 2, "code" => 'SNC2', 'name' => 'Phòng Công Nghệ', '_lft' => 2, '_rgt' => 9, 'parent_id' => 1],
