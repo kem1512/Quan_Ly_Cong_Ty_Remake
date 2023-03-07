@@ -13,5 +13,18 @@ class Authority extends Model
         'personnel',
         'departments',
         'equipment',
+        'authority',
     ];
+
+    public static function get_Roles_By_Id_User($id)
+    {
+        $user = User::find($id);
+        if (empty($user->autho)) {
+            return 0;
+        }
+        $autho = Authority::find($user->autho);
+        $autho->personnel = json_decode($autho->personnel);
+        $autho->authority = json_decode($autho->authority);
+        return $autho;
+    }
 }

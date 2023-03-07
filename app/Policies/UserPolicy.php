@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Authority;
 use App\Models\User;
 use App\Models\Department;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -30,7 +31,13 @@ class UserPolicy
 
     public function personnel(User $user)
     {
-        return $user->department_id == 3 ||  $user->level == 2 || $user->position_id == 1 || $user->position_id == 2 || $user->position_id == 3 || $user->position_id == 4 || $user->position_id == 5 || $user->position_id == 6 || $user->position_id == 7 || $user->position_id == 8;
+        $autho = Authority::get_Roles_By_Id_User($user->id);
+        return $autho->personnel->personnel_autho_access === "true";
+    }
+
+    public function authentication(User $user)
+    {
+        $autho = Authority::get_Roles_By_Id_User($user->id);
+        return $autho->authority === "true";
     }
 }
-

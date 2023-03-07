@@ -145,6 +145,14 @@ class User extends Authenticatable
         $users = DB::table('users');
         return $users->paginate(7);
     }
+
+    public static function build_autho()
+    {
+        $a = null;
+        $users = User::where('autho', '=', $a)->paginate(7);
+        // dd($users);
+        return $users;
+    }
     public static function getAll()
     {
         $users = User::leftjoin('departments', 'users.department_id', 'departments.id')
@@ -154,6 +162,7 @@ class User extends Authenticatable
     }
     public static function UserBuild($nhansu)
     {
+        $authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
         $html = '
         <div class="table-responsive p-0">
         <table class="table align-items-center mb-0">
@@ -176,14 +185,8 @@ class User extends Authenticatable
                         Phòng Ban</th>
                     <th
                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        Trạng Thái</th>';
-        if (Auth::user()->level == 2) {
-            $html .= '  <th
-                        class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                        Chỉnh Sửa</th> ';
-        }
-
-        $html .= '     <th
+                        Trạng Thái</th> 
+                    <th
                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                         Action</th>
                 </tr>
@@ -253,53 +256,31 @@ class User extends Authenticatable
             } else {
                 $html .= '<span class="badge badge-sm bg-gradient-warning">Không xác định</span> ';
             }
-
-            if (Auth::user()->level == 2) {
-                $html .= '</td>
-             <td><div class="form-check form-switch justify-content-center">';
-
-                if ($ns->level != 0) {
-                    $html .= '  <input class="form-check-input read-checkbox-level" user-data-src="' . $ns->id . '" type="checkbox" id="flexSwitchCheckDefault" checked >';
-                } else {
-                    $html .= '  <input class="form-check-input read-checkbox-level" user-data-src="' . $ns->id . '" type="checkbox" id="flexSwitchCheckDefault" >';
-                }
-                $html .= '</div></td>';
-            }
-
-
-
+            $html .= '</td>';
             $html .= '   <td class="align-middle text-end">
                             <div class="d-flex px-3 py-1 justify-content-center align-items-center"> ';
-            if (!Auth::user()->level == 0) {
+            if ($authentication->personnel->delete_personnel === "true") {
                 $html .= '<a class="text-sm font-weight-bold mb-0 " id="btn-del"
                                     onclick="onDelete(' . $ns->id . ')">
                                     Xóa
-                                </a> |';
-                if ($ns->position_id == '') {
-                    $html .= '     <a id="btn-edit" data-bs-toggle="offcanvas"
-                                    onclick="getdetail(' . $ns->id . ')"
-                                    data-pos="xxx"
-                                    data-bs-target="#offcanvasNavbarupdate"
-                                    class="text-sm font-weight-bold mb-0 ps-2">
-                                    Sửa
                                 </a> ';
-                } else {
-                    $html .= '     <a id="btn-edit" data-bs-toggle="offcanvas"
+            }
+            if ($authentication->personnel->update_personnel) {
+                $html .= '   | <a id="btn-edit" data-bs-toggle="offcanvas"
                                     onclick="getdetail(' . $ns->id . ')"
                                     data-pos="' . $ns->position_id . '"
                                     data-bs-target="#offcanvasNavbarupdate"
                                     class="text-sm font-weight-bold mb-0 ps-2">
                                     Sửa
                                 </a> ';
-                }
-            } else {
-                $html .= '      <a id="btn-edit" data-bs-toggle="offcanvas"
+            }
+            $html .= '     | <a id="btn-edit" data-bs-toggle="offcanvas"
                                     onclick="getdetailview(' . $ns->id . ')"
                                     data-bs-target="#offcanvasNavbarupdate"
                                     class="text-sm font-weight-bold mb-0 ps-2">
                                     Xem
-                                </a> ';
-            }
+                                </a> |';
+
 
             $html .= '</div>
                         </td>
@@ -325,9 +306,7 @@ class User extends Authenticatable
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Chức Vụ</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Phòng Ban</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7  ps-1">(Mặc Định)</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7  ps-1">Level 1</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7  ps-1">Level 2</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7  ps-1">Cấp Quyền</th>
                             </tr>
                         </thead>
                         <tbody>';
@@ -368,21 +347,8 @@ class User extends Authenticatable
             $html .= ' <p class="text-sm font-weight-bold mb-0 ">' . $ns->name . '</p>
                                         </td>
                                         <td>
-                                            <div class="form-check form-switch justify-content-center">
-                                                <input class="form-check-input " type="checkbox" user-data-src="' . $ns->id . '" id="level1" checked>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-check form-switch justify-content-center">';
-            if ($ns->level == 1 || $ns->level == 2) {
-                $check = 'checked';
-            }
-            $html .= '    <input class="form-check-input read-checkbox-level" type="checkbox" user-data-src="' . $ns->id . '" id="level2" ' . $check . '>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-check form-switch justify-content-center">
-                                                <input class="form-check-input" type="checkbox" user-data-src="' . $ns->id . '" id="level3" checked>
+                                            <div class="form-check justify-content-center">
+                                                <input class="form-check-input set_role_user " style="margin-left:10%;" type="checkbox" data-user="' . $ns->id . '">
                                             </div>
                                         </td>
                                     </tr>';

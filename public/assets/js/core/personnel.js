@@ -115,6 +115,8 @@ function getMoresUser(page) {
                 $("#cvut_query").html(result.cvbody);
             } else if (result.location == "autho") {
                 $("#body_auth").html(result.body);
+            } else if (result.location == "auth") {
+                $("#table_user_autho").html(result.table_user);
             }
             $("#body_query").html(result.body);
         },
@@ -197,16 +199,22 @@ function getdetail(id) {
             }
             $("#img_url_update").val("");
             $("#img_url").attr("src", "./img/" + nhansu.img_url);
-            $("#id_user").val(nhansu.id);
-            $("#about").val(nhansu.about);
-            $("#gender").val(nhansu.gender);
-            $("#title").val(nhansu.title);
-            $("#personnel_codeu").val(nhansu.personnel_code);
-            $("#fullnameu").val(nhansu.fullname);
-            $("#phoneu").val(nhansu.phone);
-            $("#emailu").val(nhansu.email);
-            $("#passwordu").val(nhansu.password);
+            $("#img_url_update").attr("disabled", false);
+            $("#id_user").val(nhansu.id).attr("disabled", false);
+            $("#about").val(nhansu.about).attr("disabled", false);
+            $("#gender").val(nhansu.gender).attr("disabled", false);
+            $("#title").val(nhansu.title).attr("disabled", false);
+            $("#personnel_codeu")
+                .val(nhansu.personnel_code)
+                .attr("disabled", false);
+            $("#fullnameu").val(nhansu.fullname).attr("disabled", false);
+            $("#phoneu").val(nhansu.phone).attr("disabled", false);
+            $("#emailu").val(nhansu.email).attr("disabled", false);
+            $("#passwordu").val(nhansu.password).attr("disabled", false);
 
+            $("#autho_roles_ud").val(nhansu.autho).attr("disabled", false);
+
+            $("#nominee_bild").attr("disabled", false);
             $("#nominee_bild")
                 .find("option")
                 .each(function () {
@@ -216,18 +224,26 @@ function getdetail(id) {
                         $(this).removeAttr("selected");
                     }
                 });
-            $("#department_idu").val(nhansu.department_id);
-            $("#personnel_codeu").val(nhansu.personnel_code);
-            $("#date_of_birthu").val(nhansu.date_of_birth);
-            $("#position_idu").val(nhansu.position_id);
-            $("#recruitment_dateu").val(nhansu.recruitment_date);
+            $("#department_idu")
+                .val(nhansu.department_id)
+                .attr("disabled", false);
+            $("#personnel_codeu")
+                .val(nhansu.personnel_code)
+                .attr("disabled", false);
+            $("#date_of_birthu")
+                .val(nhansu.date_of_birth)
+                .attr("disabled", false);
+            $("#position_idu").val(nhansu.position_id).attr("disabled", false);
+            $("#recruitment_dateu")
+                .val(nhansu.recruitment_date)
+                .attr("disabled", false);
             if ((nhansu.status == 3) | (nhansu.status == 4)) {
                 $("#about-text").html("Lý Do:");
             } else {
                 $("#about-text").html("Giới thiệu về bản thân :");
             }
-            $("#statusu").val(nhansu.status);
-            $("#addressup").val(nhansu.address);
+            $("#statusu").val(nhansu.status).attr("disabled", false);
+            $("#addressup").val(nhansu.address).attr("disabled", false);
         },
         error: function (error) {
             onAlertError("Vui lòng kiểm tra và thử lại !");
@@ -257,6 +273,7 @@ function getdetailview(id) {
             $("#personnel_codeu")
                 .val(nhansu.personnel_code)
                 .attr("disabled", true);
+            $("#autho_roles_ud").val(nhansu.autho).attr("disabled", true);
             $("#fullnameu").val(nhansu.fullname).attr("disabled", true);
             $("#phoneu").val(nhansu.phone).attr("disabled", true);
             $("#emailu").val(nhansu.email).attr("disabled", true);

@@ -1,3 +1,4 @@
+
 $(document).ready(() => {
     $("#btn_save_autho").on("click", (e) => {
         e.preventDefault();
@@ -12,6 +13,8 @@ $(document).ready(() => {
         var inter_cv_autho = $("#inter_cv_autho").is(":checked");
         var eva_cv_autho = $("#eva_cv_autho").is(":checked");
         var offer_cv_autho = $("#offer_cv_autho").is(":checked");
+        var authority_role = $("#authority_role").is(":checked");
+        var faild_cv_autho = $("#faild_cv_autho").is(":checked");
         $.ajax({
             type: "POST",
             url: "/authorization",
@@ -27,6 +30,8 @@ $(document).ready(() => {
                 inter_cv_autho: inter_cv_autho,
                 eva_cv_autho: eva_cv_autho,
                 offer_cv_autho: offer_cv_autho,
+                authority: authority_role,
+                faild_cv_autho: faild_cv_autho,
             },
             success: (result) => {
                 if (result.status == "success") {
@@ -50,7 +55,6 @@ function get_all_autho() {
         type: "GET",
         url: "/authorization",
         success: (result) => {
-            console.log(result.body.data);
             if (result.status == "success") {
                 let html = "";
                 $.each(result.body.data, (index, value) => {
@@ -121,6 +125,12 @@ function get_autho_By_Id(id) {
                 quyen.eva_cv_autho == "true"
                     ? $("#eva_cv_autho").prop("checked", true)
                     : $("#eva_cv_autho").prop("checked", false);
+                quyen.faild_cv_autho == "true"
+                    ? $("#faild_cv_autho").prop("checked", true)
+                    : $("#faild_cv_autho").prop("checked", false);
+                data.authority == "true"
+                    ? $("#authority_role").prop("checked", true)
+                    : $("#authority_role").prop("checked", false);
             } else {
                 onAlertError("Lỗi server !");
             }
@@ -141,6 +151,8 @@ function delete_autho_By_Id(id) {
         success: (response) => {
             if (response.status == "success") {
                 onAlertSuccess("Xóa Thành Công !");
+                reset_id();
+                $("#btn_save_autho").html("Thêm Mới");
                 get_all_autho();
             } else {
                 onAlertError(response.message);
@@ -167,4 +179,6 @@ function form_clear() {
     $("#inter_cv_autho").prop("checked", false);
     $("#offer_cv_autho").prop("checked", false);
     $("#eva_cv_autho").prop("checked", false);
+    $("#authority_role").prop("checked", false);
+    $("#faild_cv_autho").prop("checked", false);
 }

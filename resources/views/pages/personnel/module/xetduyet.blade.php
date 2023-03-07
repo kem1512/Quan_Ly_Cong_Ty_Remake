@@ -57,10 +57,11 @@
                                     name="interview_location">
                             </div>
                         </div>
-
-                        <div class="wrapper col-md-6 mt-2 ">
-                            <button type="submit" class="btn btn-success">Thêm</button>
-                        </div>
+                        @if ($authentication->personnel->inter_cv_autho === 'true')
+                            <div class="wrapper col-md-6 mt-2 ">
+                                <button type="submit" class="btn btn-success">Thêm</button>
+                            </div>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -160,11 +161,15 @@
                             <textarea class="form-control" name="xd_note_interview" id="xd_note_interview" rows="3"></textarea>
                         </div>
                         <div class="wrapper col-12 mt-5 " style="text-align: center">
-                            <a id="accept_interview" class="btn btn-success " data=2 style="margin-right: 5%">Gửi
-                                Đánh Giá</a>
-                            <a id="faild_interview" class="btn btn-secondary accept_cv" data="6"
-                                style="margin-right: 5%">Từ
-                                Chối</a>
+                            @if ($authentication->personnel->eva_cv_autho === 'true')
+                                <a id="accept_interview" class="btn btn-success " data=2 style="margin-right: 5%">Gửi
+                                    Đánh Giá</a>
+                            @endif
+                            @if ($authentication->personnel->faild_cv_autho === 'true')
+                                <a id="faild_interview" class="btn btn-secondary accept_cv" data="6"
+                                    style="margin-right: 5%">Từ
+                                    Chối</a>
+                            @endif
                             <a class="btn btn-danger" onclick="close2form()" data-bs-dismiss="offcanvas">close</a>
                         </div>
                     </div>
@@ -269,14 +274,18 @@
                             </div>
                         </div>
                         <div class="wrapper col-12 mt-5 " style="text-align: center">
-                            <a id="accept_offer" class="btn btn-secondary " data=2 style="margin-right: 5%">Gửi
-                                Offer</a>
-                            <a id="accept_personnel" class="btn btn-success" onclick="addToPersonnel()"
-                                style="margin-right: 5%">Chấp
-                                Thuận</a>
-                            <a id="faild_offer" class="btn btn-danger accept_cv" data="6"
-                                style="margin-right: 5%">Từ
-                                Chối</a>
+                            @if ($authentication->personnel->offer_cv_autho === 'true')
+                                <a id="accept_offer" class="btn btn-secondary " data=2 style="margin-right: 5%">Gửi
+                                    Offer</a>
+                                <a id="accept_personnel" class="btn btn-success" onclick="addToPersonnel()"
+                                    style="margin-right: 5%">Chấp
+                                    Thuận</a>
+                            @endif
+                            @if ($authentication->personnel->faild_cv_autho === 'true')
+                                <a id="faild_offer" class="btn btn-danger accept_cv" data="6"
+                                    style="margin-right: 5%">Từ
+                                    Chối</a>
+                            @endif
                             <a class="btn btn-warning" onclick="close2form()" data-bs-dismiss="offcanvas">close</a>
                         </div>
                     </div>

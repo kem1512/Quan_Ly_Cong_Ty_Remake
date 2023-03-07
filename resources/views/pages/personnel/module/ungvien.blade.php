@@ -196,9 +196,12 @@
                                 <textarea class="form-control" name="about_ut_update" id="about_ut_update" rows="3"></textarea>
                             </div>
                         </div>
-                        <div id="btn-submit-add">
-                            <button type="submit" id="btn_update_cv" class="btn btn-primary mt-7">Cập Nhật</button>
-                        </div>
+                        @if ($authentication->personnel->update_cv_autho === 'true')
+                            <div id="btn-submit-add">
+                                <button type="submit" id="btn_update_cv" class="btn btn-primary mt-7">Cập
+                                    Nhật</button>
+                            </div>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -292,9 +295,14 @@
                             </div>
                         </div>
                         <div class="wrapper col-12 mt-5 " style="text-align: center">
-                            <a id="accept_cv" class="btn btn-success accept_cv" data=2
-                                style="margin-right: 5%">Duyệt</a>
-                            <a onclick="openNote();" class="btn btn-secondary " style="margin-right: 5%">Từ Chối</a>
+                            @if ($authentication->personnel->accept_cv_autho === 'true')
+                                <a id="accept_cv" class="btn btn-success accept_cv" data=2
+                                    style="margin-right: 5%">Duyệt</a>
+                            @endif
+                            @if ($authentication->personnel->faild_cv_autho === 'true')
+                                <a onclick="openNote();" class="btn btn-secondary " style="margin-right: 5%">Từ
+                                    Chối</a>
+                            @endif
                             <a class="btn btn-danger" onclick="close2form()" data-bs-dismiss="offcanvas">close</a>
                         </div>
                     </div>

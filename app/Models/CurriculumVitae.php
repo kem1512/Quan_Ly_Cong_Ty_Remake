@@ -107,6 +107,7 @@ class CurriculumVitae extends Model
 
     public static function UTBuild($cvs)
     {
+        $authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
         $html = '<div class="table-responsive p-0">
                     <table class="table align-items-center mb-0">
                         <thead>
@@ -141,18 +142,23 @@ class CurriculumVitae extends Model
 
             $html .= '  </td>
                         <td class="text-center">';
-            if ($cv->status == 0) {
-                $html .= ' <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbarevaluatecv" onclick="get_CV_By_ID_eva(' . $cv->id .
-                    ')" class="text-sm font-weight-bold mb-0 ps-2">Duyệt</a> |';
+            if ($authentication->personnel->accept_cv_autho === "true") {
+                if ($cv->status == 0) {
+                    $html .= '| <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbarevaluatecv" onclick="get_CV_By_ID_eva(' . $cv->id .
+                        ')" class="text-sm font-weight-bold mb-0 ps-2">Duyệt</a> |';
+                }
             }
-            if ($cv->status == 2) {
-                $html .= ' <a id="btn-interview-in-table" data-bs-toggle="offcanvas" code="' . $cv->id . '" data-bs-target="#offcanvasNavbarphongvan" onclick="setnull_insert_PV()"  style="cursor: pointer" class="text-sm font-weight-bold mb-0 ps-2">Xếp Lịch</a> |';
+            if ($authentication->personnel->inter_cv_autho === "true") {
+                if ($cv->status == 2) {
+                    $html .= '| <a id="btn-interview-in-table" data-bs-toggle="offcanvas" code="' . $cv->id . '" data-bs-target="#offcanvasNavbarphongvan" onclick="setnull_insert_PV()"  style="cursor: pointer" class="text-sm font-weight-bold mb-0 ps-2">Xếp Lịch</a>';
+                }
             }
-            if ($cv->status !== 1) {
-                $html .= '   <a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbareditcv" data-pos="' . $cv->position_id . '" onclick="get_CV_By_ID_edit(' . $cv->id .
-                    ')" class="text-sm font-weight-bold mb-0 ps-2">Sửa</a> 
+            if ($authentication->personnel->update_cv_autho === "true") {
+                $html .= '   |<a id="btn-edit" data-bs-toggle="offcanvas"  data-bs-target="#offcanvasNavbareditcv" data-pos="' . $cv->position_id . '" onclick="get_CV_By_ID_edit(' . $cv->id .
+                    ')" class="text-sm font-weight-bold mb-0 ps-2">Sửa</a> |
                            </td>';
             }
+
 
             $html .= ' </tr>';
         }
@@ -165,6 +171,7 @@ class CurriculumVitae extends Model
     }
     public static function XDBuild($cvs)
     {
+        $authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
         $html = '<div class="table-responsive p-0">
                     <table class="table align-items-center mb-0">
                         <thead>
@@ -208,11 +215,13 @@ class CurriculumVitae extends Model
                 }
                 $html .= ' <td>';
                 if ($cv->status == 3) {
-                    if (Auth::user()->id == $cv->interviewer1 || Auth::user()->id == $cv->interviewer2) {
+                    if ($authentication->personnel->eva_cv_autho === 'true') {
                         $html .= '<p class="text-sm font-weight-bold mb-0" style="cursor: pointer" data-bs-toggle="offcanvas" onclick="find_interview(' . $cv->id . ')"  data-bs-target="#offcanvasNavbarInterview">Đánh Giá</p>';
                     }
                 } else if ($cv->status == 4 || $cv->status == 5) {
-                    $html .= '<p class="text-sm font-weight-bold mb-0" style="cursor: pointer" data-bs-toggle="offcanvas" onclick=" find_offer(' . $cv->id . ')"  data-bs-target="#offcanvasNavbarOffer">Offer</p>';
+                    if ($authentication->personnel->offer_cv_autho === 'true') {
+                        $html .= '<p class="text-sm font-weight-bold mb-0" style="cursor: pointer" data-bs-toggle="offcanvas" onclick=" find_offer(' . $cv->id . ')"  data-bs-target="#offcanvasNavbarOffer">Offer</p>';
+                    }
                 } else if ($cv->status == 6) {
                     $html .= '<p class="text-sm font-weight-bold mb-0" style="cursor: pointer" data-bs-toggle="offcanvas" onclick=" find_offer(' . $cv->id . ')"  data-bs-target="#offcanvasNavbarOffer">Xem</p>';
                 }
