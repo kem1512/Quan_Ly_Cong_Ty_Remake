@@ -96,12 +96,11 @@ function onDelete(id) {
 }
 
 //Phân Trang
-$(document).ready(function () {
-    $(document).on("click", ".pagination a", function (e) {
-        e.preventDefault();
-        var page = $(this).attr("href");
-        getMoresUser(page);
-    });
+
+$(document).on("click", ".pagination a", function (e) {
+    e.preventDefault();
+    var page = $(this).attr("href");
+    getMoresUser(page);
 });
 
 function getMoresUser(page) {
@@ -117,6 +116,7 @@ function getMoresUser(page) {
                 $("#body_auth").html(result.body);
             } else if (result.location == "auth") {
                 $("#table_user_autho").html(result.table_user);
+                checked_paginate_user(result.count);
             }
             $("#body_query").html(result.body);
         },
@@ -500,6 +500,8 @@ function setnull_insert_PV() {
     $("#interviewer2").attr("code", "");
     $("#interview_date").val("");
     $("#interview_time").val("");
+    $("#id_cv_ut_inter").val("");
+    $("#cv_ut_inter").val("");
 }
 function notication_interview() {
     let timerInterval;
@@ -525,6 +527,7 @@ function notication_interview() {
         }
     });
 }
+
 //Xếp lịch PV
 $(document).ready(function () {
     $("#submit_insert_interview").on("submit", function (e) {
@@ -535,7 +538,7 @@ $(document).ready(function () {
         var interview_date = $("#interview_date").val();
         var interview_time = $("#interview_time").val();
         var cate_inter = $("#cate_inter").val();
-        var id_cv = $("#btn-interview-in-table").attr("code");
+        var id_cv = $("#id_cv_ut_inter").val();
         var location = $("#interview_location").val();
         $.ajax({
             type: "POST",
@@ -1368,6 +1371,20 @@ function GetNhanSuBanGiao(id) {
                     </p>`
                 );
             }
+        },
+    });
+}
+function get_cv_by_Id(id) {
+    setnull_insert_PV();
+    $.ajax({
+        url: "/personnel/cv-u",
+        method: "GET",
+        data: {
+            id: id,
+        },
+        success: function (response) {
+            $("#cv_ut_inter").val(response.body.name);
+            $("#id_cv_ut_inter").val(response.body.id);
         },
     });
 }

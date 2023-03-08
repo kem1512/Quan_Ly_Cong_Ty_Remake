@@ -209,6 +209,14 @@
                             <div class="accordion border border-success p-4 rounded-3 " style="min-height: 62vh">
                                 <div class="row justify-content-between">
                                     <h4 class="col-3">Cấp Quyền</h4>
+                                    <div class="form-group col-2">
+                                        <select class="form-control " name="department_auth" id="department_auth">
+                                            <option value="0" selected>Phòng Ban</option>
+                                            @foreach ($departments as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <div class="col-3 d-flex justify-content-between">
                                         <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
                                             class="btn btn-success">Cấp Quyền</a>
@@ -234,16 +242,16 @@
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content ">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">Chọn Quyền</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="example-text-input" class="col-4 col-form-label w-100">Vui lòng chọn nhóm
                             quyền:</label>
-                        <select class="form-control " name="gender_ut_update" id="gender_ut_update">
+                        <select class="form-control "id="gender_ut_update">
                             @foreach ($authority as $item)
                                 <option value="{{ $item->id }}">{{ $item->name_autho }}</option>
                             @endforeach
@@ -252,7 +260,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Cấp Quyền</button>
+                    <button type="button" class="btn btn-primary" id="add_autho_modal" data-bs-dismiss="modal">Cấp
+                        Quyền</button>
                 </div>
             </div>
         </div>
