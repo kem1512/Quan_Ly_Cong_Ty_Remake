@@ -37,7 +37,7 @@ class User extends Authenticatable
         'status',
         'recruitment_date',
         'img_url',
-        'auth',
+        'autho',
         'level',
     ];
 
@@ -146,10 +146,22 @@ class User extends Authenticatable
         return $users->paginate(7);
     }
 
+    public static function build_autho_by_department($id)
+    {
+        $users = User::where('users.department_id', $id)
+            ->leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->leftjoin('authorities', 'users.autho', 'authorities.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name', 'authorities.name_autho')->paginate(7);
+        // dd($users);
+        return $users;
+    }
     public static function build_autho()
     {
-        $a = null;
-        $users = User::where('autho', '=', $a)->paginate(7);
+        $users = User::leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->leftjoin('authorities', 'users.autho', 'authorities.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name', 'authorities.name_autho')->paginate(7);
         // dd($users);
         return $users;
     }
@@ -186,6 +198,7 @@ class User extends Authenticatable
                     <th
                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                         Trạng Thái</th> 
+                        
                     <th
                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                         Action</th>
@@ -296,7 +309,7 @@ class User extends Authenticatable
 
     public static function Autho_Build($nhansu)
     {
-        $check = '';
+        $index = 0;
         $html = '<div class="table-responsive p-0">
                     <table class="table align-items-center mb-0">
                         <thead>
@@ -306,14 +319,16 @@ class User extends Authenticatable
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Email</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Chức Vụ</th>
                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Phòng Ban</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ">Nhóm quyền hiện tại</th>
                                 <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7  ps-1">Cấp Quyền</th>
                             </tr>
                         </thead>
                         <tbody>';
-        if ($nhansu == null) {
-            $html .= '<p>không có dữ liệu</p>';
-        }
+        // if (empty($nhansu)) {
+        //     $html .= '<tr><td><p>không có dữ liệu</p></td></tr>';
+        // } else {
         foreach ($nhansu as $ns) {
+            $index = $index + 1;
             $html .= '<tr>
                         <td>
                             <p class="text-sm font-weight-bold mb-0">' . $ns->personnel_code . '</p>
@@ -345,14 +360,21 @@ class User extends Authenticatable
                 $ns->name = 'Chưa vào phòng ban';
             }
             $html .= ' <p class="text-sm font-weight-bold mb-0 ">' . $ns->name . '</p>
-                                        </td>
+                                        </td> 
+                                        <td>';
+            if (empty($ns->name_autho)) {
+                $ns->name_autho = 'Chưa có nhóm quyền';
+            }
+            $html .= '   <p class="text-sm font-weight-bold mb-0 text-center">' . $ns->name_autho . '</p>';
+            $html .= '  </td>
                                         <td>
                                             <div class="form-check justify-content-center">
-                                                <input class="form-check-input set_role_user " style="margin-left:10%;" type="checkbox" data-user="' . $ns->id . '">
+                                                <input class="form-check-input set_role_user " id="table_user_col_' . $index . '" style="margin-left:10%;" type="checkbox" data-user="' . $ns->id . '">
                                             </div>
                                         </td>
                                     </tr>';
         }
+        // }
 
         $html .= '               </tbody>
                             </table>

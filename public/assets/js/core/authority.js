@@ -1,3 +1,58 @@
+var arr_data_user = [];
+sessionStorage.removeItem("arr_data_user");
+var id_autho = $("#gender_ut_update").val();
+$(document).on("change", ".set_role_user", function () {
+    var isChecked = $(this).is(":checked");
+    var id_user = $(this).attr("data-user");
+    if (isChecked) {
+        arr_data_user.push(id_user);
+    } else {
+        arr_data_user.splice(arr_data_user.indexOf(id_user), 1);
+    }
+    sessionStorage.setItem("arr_data_user", arr_data_user);
+    // var ar = sessionStorage.getItem("arr_data_user");
+    // var arr = ar.split(",");
+    // console.log(arr);
+});
+
+$(document).ready(() => {
+    $("#gender_ut_update").on("change", () => {
+        var id = $("#gender_ut_update").val();
+        id_autho = id;
+    });
+});
+
+$(document).on("click", "#add_autho_modal", function () {
+    if (arr_data_user.length == 0) {
+        onAlertError("Vui lòng chọn nhân sự !");
+        return;
+    }
+    $.ajax({
+        url: "/authorization/add",
+        type: "POST",
+        data: {
+            id_autho: id_autho,
+            arr_user: arr_data_user,
+        },
+        success: (response) => {
+            if (response.status == "success") {
+                onAlertSuccess(response.message);
+                get_all_autho();
+                sessionStorage.removeItem("arr_data_user");
+            } else {
+                onAlertError("Lỗi serve !");
+            }
+        },
+        error: (error) => {
+            // onAlertError(error.responseJSON.message);
+        },
+    });
+});
+
+$(document).on("change", "#department_auth", function () {
+    var id = $(this).val();
+    getUserByDepartment(id);
+});
 
 $(document).ready(() => {
     $("#btn_save_autho").on("click", (e) => {
@@ -50,6 +105,7 @@ $(document).ready(() => {
         });
     });
 });
+
 function get_all_autho() {
     $.ajax({
         type: "GET",
@@ -75,12 +131,23 @@ function get_all_autho() {
                                 `;
                 });
                 $("#list_autho_build").html(html);
+                $("#table_user_autho").html(result.table_user);
             } else {
                 onAlertError(result.message);
             }
         },
         error: (error) => {
             onAlertError(error.responseJSON.message);
+        },
+    });
+}
+function getUserByDepartment(id) {
+    $.ajax({
+        url: "/authorization/user",
+        type: "GET",
+        data: { id: id },
+        success: (response) => {
+            $("#table_user_autho").html(response.table_user);
         },
     });
 }
@@ -181,4 +248,19 @@ function form_clear() {
     $("#eva_cv_autho").prop("checked", false);
     $("#authority_role").prop("checked", false);
     $("#faild_cv_autho").prop("checked", false);
+}
+function checked_paginate_user(count) {
+    var ar = sessionStorage.getItem("arr_data_user");
+    var arr = ar.split(",");
+    for (let index = 1; index <= count; index++) {
+        var id_user = $("#table_user_col_" + index).attr("data-user");
+        var x = arr.indexOf(id_user);
+        console.log("Chạy Lần :" + index);
+        console.log(id_user);
+        console.log(x);
+        if (x !== -1) {
+            $("#table_user_col_" + index).prop("checked", true);
+        }
+    }
+    // $("#body_table_user_in_autho");
 }

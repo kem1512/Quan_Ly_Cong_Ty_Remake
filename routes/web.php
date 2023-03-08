@@ -120,6 +120,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/authorization', [App\Http\Controllers\AuthorizationController::class, 'save'])->name('insert.authorization');
 	Route::delete('/authorization', [App\Http\Controllers\AuthorizationController::class, 'delete'])->name('delete.authorization');
 	Route::post('/authorization/user', [App\Http\Controllers\AuthorizationController::class, 'set_role_user'])->name('set_role_user');
+	Route::get('/authorization/user', [App\Http\Controllers\AuthorizationController::class, 'get_user_by_department'])->name('get_user_by_department');
+	Route::post('/authorization/add', [App\Http\Controllers\AuthorizationController::class, 'set_autho_for_user'])->name('set_autho_for_user');
 
 	Route::group(
 		['middleware' => 'auth'],

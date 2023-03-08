@@ -150,7 +150,7 @@ class CurriculumVitae extends Model
             }
             if ($authentication->personnel->inter_cv_autho === "true") {
                 if ($cv->status == 2) {
-                    $html .= '| <a id="btn-interview-in-table" data-bs-toggle="offcanvas" code="' . $cv->id . '" data-bs-target="#offcanvasNavbarphongvan" onclick="setnull_insert_PV()"  style="cursor: pointer" class="text-sm font-weight-bold mb-0 ps-2">Xếp Lịch</a>';
+                    $html .= '| <a id="btn_interview_in_table" data-bs-toggle="offcanvas" code="' . $cv->id . '" data-bs-target="#offcanvasNavbarphongvan" onclick="get_cv_by_Id(' . $cv->id . ')"  style="cursor: pointer" class="text-sm font-weight-bold mb-0 ps-2">Xếp Lịch</a>';
                 }
             }
             if ($authentication->personnel->update_cv_autho === "true") {

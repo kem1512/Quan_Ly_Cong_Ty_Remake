@@ -12,6 +12,13 @@
                     <form id="submit_insert_interview" class="row d-flex mt-5" action="" method="post">
                         <div class="col-md-12">
                             <div class="form-group">
+                                <label for="example-text-input" class="col-4 col-form-label w-100">Ứng Viên</label>
+                                <input class="form-control " name="cv_ut_inter" id="cv_ut_inter" value="">
+                                <input class="d-none " name="id_cv_ut_inter" id="id_cv_ut_inter" value="">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
                                 <label for="example-text-input" class="col-4 col-form-label w-100">Người
                                     Phỏng Vấn 1</label>
                                 <input class="form-control " name="interviewer1" id="interviewer1" value="">

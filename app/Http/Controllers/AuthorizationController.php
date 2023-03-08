@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthoInsertRequest;
 use App\Models\Authority;
+use App\Models\Department;
 use App\Models\Position;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -20,12 +21,14 @@ class AuthorizationController extends Controller
             $body = Authority::paginate(7);
             $user = User::build_autho();
             $use = User::Autho_Build($user);
-            return response()->json(['status' => 'success', 'body' => $body, 'location' => 'auth', 'table_user' => $use]);
+            $count = count($user);
+            return response()->json(['status' => 'success', 'body' => $body, 'location' => 'auth', 'count' => $count, 'table_user' => $use]);
         }
         $authos = Authority::paginate(7);
         $authority = Authority::all();
         $users = User::build_autho();
-        return view('pages.authorization', compact('authos', 'authority', 'users'));
+        $departments = Department::all();
+        return view('pages.authorization', compact('authos', 'departments', 'authority', 'users'));
     }
     function set_role_user(Request $request)
     {
@@ -40,6 +43,25 @@ class AuthorizationController extends Controller
         }
         $user->save();
         return response()->json(['status' => 'success', 'message' => $mes]);
+    }
+    function get_user_by_department(Request $request)
+    {
+        if ($request->id == 0) {
+            $users = User::build_autho();
+        } else {
+            $users = User::build_autho_by_department($request->id);
+        }
+        $data = User::Autho_Build($users);
+        return response()->json(['status' => 'success', 'location' => 'auth', 'table_user' => $data]);
+    }
+    function set_autho_for_user(Request $request)
+    {
+        foreach ($request->arr_user as $item) {
+            $users = User::find($item);
+            $users->autho = $request->id_autho;
+            $users->save();
+        }
+        return  response()->json(['status' => 'success', 'message' => 'Cấp quyền thành công !']);
     }
     function save(AuthoInsertRequest $request)
     {
