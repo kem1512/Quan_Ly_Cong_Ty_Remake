@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -12,13 +13,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('storehouses', function (Blueprint $table) {
+        Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50);
-            $table->string('image', 500);
-            $table->string('address', 500);
-            $table->boolean('status');
+            $table->string('name');
             $table->timestamps();
+        });
+        
+        Schema::table('equipment_details', function (Blueprint $table) {
+            $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('set null');
         });
     }
 
@@ -29,6 +31,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('storehouses');
+        Schema::dropIfExists('suppliers');
     }
 };

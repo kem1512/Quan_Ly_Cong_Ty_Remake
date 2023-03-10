@@ -33,6 +33,7 @@ use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\Admin\PersonnelController;
 use App\Http\Controllers\EquimentTypeController;
 use App\Http\Controllers\EquimentsController;
+use App\Http\Controllers\equipment\EquipmentController;
 use App\Http\Controllers\PositionController;
 use App\Jobs\SendEmailJob;
 
@@ -115,87 +116,24 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/personnel/interview/find', [App\Http\Controllers\Admin\PersonnelController::class, 'find_interviewer'])->name('find_interviewer');
 	Route::get('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'offer_cv'])->name('offer_cv');
 	Route::post('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'send_offer'])->name('send_offer');
+	//autho
 	Route::get('/authorization', [App\Http\Controllers\AuthorizationController::class, 'index'])->name('index.authorization');
 	Route::get('/authorization/id', [App\Http\Controllers\AuthorizationController::class, 'getAutho_Detail_By_Id'])->name('getAutho_Detail_By_Id');
-	Route::post('/authorization', [App\Http\Controllers\AuthorizationController::class, 'save'])->name('insert.authorization');
+	Route::post('/authorization/insert', [App\Http\Controllers\AuthorizationController::class, 'save'])->name('insert.authorization');
 	Route::delete('/authorization', [App\Http\Controllers\AuthorizationController::class, 'delete'])->name('delete.authorization');
-	Route::post('/authorization/user', [App\Http\Controllers\AuthorizationController::class, 'set_role_user'])->name('set_role_user');
+	// Route::post('/authorization/user', [App\Http\Controllers\AuthorizationController::class, 'set_role_user'])->name('set_role_user');
+	Route::post('/authorization/recall', [App\Http\Controllers\AuthorizationController::class, 'recall_autho_user'])->name('recall_autho_user');
 	Route::get('/authorization/user', [App\Http\Controllers\AuthorizationController::class, 'get_user_by_department'])->name('get_user_by_department');
 	Route::post('/authorization/add', [App\Http\Controllers\AuthorizationController::class, 'set_autho_for_user'])->name('set_autho_for_user');
+	Route::get('/authorization/search', [App\Http\Controllers\AuthorizationController::class, 'search_autho'])->name('search_autho');
+	Route::post('/authorization', [App\Http\Controllers\AuthorizationController::class, 'set_page_size_autho'])->name('set_page_size_autho');
+	// thiết bị
+	Route::get('/equipment', [EquipmentController::class, 'index'])->name('index.equipment');
 
+	// phần trường làm 
 	Route::group(
 		['middleware' => 'auth'],
-		function () {
-			//Route::get('department', 'DepartmentController@Index');
-			//Route thiết bị
-			//Loại thiết bị
-			Route::group(
-				['prefix' => 'equimenttype'],
-				function () {
-					Route::get(
-						'/',
-						function () {
-
-							return view('pages.Equiments.Equiment_Type.Index');
-						}
-					)->name('equimenttype');
-					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [EquimentTypeController::class, 'Get']);
-					Route::post('post', [EquimentTypeController::class, 'Post']);
-					Route::get('delete/{id?}', [EquimentTypeController::class, 'Delete']);
-					Route::get('getbyid/{id?}', [EquimentTypeController::class, 'Get_By_Id']);
-					Route::post('update/{id?}', [EquimentTypeController::class, 'Update']);
-				}
-			);
-
-			//Kho
-			Route::group(
-				['prefix' => 'warehouse'],
-				function () {
-					Route::get('/', [WareHousesController::class, 'Index'])->name('warehouse');
-					Route::get('get/{perpage?}/{orderby?}/{keyword?}', [WareHousesController::class, 'Get']);
-					Route::get('delete/{id?}', [WareHousesController::class, 'Delete']);
-					Route::get('getbyid/{id?}', [WareHousesController::class, 'GetById']);
-					Route::post('post', [WareHousesController::class, 'Create']);
-					Route::post('update/{id?}', [WareHousesController::class, 'Update']);
-					Route::get('getequipment/{perpage?}/{currentpage?}/{id?}/{keyword?}', [WareHousesController::class, 'GetEquiments']);
-					Route::post('/createequipment', [WareHousesController::class, 'CreateEquipment']);
-					Route::post('/createstorehousedetail', [WareHousesController::class, 'CreateStoreHouseDetail']);
-					Route::get('/viewstorehousedetail/{id?}/{name?}', [WareHousesController::class, 'ViewDetail']);
-					Route::get('/storehousedetail/{perpage?}/{id?}', [WareHousesController::class, 'ViewStoreHouseDetail']);
-					Route::get('/getequimentbyid/{id?}', [WareHousesController::class, 'GetEquipmentById']);
-					Route::post('/updateequipment/{id?}', [WareHousesController::class, 'UpdateEquipment']);
-				}
-			);
-
-			//Chuyển giao
-			Route::group(
-				['prefix' => 'transfer'],
-				function () {
-					Route::get('/', [TransferController::class, 'Index'])->name('transfer');
-					Route::get('/getnhansu/{id?}', [TransferController::class, 'GetNhanSu']);
-					Route::get('/getstorehouse/{keyword?}', [TransferController::class, 'GetStoreHouse']);
-					Route::get('/getusedetail/{id?}', [TransferController::class, 'GetUseDetail']);
-					Route::post('/updateamount', [TransferController::class, 'GetUseDetail']);
-					Route::get('/getequipmentbyid/{id?}', [TransferController::class, 'GetEquimentById']);
-					Route::get('/getequipmentusedetail/{id?}', [TransferController::class, 'GetEquimentUseDetailById']);
-					Route::post('createtransfer', [TransferController::class, 'CreateTransfer']);
-					Route::post('createtransferdetail', [TransferController::class, 'CreateTransferDetail']);
-					Route::post('/updateamountstorehousedetail', [TransferController::class, 'UpdateAmountStoreHouseDetail']);
-					Route::post('/addorupdateusedetail', [TransferController::class, 'AddOrUpdateUseDetail']);
-					Route::post('/updateusedetail', [TransferController::class, 'UpdateUseDetail']);
-					Route::post('/updatekhodetail', [TransferController::class, 'UpdateKhoDetail']);
-				}
-			);
-
-			//Thiết bị
-			Route::group(
-				['prefix' => 'equipment'],
-				function () {
-					Route::get('/{id?}', [EquipmentsController::class, 'Index'])->name('equipment');
-					Route::get('/getequipment/{id?}', [EquipmentsController::class, 'GetEquipment']);
-				}
-			);
-
+		function () { 
 			//End route thiết bị
 			Route::post(
 				'get_departments',

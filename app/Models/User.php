@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\AuthorizationController;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -108,6 +109,17 @@ class User extends Authenticatable
             ->select('users.*', 'nominees.nominees', 'departments.name');
         return $result->paginate(7);
     }
+    public static function search_user_autho($search)
+    {
+        $result = User::where('personnel_code', 'like', "%$search%")
+            ->orWhere('fullname', 'like', "%$search%")
+            ->orWhere('email', 'like', "%$search%")
+            ->leftjoin('departments', 'users.department_id', 'departments.id')
+            ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
+            ->leftjoin('authorities', 'users.autho', 'authorities.id')
+            ->select('users.*', 'nominees.nominees', 'departments.name', 'authorities.name_autho');
+        return $result;
+    }
 
 
     /**
@@ -152,8 +164,7 @@ class User extends Authenticatable
             ->leftjoin('departments', 'users.department_id', 'departments.id')
             ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
             ->leftjoin('authorities', 'users.autho', 'authorities.id')
-            ->select('users.*', 'nominees.nominees', 'departments.name', 'authorities.name_autho')->paginate(7);
-        // dd($users);
+            ->select('users.*', 'nominees.nominees', 'departments.name', 'authorities.name_autho');
         return $users;
     }
     public static function build_autho()
@@ -161,7 +172,7 @@ class User extends Authenticatable
         $users = User::leftjoin('departments', 'users.department_id', 'departments.id')
             ->leftjoin('nominees', 'users.nominee_id', 'nominees.id')
             ->leftjoin('authorities', 'users.autho', 'authorities.id')
-            ->select('users.*', 'nominees.nominees', 'departments.name', 'authorities.name_autho')->paginate(7);
+            ->select('users.*', 'nominees.nominees', 'departments.name', 'authorities.name_autho');
         // dd($users);
         return $users;
     }
@@ -378,7 +389,21 @@ class User extends Authenticatable
 
         $html .= '               </tbody>
                             </table>
-                            ' . $nhansu->links() . '
+                              <div class="row">
+                              
+                             <div class="col-11">' . $nhansu->links() . '</div>
+                             <div class="col-1">
+                             <div class="form-group">
+                        <select class="form-control "id="count_result_autho">
+                            <option value="7">7 Kết Quả</option>
+                            <option value="10">10 Kết Quả</option>
+                            <option value="20">20 Kết Quả</option>
+                            <option value="50">50 Kết Quả</option>
+                        </select>
+                    </div>
+                             </div>
+                            </div>
+
                         </div>';
         return $html;
     }

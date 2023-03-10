@@ -18,14 +18,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->insert([
-            'fullname' => 'Đặng Anh Tuấn',
-            'email' => 'admin@argon.com',
-            'password' => bcrypt('admin'),
-            'personnel_code' => 'SCN0001',
-            'level' => 2,
-            'img_url' => 'marie.jpg',
-        ]);
+
 
         $position = [
             ['id' => 1, 'position' => 'Tổng Giám Đốc', 'level' => 1],
@@ -44,6 +37,12 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('positions')->insert($position);
+
+        $autho = [
+            ['id' => 1, 'name_autho' => 'Full Quyền', 'authority' => '"true"', 'personnel' => '{"personnel_autho_access":"true","insert_personnel":"true","update_personnel":"true","delete_personnel":"true","accept_cv_autho":"true","update_cv_autho":"true","inter_cv_autho":"true","eva_cv_autho":"true","offer_cv_autho":"true","faild_cv_autho":"true"}', 'departments' => 'null', 'equipment' => 'null'],
+        ];
+
+        DB::table('authorities')->insert($autho);
         $nominees = [
             [
                 'id' => 1,
@@ -150,51 +149,75 @@ class DatabaseSeeder extends Seeder
         DB::table('departments')->insert($data);
 
         $equipmenttypes = [
-            ['id' => 1, 'name' => 'Màn hình', 'status' => true],
-            ['id' => 2, 'name' => 'Case', 'status' => true],
-            ['id' => 3, 'name' => 'Bàn phím không dây', 'status' => true],
-            ['id' => 4, 'name' => 'Bàn phím có dây', 'status' => true],
-            ['id' => 5, 'name' => 'Chuột không dây', 'status' => true],
-            ['id' => 6, 'name' => 'Chuột có dây', 'status' => true],
-            ['id' => 7, 'name' => 'Laptop', 'status' => true],
-            ['id' => 8, 'name' => 'Model mạng', 'status' => true],
-            ['id' => 9, 'name' => 'Tai nghe', 'status' => true],
+            ['id' => 1, 'name' => 'Màn hình'],
+            ['id' => 2, 'name' => 'Case'],
+            ['id' => 3, 'name' => 'Bàn phím không dây'],
+            ['id' => 4, 'name' => 'Bàn phím có dây'],
+            ['id' => 5, 'name' => 'Chuột không dây'],
+            ['id' => 6, 'name' => 'Chuột có dây'],
+            ['id' => 7, 'name' => 'Laptop'],
+            ['id' => 8, 'name' => 'Model mạng'],
+            ['id' => 9, 'name' => 'Tai nghe'],
+            ['id' => 10, 'name' => 'Link kiện'],
         ];
         DB::table('equipment_types')->insert($equipmenttypes);
 
         $suppliers = [
-            ['id' => 1, 'name' => 'Gaming Gear', 'status' => true],
-            ['id' => 2, 'name' => 'MSI', 'status' => true],
-            ['id' => 3, 'name' => 'Acer', 'status' => true],
-            ['id' => 4, 'name' => 'Hp', 'status' => true],
-            ['id' => 5, 'name' => 'Logitech', 'status' => true],
-            ['id' => 6, 'name' => 'Viettel', 'status' => true],
-            ['id' => 7, 'name' => 'Vinaphone', 'status' => true],
-            ['id' => 8, 'name' => 'FPT', 'status' => true],
+            ['id' => 1, 'name' => 'Gaming Gear'],
+            ['id' => 2, 'name' => 'MSI'],
+            ['id' => 3, 'name' => 'Acer'],
+            ['id' => 4, 'name' => 'Hp'],
+            ['id' => 5, 'name' => 'Logitech'],
+            ['id' => 6, 'name' => 'Viettel'],
+            ['id' => 7, 'name' => 'Vinaphone'],
+            ['id' => 8, 'name' => 'FPT'],
+            ['id' => 9, 'name' => 'samsung'],
         ];
         DB::table('suppliers')->insert($suppliers);
-
         $equipments = [
-            ['id' => 1, 'name' => 'Gaming Gear', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 'active', 'price' => 10000000, 'out_of_date' => '2023/2/25', 'warranty_date' => '2023/2/25', 'equipment_type_id' => 1, 'supplier_id' => 1],
-            ['id' => 2, 'name' => 'Gaming Gear 1', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 'active', 'price' => 10000000, 'out_of_date' => '2023/2/25', 'warranty_date' => '2023/2/25', 'equipment_type_id' => 2, 'supplier_id' => 2],
-            ['id' => 3, 'name' => 'Gaming Gear 2', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 'active', 'price' => 10000000, 'out_of_date' => '2023/2/25', 'warranty_date' => '2023/2/25', 'equipment_type_id' => 3, 'supplier_id' => 3],
-            ['id' => 4, 'name' => 'Gaming Gear 3', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 'active', 'price' => 10000000, 'out_of_date' => '2023/2/25', 'warranty_date' => '2023/2/25', 'equipment_type_id' => 4, 'supplier_id' => 4],
-            ['id' => 5, 'name' => 'Gaming Gear 4', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 'active', 'price' => 10000000, 'out_of_date' => '2023/2/25', 'warranty_date' => '2023/2/25', 'equipment_type_id' => 5, 'supplier_id' => 4],
+            ['id' => 1, 'name' => 'tai nghe bluetooth samsung galaxy buds live đen (r180)'],
+            ['id' => 2, 'name' => 'bàn phím cơ không dây dareu ek807g '],
+            ['id' => 3, 'name' => 'màn hình dell u2419h'],
+            ['id' => 4, 'name' => 'chuột logitech g102 lightsync rgb black'],
+            ['id' => 5, 'name' => 'ram kingston fury beast rgb kf552c36bbeak2 16'],
+            ['id' => 6, 'name' => 'ssd m2 nvme 256gb gigabyte'],
+            ['id' => 7, 'name' => 'card đồ họa nvidia geforce gtx 1060 6g'],
+            ['id' => 8, 'name' => 'nguồn máy tính 500w xigmatek z-power 600'],
         ];
-        DB::table('equipments')->insert($equipments);
+        DB::table('equipment')->insert($equipments);
+        $equipment_details = [
+            ['id' => 1, 'id_equipment' => 1, 'id_type' => 9, 'equipment_code' => 'SKU0000001', 'warranty_expiration_date' => '2024/03/12', 'img' => 'https://cdn.hoanghamobile.com/i/preview/Uploads/2023/02/04/image-removebg-preview-7.png', 'specifications' => 'Samsung', 'date_added' => Carbon::now(), 'supplier_id' => 9],
+            ['id' => 2, 'id_equipment' => 2, 'id_type' => 3, 'equipment_code' => 'SKU0000002', 'warranty_expiration_date' => '2024/03/12', 'img' => 'https://cdn.hoanghamobile.com/i/preview/Uploads/2023/02/04/image-removebg-preview-7.png', 'specifications' => 'dareu', 'date_added' => Carbon::now(), 'supplier_id' => 8],
+            ['id' => 3, 'id_equipment' => 3, 'id_type' => 1, 'equipment_code' => 'SKU0000003', 'warranty_expiration_date' => '2024/03/12', 'img' => 'https://cdn.hoanghamobile.com/i/preview/Uploads/2023/02/04/image-removebg-preview-7.png', 'specifications' => 'dell u2419h', 'date_added' => Carbon::now(), 'supplier_id' => 7],
+            ['id' => 4, 'id_equipment' => 4, 'id_type' => 6, 'equipment_code' => 'SKU0000004', 'warranty_expiration_date' => '2024/03/12', 'img' => 'https://cdn.hoanghamobile.com/i/preview/Uploads/2023/02/04/image-removebg-preview-7.png', 'specifications' => ' g102 lightsync rgb black', 'date_added' => Carbon::now(), 'supplier_id' => 6],
+            ['id' => 5, 'id_equipment' => 5, 'id_type' => 10, 'equipment_code' => 'SKU0000005', 'warranty_expiration_date' => '2024/03/12', 'img' => 'https://cdn.hoanghamobile.com/i/preview/Uploads/2023/02/04/image-removebg-preview-7.png', 'specifications' => 'fury beast rgb kf552c36bbeak2 16', 'date_added' => Carbon::now(), 'supplier_id' => 5],
+            ['id' => 6, 'id_equipment' => 6, 'id_type' => 10, 'equipment_code' => 'SKU0000006', 'warranty_expiration_date' => '2024/03/12', 'img' => 'https://cdn.hoanghamobile.com/i/preview/Uploads/2023/02/04/image-removebg-preview-7.png', 'specifications' => ' m2 nvme 256gb gigabyte', 'date_added' => Carbon::now(), 'supplier_id' => 4],
+            ['id' => 7, 'id_equipment' => 7, 'id_type' => 10, 'equipment_code' => 'SKU0000007', 'warranty_expiration_date' => '2024/03/12', 'img' => 'https://cdn.hoanghamobile.com/i/preview/Uploads/2023/02/04/image-removebg-preview-7.png', 'specifications' => 'gtx 1060 6g', 'date_added' => Carbon::now(), 'supplier_id' => 3],
+            ['id' => 8, 'id_equipment' => 8, 'id_type' => 10, 'equipment_code' => 'SKU0000008', 'warranty_expiration_date' => '2024/03/12', 'img' => 'https://cdn.hoanghamobile.com/i/preview/Uploads/2023/02/04/image-removebg-preview-7.png', 'specifications' => '500w xigmatek z-power 600', 'date_added' => Carbon::now(), 'supplier_id' => 2],
+        ];
+        DB::table('equipment_details')->insert($equipment_details);
 
-        $storehouses = [
-            ['id' => 1, 'name' => 'Kho 1', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
-            ['id' => 2, 'name' => 'Kho 2', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
-            ['id' => 3, 'name' => 'Kho 3', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
-            ['id' => 4, 'name' => 'Kho 4', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
-            ['id' => 5, 'name' => 'Kho 5', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
-            ['id' => 6, 'name' => 'Kho 6', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
-            ['id' => 7, 'name' => 'Kho 7', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
-            ['id' => 8, 'name' => 'Kho 8', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
-            ['id' => 9, 'name' => 'Kho 9', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
-        ];
-        DB::table('storehouses')->insert($storehouses);
+        // $equipments = [
+        //     ['id' => 1, 'name' => 'Gaming Gear', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 0, 'price' => 10000000,  'warranty_date' => '2023/2/25', 'equipment_type_id' => 1, 'supplier_id' => 1],
+        //     ['id' => 2, 'name' => 'Gaming Gear 1', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 0, 'price' => 10000000,  'warranty_date' => '2023/2/25', 'equipment_type_id' => 2, 'supplier_id' => 2],
+        //     ['id' => 3, 'name' => 'Gaming Gear 2', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 0, 'price' => 10000000,  'warranty_date' => '2023/2/25', 'equipment_type_id' => 3, 'supplier_id' => 3],
+        //     ['id' => 4, 'name' => 'Gaming Gear 3', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 0, 'price' => 10000000,  'warranty_date' => '2023/2/25', 'equipment_type_id' => 4, 'supplier_id' => 4],
+        //     ['id' => 5, 'name' => 'Gaming Gear 4', 'image' => '1.jpg', 'specifications' => 'Ngon - bổ - rẻ', 'status' => 0, 'price' => 10000000,  'warranty_date' => '2023/2/25', 'equipment_type_id' => 5, 'supplier_id' => 4],
+        // ];
+        // DB::table('equipments')->insert($equipments);
+
+        // $storehouses = [
+        //     ['id' => 1, 'name' => 'Kho 1', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+        //     ['id' => 2, 'name' => 'Kho 2', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+        //     ['id' => 3, 'name' => 'Kho 3', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+        //     ['id' => 4, 'name' => 'Kho 4', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+        //     ['id' => 5, 'name' => 'Kho 5', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+        //     ['id' => 6, 'name' => 'Kho 6', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+        //     ['id' => 7, 'name' => 'Kho 7', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+        //     ['id' => 8, 'name' => 'Kho 8', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+        //     ['id' => 9, 'name' => 'Kho 9', 'image' => 'Ảnh.jpg', 'address' => 'Địa chỉ 1', 'status' => true],
+        // ];
+        // DB::table('storehouses')->insert($storehouses);
 
 
         // $use_details = [
@@ -202,5 +225,14 @@ class DatabaseSeeder extends Seeder
         //     ['id' => 2, 'user_id' => 2, 'equipment_id' => 2, 2],
         // ];
         // DB::table('use_details')->insert($use_details);
+        DB::table('users')->insert([
+            'fullname' => 'Đặng Anh Tuấn',
+            'email' => 'admin@argon.com',
+            'password' => bcrypt('admin'),
+            'personnel_code' => 'SCN0001',
+            'level' => 2,
+            'img_url' => 'marie.jpg',
+            'autho' => 1,
+        ]);
     }
 }

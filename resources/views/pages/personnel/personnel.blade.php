@@ -67,7 +67,7 @@
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-12">
-                <div class="tab-content" id="myTabContent">
+                <div class="tab-content mh-71vh" id="myTabContent">
                     {{-- =================================================================== tab HRM =================================================================== --}}
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                         <div class="card mb-4">

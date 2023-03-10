@@ -1,4 +1,7 @@
 <?php
 return [
-    'PAGE_PERSONNEL_COUNT' => 7,
+    'AUTHO' => [
+        'PAGE_SIZE_AUTHO' => 7,
+        'PAGE_SIZE_PERSONNEL' => 7,
+    ],
 ];

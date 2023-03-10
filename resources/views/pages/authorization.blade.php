@@ -6,21 +6,7 @@
         @include('components.alert')
     </div>
     <style>
-        .autho_css {
-            min-height: 62vh;
-            max-height: 62vh;
-            overflow-y: scroll;
-
-        }
-
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background-color: rgb(153, 147, 147);
-            border-radius: 5px;
-        }
+       
     </style>
     <div class="container-fluid py-4">
         <div class="row" style="min-height: 79vh">
@@ -210,6 +196,10 @@
                                 <div class="row justify-content-between">
                                     <h4 class="col-3">Cấp Quyền</h4>
                                     <div class="form-group col-2">
+                                        <input class="form-control " type="text" name="search_autho"
+                                            id="search_autho" placeholder="Search...">
+                                    </div>
+                                    <div class="form-group col-2">
                                         <select class="form-control " name="department_auth" id="department_auth">
                                             <option value="0" selected>Phòng Ban</option>
                                             @foreach ($departments as $item)
@@ -220,10 +210,11 @@
                                     <div class="col-3 d-flex justify-content-between">
                                         <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
                                             class="btn btn-success">Cấp Quyền</a>
+                                        <a href="" id="recall_autho" data-bs-toggle="modal" class="btn btn-success">Thu Hồi</a>
 
                                         <div class="form-check justify-content-center p-0 m-0">
                                             <label for="" class="col-4 col-form-label w-100 p-0">All</label>
-                                            <input class="form-check-input p-0 m-0" type="checkbox">
+                                            <input id="checked_all" class="form-check-input p-0 m-0" type="checkbox">
                                         </div>
                                     </div>
                                     <div id="table_user_autho">
