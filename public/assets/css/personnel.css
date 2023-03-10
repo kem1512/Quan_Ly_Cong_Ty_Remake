@@ -3,6 +3,22 @@
     animation-name: formsend;
     animation-duration: 2s;
 }
+.autho_css {
+    min-height: 62vh;
+    max-height: 62vh;
+    overflow-y: scroll;
+}
+.mh-71vh {
+    min-height: 71vh !important;
+}
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgb(153, 147, 147);
+    border-radius: 5px;
+}
 
 @keyframes formsend {
     0% {
@@ -42,7 +58,9 @@
 #offcanvasNavbar {
     width: 40%;
 }
-
+#offcanvasRight {
+    width: 50%;
+}
 .btn-close {
     color: #524f4c !important;
 }
@@ -87,6 +105,7 @@
     #offcanvasNavbarupdate,
     #offcanvasNavbarevaluatecv,
     #offcanvasNavbarInterview,
+    #offcanvasRight,
     #offcanvasNavbarut,
     #offcanvasNavbar {
         width: 100%;
@@ -116,4 +135,19 @@
 
 .w-100 {
     width: 100% !important;
+}
+.bg-blue {
+    background-color: rgb(107, 107, 136);
+}
+.bg-dark {
+    background-color: darkgray;
+}
+.mh-20 {
+    min-height: 200px;
+}
+.mh-200 {
+    min-height: 200px;
+}
+.mh-2000 {
+    min-height: 2000px;
 }

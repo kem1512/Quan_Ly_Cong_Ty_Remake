@@ -10,9 +10,6 @@ $(document).on("change", ".set_role_user", function () {
         arr_data_user.splice(arr_data_user.indexOf(id_user), 1);
     }
     sessionStorage.setItem("arr_data_user", arr_data_user);
-    // var ar = sessionStorage.getItem("arr_data_user");
-    // var arr = ar.split(",");
-    // console.log(arr);
 });
 
 $(document).ready(() => {
@@ -22,6 +19,34 @@ $(document).ready(() => {
     });
 });
 
+$(document).on("click", "#recall_autho", function () {
+    if (arr_data_user.length == 0) {
+        onAlertError("Vui lòng chọn nhân sự !");
+        return;
+    }
+    $.ajax({
+        url: "/authorization/recall",
+        type: "POST",
+        data: {
+            id_autho: id_autho,
+            arr_user: arr_data_user,
+        },
+        success: (response) => {
+            if (response.status == "success") {
+                onAlertSuccess(response.message);
+                get_all_autho();
+                arr_data_user = [];
+                sessionStorage.removeItem("arr_data_user");
+                $("#checked_all").prop("checked", false);
+            } else {
+                onAlertError("Lỗi serve !");
+            }
+        },
+        error: (error) => {
+            // onAlertError(error.responseJSON.message);
+        },
+    });
+});
 $(document).on("click", "#add_autho_modal", function () {
     if (arr_data_user.length == 0) {
         onAlertError("Vui lòng chọn nhân sự !");
@@ -38,7 +63,9 @@ $(document).on("click", "#add_autho_modal", function () {
             if (response.status == "success") {
                 onAlertSuccess(response.message);
                 get_all_autho();
+                arr_data_user = [];
                 sessionStorage.removeItem("arr_data_user");
+                $("#checked_all").prop("checked", false);
             } else {
                 onAlertError("Lỗi serve !");
             }
@@ -49,9 +76,68 @@ $(document).on("click", "#add_autho_modal", function () {
     });
 });
 
+//Search User
+$(document).ready(function () {
+    $("#search_autho").keyup(function () {
+        var search = $("#search_autho").val();
+        $.ajax({
+            url: "/authorization/search",
+            method: "GET",
+            data: {
+                search: search,
+            },
+            success: function (result) {
+                $("#table_user_autho").html(result.table_user);
+            },
+        });
+    });
+});
+
 $(document).on("change", "#department_auth", function () {
     var id = $(this).val();
     getUserByDepartment(id);
+});
+$(document).on("change", "#checked_all", function () {
+    var checked = $("#checked_all").is(":checked");
+    var num = $("#count_result_autho").val();
+    if (checked) {
+        for (let index = 1; index <= num; index++) {
+            var isChecked = $("#table_user_col_" + index).is(":checked");
+            if (isChecked == false) {
+                $("#table_user_col_" + index).prop("checked", true);
+                var id_user = $("#table_user_col_" + index).attr("data-user");
+                arr_data_user.push(id_user);
+                sessionStorage.setItem("arr_data_user", arr_data_user);
+            }
+        }
+    } else {
+        for (let index = 1; index <= num; index++) {
+            $("#table_user_col_" + index).prop("checked", false);
+            var isChecked = $("#table_user_col_" + index).is(":checked");
+            var id_user = $("#table_user_col_" + index).attr("data-user");
+            arr_data_user.splice(arr_data_user.indexOf(id_user), 1);
+            sessionStorage.setItem("arr_data_user", arr_data_user);
+        }
+    }
+});
+$(document).on("change", "#count_result_autho", function () {
+    var count = $("#count_result_autho").val();
+    var search_autho = $("#search_autho").val();
+    var department_auth = $("#department_auth").val();
+    $.ajax({
+        url: "/authorization",
+        type: "POST",
+        data: {
+            count: count,
+            search_autho: search_autho,
+            department_auth: department_auth,
+        },
+        success: (response) => {
+            $("#table_user_autho").html(response.table_user);
+            $("#count_result_autho").val(response.page_size);
+        },
+        error: () => {},
+    });
 });
 
 $(document).ready(() => {
@@ -72,7 +158,7 @@ $(document).ready(() => {
         var faild_cv_autho = $("#faild_cv_autho").is(":checked");
         $.ajax({
             type: "POST",
-            url: "/authorization",
+            url: "/authorization/insert",
             data: {
                 id: id,
                 autho_name: name,
@@ -251,13 +337,13 @@ function form_clear() {
 }
 function checked_paginate_user(count) {
     var ar = sessionStorage.getItem("arr_data_user");
+    if (ar == null) {
+        return;
+    }
     var arr = ar.split(",");
     for (let index = 1; index <= count; index++) {
         var id_user = $("#table_user_col_" + index).attr("data-user");
         var x = arr.indexOf(id_user);
-        console.log("Chạy Lần :" + index);
-        console.log(id_user);
-        console.log(x);
         if (x !== -1) {
             $("#table_user_col_" + index).prop("checked", true);
         }

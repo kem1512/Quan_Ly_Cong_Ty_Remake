@@ -5,7 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class storehouse extends Model
+class EquipmentChild extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'id_equipment',
+        'id_equipment_detail',
+    ];
 }

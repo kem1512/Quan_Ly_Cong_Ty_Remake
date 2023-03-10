@@ -43,32 +43,17 @@
             </li>
             {{-- Thiet bi link --}}
             <li class="nav-item">
-                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'warehouse' ? 'active' : '' }}"
-                    href="/warehouse">
-                    <i class="fa-solid fa-warehouse text-primary"></i>
-                    <span class="nav-link-text ms-1">Kho</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'transfer' ? 'active' : '' }}" href="/transfer">
-                    <i class="fa-solid fa-retweet text-primary"></i>
-                    <span class="nav-link-text ms-1">Chuyển giao thiết bị</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'equimenttype' ? 'active' : '' }}"
-                    href="/equimenttype">
+                <a class="nav-link mx-3 {{ Route::currentRouteName() == 'equipment' ? 'active' : '' }}"
+                    href="/equipment">
                     <i class="fa-solid fa-memory text-primary"></i>
-                    <span class="nav-link-text ms-1">Loại thiết bị</span>
+                    <span class="nav-link-text ms-1">Thiết bị</span>
                 </a>
             </li>
 
+            {{-- Thiet bi link --}}
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Phòng Ban</h6>
             </li>
-            {{-- Thiet bi link --}}
             <li class="nav-item">
                 <a class="nav-link mx-3 {{ Route::currentRouteName() == 'department' ? 'active' : '' }}"
                     href="{{ route('department') }}">

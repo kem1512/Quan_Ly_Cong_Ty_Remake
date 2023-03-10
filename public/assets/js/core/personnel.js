@@ -104,9 +104,11 @@ $(document).on("click", ".pagination a", function (e) {
 });
 
 function getMoresUser(page) {
+    var size = $("#count_result_autho").val();
     $.ajax({
         type: "GET",
         url: page,
+        data: { size: size },
         success: function (result) {
             if (result.location == "interview") {
                 $("#interview_table").html(result.cvbody);
@@ -116,6 +118,7 @@ function getMoresUser(page) {
                 $("#body_auth").html(result.body);
             } else if (result.location == "auth") {
                 $("#table_user_autho").html(result.table_user);
+                $("#count_result_autho").val(size);
                 checked_paginate_user(result.count);
             }
             $("#body_query").html(result.body);

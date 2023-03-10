@@ -15,43 +15,60 @@ class AuthorizationController extends Controller
 
     function index(Request $request)
     {
-        $this->authorize("authentication", Auth::user());
+        // $this->authorize("authentication", Auth::user());
 
         if ($request->ajax()) {
             $body = Authority::paginate(7);
-            $user = User::build_autho();
+            if (empty($request->size)) {
+                $user = User::build_autho()->paginate(config('const.AUTHO.PAGE_SIZE_AUTHO'));
+            } else {
+                $user = User::build_autho()->paginate($request->size);
+            }
             $use = User::Autho_Build($user);
             $count = count($user);
             return response()->json(['status' => 'success', 'body' => $body, 'location' => 'auth', 'count' => $count, 'table_user' => $use]);
         }
         $authos = Authority::paginate(7);
         $authority = Authority::all();
-        $users = User::build_autho();
+        $users = User::build_autho()->paginate(config('const.AUTHO.PAGE_SIZE_AUTHO'));
         $departments = Department::all();
         return view('pages.authorization', compact('authos', 'departments', 'authority', 'users'));
     }
-    function set_role_user(Request $request)
+    function set_page_size_autho(Request $request)
     {
-        $user = User::find($request->id_user);
-        if ($request->checked === 'true') {
-            $user->autho = $request->id_auth;
-            $mes = 'Cấp quyền thành công !';
-        } else {
-            $a = null;
-            $user->autho = $a;
-            $mes = 'Thu hồi quyền thành công !';
+        // dd($request);
+        if ($request->count > 100) {
+            return response()->json(['status' => 'success', 'message' => 'Số lượng yêu cầu lớn hơn mức cho phép !']);
         }
-        $user->save();
-        return response()->json(['status' => 'success', 'message' => $mes]);
+        if (empty($request->search_autho) && !empty($request->department_auth)) {
+            $users = User::build_autho_by_department($request->department_auth)->paginate($request->count);
+        } else if (!empty($request->search_autho) && $request->department_auth === 0) {
+            $users = User::search_user_autho($request->search)->paginate($request->count);
+        } else {
+            $users = User::build_autho()->paginate($request->count);
+        }
+        // dd($users);
+        $use = User::Autho_Build($users);
+        return response()->json(['status' => 'success', 'table_user' => $use, 'page_size' => $request->count]);
     }
     function get_user_by_department(Request $request)
     {
         if ($request->id == 0) {
-            $users = User::build_autho();
+            $users = User::build_autho()->paginate(config('const.AUTHO.PAGE_SIZE_AUTHO'));
         } else {
-            $users = User::build_autho_by_department($request->id);
+            $users = User::build_autho_by_department($request->id)->paginate(config('const.AUTHO.PAGE_SIZE_AUTHO'));
         }
         $data = User::Autho_Build($users);
+        return response()->json(['status' => 'success', 'location' => 'auth', 'table_user' => $data]);
+    }
+    function search_autho(Request $request)
+    {
+        if (empty($request->search)) {
+            $user = User::build_autho()->paginate(config('const.AUTHO.PAGE_SIZE_AUTHO'));
+        } else {
+            $user = User::search_user_autho($request->search)->paginate(config('const.AUTHO.PAGE_SIZE_AUTHO'));
+        }
+        $data = User::Autho_Build($user);
         return response()->json(['status' => 'success', 'location' => 'auth', 'table_user' => $data]);
     }
     function set_autho_for_user(Request $request)
@@ -62,6 +79,16 @@ class AuthorizationController extends Controller
             $users->save();
         }
         return  response()->json(['status' => 'success', 'message' => 'Cấp quyền thành công !']);
+    }
+    function recall_autho_user(Request $request)
+    {
+        $a = null;
+        foreach ($request->arr_user as $item) {
+            $users = User::find($item);
+            $users->autho = $a;
+            $users->save();
+        }
+        return  response()->json(['status' => 'success', 'message' => 'Thu hồi thành công !']);
     }
     function save(AuthoInsertRequest $request)
     {
