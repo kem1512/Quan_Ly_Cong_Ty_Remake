@@ -33,6 +33,7 @@ class PersonnelController extends Controller
 
     public function index(Request $rq)
     {
+        dd(Auth::user());
         //check quyền truy cập trang của user đang đăng nhập
         $this->authorize("personnel", Auth::user());
         //active new user

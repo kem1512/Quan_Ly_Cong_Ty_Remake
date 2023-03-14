@@ -72,71 +72,18 @@
                                     <h5>Thiết Bị</h5>
                                     <!-- Button trigger modal -->
                                     <div class="wraper-btn">
-                                        <button class="btn btn-success" type="button" data-bs-toggle="offcanvas"
+                                        <button class="btn btn-success" id="btn-add-equipment" type="button" data-bs-toggle="offcanvas"
                                             data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Thêm</button>
                                     </div>
                                 </div>
                             </div>
                             <div class="card-body px-0 pt-0 pb-2">
                                 <div class="row m-1 d-flex justify-content-between">
-                                    <div class="col-4 m-2" id="table_equipment" style="min-height: 40vh;">
-                                        <div class="table-responsive p-0"
-                                            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
-                                            <table class="table align-items-center mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                            STT</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Thiết Bị</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Số Lượng</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Thao Tác</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-
+                                    <div class="col-6 p-2" id="table_equipment" style="min-height: 40vh;">
+                                        {!! \App\Models\Equipment::biuld_equipment($equipments) !!}
                                     </div>
-                                    <div class="col-7 m-2 " id="table_equipment_detail" style="min-height: 40vh;">
-                                        <div class="table-responsive p-0"
-                                            style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
-                                            <table class="table align-items-center mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                            Mã Sản Phẩm</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Thể Loại</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Ngày Nhập</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Nhà Cung Cấp</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Trạng Thái</th>
-                                                        <th
-                                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                            Thao Tác</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                    <div class="col-6 p-1 " id="table_equipment_detail" style="min-height: 40vh;">
+                                        {!! \App\Models\EquipmentDetail::build_equipment_detail($equipment_detail, $equiment) !!}
                                     </div>
                                 </div>
                             </div>

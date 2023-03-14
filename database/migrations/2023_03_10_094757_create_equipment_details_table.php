@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('equipment_details', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('id_equipment')->unsigned()->nullable();
-            $table->bigInteger('id_type')->unsigned()->nullable();
+            $table->string('imei')->nullable();
             $table->string('equipment_code')->unique();
             $table->date('warranty_expiration_date');
             $table->string('img')->nullable();
@@ -25,10 +25,10 @@ return new class extends Migration
             $table->date('date_added');
             $table->bigInteger('supplier_id')->unsigned()->nullable();
             $table->string('note')->nullable();
-           
             $table->timestamps();
             $table->foreign('id_equipment')->references('id')->on('equipment')->onDelete('set null');
         });
+        
     }
 
     /**

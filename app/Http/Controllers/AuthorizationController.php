@@ -12,10 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthorizationController extends Controller
 {
+    // check quyền user đăng nhập
+
+    protected $autho;
 
     function index(Request $request)
     {
-        // $this->authorize("authentication", Auth::user());
+        $this->authorize("authentication", Auth::user());
 
         if ($request->ajax()) {
             $body = Authority::paginate(7);
@@ -73,6 +76,11 @@ class AuthorizationController extends Controller
     }
     function set_autho_for_user(Request $request)
     {
+        // check quyền user đăng nhập
+        $Authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        if ($Authentication->authority === "false") {
+            return response()->json(['status' => 'error', 'message' => 'Không thể cấp quyền !']);
+        }
         foreach ($request->arr_user as $item) {
             $users = User::find($item);
             $users->autho = $request->id_autho;
@@ -82,6 +90,11 @@ class AuthorizationController extends Controller
     }
     function recall_autho_user(Request $request)
     {
+        // check quyền user đăng nhập
+        $Authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        if ($Authentication->authority === "false") {
+            return response()->json(['status' => 'error', 'message' => 'Không thể thu hồi do không đủ quyền !']);
+        }
         $a = null;
         foreach ($request->arr_user as $item) {
             $users = User::find($item);
@@ -91,7 +104,12 @@ class AuthorizationController extends Controller
         return  response()->json(['status' => 'success', 'message' => 'Thu hồi thành công !']);
     }
     function save(AuthoInsertRequest $request)
-    {
+    { 
+        // check quyền user đăng nhập
+        $Authentication = Authority::get_Roles_By_Id_User(Auth::user()->id);
+        if ($Authentication->authority === "false") {
+            return response()->json(['status' => 'error', 'message' => 'Không thể thu hồi do không đủ quyền !']);
+        }
         if (empty($request->id)) {
             $autho = new Authority();
             $request->validate([

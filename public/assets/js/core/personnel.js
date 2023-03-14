@@ -105,10 +105,14 @@ $(document).on("click", ".pagination a", function (e) {
 
 function getMoresUser(page) {
     var size = $("#count_result_autho").val();
+    var id = $("#wraper_equipment_name").attr("code");
+    if (id == null) {
+        id = 1;
+    }
     $.ajax({
         type: "GET",
         url: page,
-        data: { size: size },
+        data: { size: size, id: id },
         success: function (result) {
             if (result.location == "interview") {
                 $("#interview_table").html(result.cvbody);
@@ -116,6 +120,15 @@ function getMoresUser(page) {
                 $("#cvut_query").html(result.cvbody);
             } else if (result.location == "autho") {
                 $("#body_auth").html(result.body);
+            } else if (result.location == "equipment_detail") {
+                $("#table_equipment_detail").html(result.body);
+            } else if (result.location == "build_equipment") {
+                $("#table_equipment").html(result.body);
+                var id = $("#wraper_equipment_name").attr("code");
+                var idx = $("#data-row-1").attr("data-get");
+                if (id !== idx) {
+                    $("#data-row-1").removeClass("bgr-selected");
+                }
             } else if (result.location == "auth") {
                 $("#table_user_autho").html(result.table_user);
                 $("#count_result_autho").val(size);
@@ -1338,45 +1351,45 @@ function closeLoading() {
     $("#id_body").removeClass("active_body");
     $("#loading").addClass("hide_loading");
 }
-GetNhanSuBanGiao(1);
-function GetNhanSuBanGiao(id) {
-    $.ajax({
-        type: "get",
-        url: "/transfer/getusedetail/" + id,
-        dataType: "json",
-        success: function (response) {
-            arrEquipment = [];
-            if (response.usedetails != 0) {
-                let html = "";
-                $.each(response.usedetails, function (index, value) {
-                    if (value.img_url == null) {
-                        value.img_url = 93333333333333333333333333333;
-                        ("https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg");
-                    }
-                    html += `<tr>
-                                <td
-                                    <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="/uploads/${value.image}" class="avatar avatar-sm me-3">
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0">${value.name}</h6>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>`;
-                });
-                $("#equiment_user").html(html);
-            } else {
-                $("#equiment_user").html(
-                    `<p style="text-align:center;">
-                        Nhân Sự Chưa Được Cấp Thiết Bị
-                    </p>`
-                );
-            }
-        },
-    });
-}
+// GetNhanSuBanGiao(1);
+// function GetNhanSuBanGiao(id) {
+//     $.ajax({
+//         type: "get",
+//         url: "/transfer/getusedetail/" + id,
+//         dataType: "json",
+//         success: function (response) {
+//             arrEquipment = [];
+//             if (response.usedetails != 0) {
+//                 let html = "";
+//                 $.each(response.usedetails, function (index, value) {
+//                     if (value.img_url == null) {
+//                         value.img_url = 93333333333333333333333333333;
+//                         ("https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg");
+//                     }
+//                     html += `<tr>
+//                                 <td
+//                                     <div class="d-flex px-2 py-1">
+//                                         <div>
+//                                             <img src="/uploads/${value.image}" class="avatar avatar-sm me-3">
+//                                         </div>
+//                                         <div class="d-flex flex-column justify-content-center">
+//                                             <h6 class="mb-0">${value.name}</h6>
+//                                         </div>
+//                                     </div>
+//                                 </td>
+//                             </tr>`;
+//                 });
+//                 $("#equiment_user").html(html);
+//             } else {
+//                 $("#equiment_user").html(
+//                     `<p style="text-align:center;">
+//                         Nhân Sự Chưa Được Cấp Thiết Bị
+//                     </p>`
+//                 );
+//             }
+//         },
+//     });
+// }
 function get_cv_by_Id(id) {
     setnull_insert_PV();
     $.ajax({

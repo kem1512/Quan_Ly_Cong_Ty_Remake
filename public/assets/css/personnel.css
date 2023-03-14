@@ -14,7 +14,12 @@
 ::-webkit-scrollbar {
     width: 10px;
 }
-
+.bgr-selected {
+    background-color: #e0dedc;
+}
+.poiter {
+    cursor: pointer;
+}
 ::-webkit-scrollbar-thumb {
     background-color: rgb(153, 147, 147);
     border-radius: 5px;
@@ -45,6 +50,9 @@
 
 .text-muted {
     /* display: none; */
+}
+.h-100 {
+    height: 100%;
 }
 
 #adddropdown {

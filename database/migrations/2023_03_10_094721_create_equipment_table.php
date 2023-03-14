@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('equipment', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
+            $table->bigInteger('id_type')->unsigned()->nullable();
             $table->string('name');
             $table->integer('status')->default(0);
-            $table->bigInteger('accessory')->unsigned()->nullable();
             $table->timestamps();
         });
     }
