@@ -104,7 +104,6 @@
                             </div>
                             <div class="card-body px-0 pt-0 pb-2" id="body_query">
                                 {!! \App\Models\User::UserBuild($nhansu) !!}
-
                             </div>
                         </div>
                     </div>

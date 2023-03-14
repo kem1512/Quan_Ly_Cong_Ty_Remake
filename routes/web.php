@@ -31,6 +31,7 @@ use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\Admin\PersonnelController;
+use App\Http\Controllers\AuthorizationController;
 use App\Http\Controllers\EquimentTypeController;
 use App\Http\Controllers\EquimentsController;
 use App\Http\Controllers\equipment\EquipmentController;
@@ -84,56 +85,64 @@ Route::group(['middleware' => 'auth'], function () {
 	//personnel
 
 	Route::get('/personnel', [PersonnelController::class, 'show'])->name('personnel');
-	Route::get('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'index'])->name('personnel.index');
-	Route::post('/personnel/new-user', [App\Http\Controllers\Admin\PersonnelController::class, 'add_new_user'])->name('add_new_user');
-	Route::get('/personnel/edit', [App\Http\Controllers\Admin\PersonnelController::class, 'edit'])->name('personnel.edit');
-	Route::delete('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'destroy'])->name('delete');
-	Route::post('/personnel/add', [App\Http\Controllers\Admin\PersonnelController::class, 'store'])->name('create.user');
-	Route::post('/personnel', [App\Http\Controllers\Admin\PersonnelController::class, 'update'])->name('update.user');
-	Route::get('/personnel/search', [App\Http\Controllers\Admin\PersonnelController::class, 'search'])->name('Search');
-	Route::post('/personnel/search-interviewer', [App\Http\Controllers\Admin\PersonnelController::class, 'search_interviewer'])->name('search_interviewer');
-	Route::get('/personnel/search-cv', [App\Http\Controllers\Admin\PersonnelController::class, 'search_cv'])->name('search_cv');
-	Route::get('/personnel/search-offer', [App\Http\Controllers\Admin\PersonnelController::class, 'search_offer'])->name('search_offer');
-	Route::post('/personnel/profile', [App\Http\Controllers\UserProfileController::class, 'update_profile'])->name('update.profile');
-	Route::post('/personnel/level', [App\Http\Controllers\Admin\PersonnelController::class, 'update_level'])->name('update.level');
-	Route::get('/personnel/fillter', [App\Http\Controllers\Admin\PersonnelController::class, 'fillter'])->name('fillter');
-	Route::get('/personnel/fillter-cv', [App\Http\Controllers\Admin\PersonnelController::class, 'fillter_cv'])->name('fillter_cv');
-	Route::get('/personnel/fillter-offer', [App\Http\Controllers\Admin\PersonnelController::class, 'fillter_offer'])->name('fillter_offer');
-	Route::get('/personnel/nominees', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees'])->name('nominees');
-	Route::get('/personnel/nominees-first', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees_first'])->name('nominees_first');
-	Route::get('/personnel/nominees-cv', [App\Http\Controllers\Admin\PersonnelController::class, 'nominees_cv'])->name('nominees_cv');
-	Route::get('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'getAllCVT'])->name('getcv');
-	Route::get('/personnel/cv-count', [App\Http\Controllers\Admin\PersonnelController::class, 'getcount'])->name('getcount');
-	Route::get('/personnel/interview', [App\Http\Controllers\Admin\PersonnelController::class, 'getAllInter'])->name('getcv');
-	Route::get('/personnel/cv-id', [App\Http\Controllers\Admin\PersonnelController::class, 'getCVbyID'])->name('getCVbyID');
-	Route::post('/personnel/cv-id', [App\Http\Controllers\Admin\PersonnelController::class, 'update_status_cv'])->name('update_status_cv');
-	Route::post('/personnel/cv', [App\Http\Controllers\Admin\PersonnelController::class, 'saveCV'])->name('savecv');
-	Route::post('/personnel/cv-u', [App\Http\Controllers\Admin\PersonnelController::class, 'update_cv'])->name('update_cv');
-	Route::get('/personnel/cv-u', [App\Http\Controllers\Admin\PersonnelController::class, 'get_cv_update'])->name('get_cv_update');
-	Route::post('/personnel/cv-update', [App\Http\Controllers\Admin\PersonnelController::class, 'update_cv_all'])->name('update_cv_all');
-	Route::post('/personnel/interview', [App\Http\Controllers\Admin\PersonnelController::class, 'Add_interview'])->name('Add_interview');
-	Route::post('/personnel/interview/update', [App\Http\Controllers\Admin\PersonnelController::class, 'update_xd_interview'])->name('update_xd_interview');
-	Route::get('/personnel/interview/find', [App\Http\Controllers\Admin\PersonnelController::class, 'find_interviewer'])->name('find_interviewer');
-	Route::get('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'offer_cv'])->name('offer_cv');
-	Route::post('/personnel/offer', [App\Http\Controllers\Admin\PersonnelController::class, 'send_offer'])->name('send_offer');
+	Route::get('/personnel', [PersonnelController::class, 'index'])->name('personnel.index');
+	Route::post('/personnel/new-user', [PersonnelController::class, 'add_new_user'])->name('add_new_user');
+	Route::get('/personnel/edit', [PersonnelController::class, 'edit'])->name('personnel.edit');
+	Route::delete('/personnel', [PersonnelController::class, 'destroy'])->name('delete');
+	Route::post('/personnel/add', [PersonnelController::class, 'store'])->name('create.user');
+	Route::post('/personnel', [PersonnelController::class, 'update'])->name('update.user');
+	Route::get('/personnel/search', [PersonnelController::class, 'search'])->name('Search');
+	Route::post('/personnel/search-interviewer', [PersonnelController::class, 'search_interviewer'])->name('search_interviewer');
+	Route::get('/personnel/search-cv', [PersonnelController::class, 'search_cv'])->name('search_cv');
+	Route::get('/personnel/search-offer', [PersonnelController::class, 'search_offer'])->name('search_offer');
+	Route::post('/personnel/profile', [UserProfileController::class, 'update_profile'])->name('update.profile');
+	Route::post('/personnel/level', [PersonnelController::class, 'update_level'])->name('update.level');
+	Route::get('/personnel/fillter', [PersonnelController::class, 'fillter'])->name('fillter');
+	Route::get('/personnel/fillter-cv', [PersonnelController::class, 'fillter_cv'])->name('fillter_cv');
+	Route::get('/personnel/fillter-offer', [PersonnelController::class, 'fillter_offer'])->name('fillter_offer');
+	Route::get('/personnel/nominees', [PersonnelController::class, 'nominees'])->name('nominees');
+	Route::get('/personnel/nominees-first', [PersonnelController::class, 'nominees_first'])->name('nominees_first');
+	Route::get('/personnel/nominees-cv', [PersonnelController::class, 'nominees_cv'])->name('nominees_cv');
+	Route::get('/personnel/cv', [PersonnelController::class, 'getAllCVT'])->name('getcv');
+	Route::get('/personnel/cv-count', [PersonnelController::class, 'getcount'])->name('getcount');
+	Route::get('/personnel/interview', [PersonnelController::class, 'getAllInter'])->name('getcv');
+	Route::get('/personnel/cv-id', [PersonnelController::class, 'getCVbyID'])->name('getCVbyID');
+	Route::post('/personnel/cv-id', [PersonnelController::class, 'update_status_cv'])->name('update_status_cv');
+	Route::post('/personnel/cv', [PersonnelController::class, 'saveCV'])->name('savecv');
+	Route::post('/personnel/cv-u', [PersonnelController::class, 'update_cv'])->name('update_cv');
+	Route::get('/personnel/cv-u', [PersonnelController::class, 'get_cv_update'])->name('get_cv_update');
+	Route::post('/personnel/cv-update', [PersonnelController::class, 'update_cv_all'])->name('update_cv_all');
+	Route::post('/personnel/interview', [PersonnelController::class, 'Add_interview'])->name('Add_interview');
+	Route::post('/personnel/interview/update', [PersonnelController::class, 'update_xd_interview'])->name('update_xd_interview');
+	Route::get('/personnel/interview/find', [PersonnelController::class, 'find_interviewer'])->name('find_interviewer');
+	Route::get('/personnel/offer', [PersonnelController::class, 'offer_cv'])->name('offer_cv');
+	Route::post('/personnel/offer', [PersonnelController::class, 'send_offer'])->name('send_offer');
 	//autho
-	Route::get('/authorization', [App\Http\Controllers\AuthorizationController::class, 'index'])->name('index.authorization');
-	Route::get('/authorization/id', [App\Http\Controllers\AuthorizationController::class, 'getAutho_Detail_By_Id'])->name('getAutho_Detail_By_Id');
-	Route::post('/authorization/insert', [App\Http\Controllers\AuthorizationController::class, 'save'])->name('insert.authorization');
-	Route::delete('/authorization', [App\Http\Controllers\AuthorizationController::class, 'delete'])->name('delete.authorization');
-	// Route::post('/authorization/user', [App\Http\Controllers\AuthorizationController::class, 'set_role_user'])->name('set_role_user');
-	Route::post('/authorization/recall', [App\Http\Controllers\AuthorizationController::class, 'recall_autho_user'])->name('recall_autho_user');
-	Route::get('/authorization/user', [App\Http\Controllers\AuthorizationController::class, 'get_user_by_department'])->name('get_user_by_department');
-	Route::post('/authorization/add', [App\Http\Controllers\AuthorizationController::class, 'set_autho_for_user'])->name('set_autho_for_user');
-	Route::get('/authorization/search', [App\Http\Controllers\AuthorizationController::class, 'search_autho'])->name('search_autho');
-	Route::post('/authorization', [App\Http\Controllers\AuthorizationController::class, 'set_page_size_autho'])->name('set_page_size_autho');
+	Route::get('/authorization', [AuthorizationController::class, 'index'])->name('index.authorization');
+	Route::get('/authorization/id', [AuthorizationController::class, 'getAutho_Detail_By_Id'])->name('getAutho_Detail_By_Id');
+	Route::post('/authorization/insert', [AuthorizationController::class, 'save'])->name('insert.authorization');
+	Route::delete('/authorization', [AuthorizationController::class, 'delete'])->name('delete.authorization');
+	// Route::post('/authorization/user', [AuthorizationController::class, 'set_role_user'])->name('set_role_user');
+	Route::post('/authorization/recall', [AuthorizationController::class, 'recall_autho_user'])->name('recall_autho_user');
+	Route::get('/authorization/user', [AuthorizationController::class, 'get_user_by_department'])->name('get_user_by_department');
+	Route::post('/authorization/add', [AuthorizationController::class, 'set_autho_for_user'])->name('set_autho_for_user');
+	Route::get('/authorization/search', [AuthorizationController::class, 'search_autho'])->name('search_autho');
+	Route::post('/authorization', [AuthorizationController::class, 'set_page_size_autho'])->name('set_page_size_autho');
 	// thiết bị
 	Route::get('/equipment', [EquipmentController::class, 'index'])->name('index.equipment');
+	Route::post('/equipment', [EquipmentController::class, 'insert_equipment'])->name('insert.equipment');
+	Route::get('/equiment_detail/paginate', [EquipmentController::class, 'get_all_equipment_paginate'])->name('get_all_equipment_paginate');
+	Route::get('/equipment_detail', [EquipmentController::class, 'get_equipment_detail_by_equipment'])->name('get_equipment_detail_by_equipment');
+	Route::get('/equipment_supplier', [EquipmentController::class, 'get_all_equipment_supplier'])->name('get_all_equipment_supplier');
+	Route::get('/equipment_type', [EquipmentController::class, 'get_all_equipment_type'])->name('get_all_equipment_type');
+	Route::delete('/equipment_type', [EquipmentController::class, 'delete_equipment_type_by_id'])->name('delete_equipment_type_by_id');
+	Route::get('/equipment_type/s', [EquipmentController::class, 'get_equipment_type_by_id'])->name('get_equipment_type_by_id');
+	Route::post('/equipment_type', [EquipmentController::class, 'insert_emquipment_types'])->name('insert_emquipment_types');
 
 	// phần trường làm 
 	Route::group(
 		['middleware' => 'auth'],
-		function () { 
+		function () {
 			//End route thiết bị
 			Route::post(
 				'get_departments',
